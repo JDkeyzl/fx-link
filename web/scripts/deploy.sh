@@ -1,34 +1,68 @@
 #!/usr/bin/env bash
-# 在阿里云服务器上执行：拉取/更新代码、安装依赖、构建、重启 PM2
-# 用法：在项目根目录（tk-link）执行 ./web/scripts/deploy.sh，或在 web 目录执行 ./scripts/deploy.sh
+# =============================================================================
+# crealink 部署脚本 — 适用于阿里云 ECS（Alibaba Cloud Linux 3 / CentOS/RHEL 系）
+# =============================================================================
+# 用法：
+#   在项目根目录（如 /home/admin/testback）：./web/scripts/deploy.sh
+#   或在 web 目录下：./scripts/deploy.sh
+#
+# 服务器需已安装：Node.js 18+、npm、PM2（可选）
+# 阿里云 Linux 3 安装示例：
+#   dnf install -y nodejs  或从 NodeSource 安装 LTS
+#   npm install -g pm2
+# =============================================================================
 
 set -e
 
-# 判断脚本所在目录，保证在 web 目录执行 npm
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WEB_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$WEB_DIR"
 
-echo "[deploy] Working directory: $WEB_DIR"
+echo "[deploy] 工作目录: $WEB_DIR"
 
-# 若在 git 仓库且存在远程，可拉取最新代码（按需取消注释）
+# -----------------------------------------------------------------------------
+# 1. 检查 Node / npm
+# -----------------------------------------------------------------------------
+if ! command -v node &>/dev/null || ! command -v npm &>/dev/null; then
+  echo "[deploy] 错误: 未检测到 node 或 npm。请先安装 Node.js 18+。"
+  echo "  阿里云 Linux 3 示例: dnf install -y nodejs"
+  echo "  或: curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash - && sudo dnf install -y nodejs"
+  exit 1
+fi
+echo "[deploy] Node $(node -v) / npm $(npm -v)"
+
+# -----------------------------------------------------------------------------
+# 2. 拉取最新代码（按需取消下一行注释，或部署前在仓库根目录执行 git pull）
+# -----------------------------------------------------------------------------
 # git pull origin main
 
-echo "[deploy] Installing dependencies (incl. devDependencies for build)..."
-# 避免 NODE_ENV=production 导致不装 devDependencies（构建需要 typescript 等）
+# -----------------------------------------------------------------------------
+# 3. 安装依赖（必须包含 devDependencies，构建需要 typescript 等）
+# -----------------------------------------------------------------------------
+echo "[deploy] 安装依赖（含 devDependencies）..."
+# 生产环境常见 NODE_ENV=production，会导致 npm 不装 devDependencies，此处显式指定
 NODE_ENV=development npm ci 2>/dev/null || NODE_ENV=development npm install
 
-echo "[deploy] Building Next.js..."
+# -----------------------------------------------------------------------------
+# 4. 构建 Next.js
+# -----------------------------------------------------------------------------
+echo "[deploy] 构建 Next.js..."
 npm run build
 
-echo "[deploy] Creating logs directory..."
+# -----------------------------------------------------------------------------
+# 5. 日志目录
+# -----------------------------------------------------------------------------
 mkdir -p logs
 
+# -----------------------------------------------------------------------------
+# 6. 使用 PM2 启动/重启（若未安装 PM2 则仅提示手动启动）
+# -----------------------------------------------------------------------------
 if command -v pm2 &>/dev/null; then
-  echo "[deploy] Restarting PM2 process..."
-  pm2 reload ecosystem.config.cjs --update-env || pm2 start ecosystem.config.cjs
+  echo "[deploy] 重启 PM2 进程..."
+  pm2 reload ecosystem.config.cjs --update-env 2>/dev/null || pm2 start ecosystem.config.cjs
   pm2 save
-  echo "[deploy] Done. Check: pm2 status"
+  echo "[deploy] 完成。查看状态: pm2 status"
 else
-  echo "[deploy] PM2 not found. Build finished. Start manually: npm run start"
+  echo "[deploy] 未检测到 PM2，请手动启动: cd $WEB_DIR && npm run start"
+  echo "  安装 PM2: npm install -g pm2"
 fi
