@@ -1,0 +1,30 @@
+# docs（不纳入版本库）
+docs/
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependencies & build
+web/node_modules/
+web/.next/
+web/out/
+web/build/
+
+# Logs
+*.log
+web/logs/
+
+# Env
+.env
+.env.*
+
+# Misc
+*.pem
+.pnp.*
+next-env.d.ts

@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "partsSearch": "Parts search",
+    "about": "About",
+    "contact": "Contact / RFQ"
+  },
+  "brand": {
+    "name": "crealink",
+    "tagline": "China truck parts export team"
+  },
+  "home": {
+    "hero": {
+      "title": "China truck parts, sourced and checked by a dedicated export team.",
+      "subtitle": "crealink helps truck parts buyers in Africa, Middle East and South America quickly check reference prices for SINOTRUK, SHACMAN, FAW and other China truck brands – then turn your parts list into a clean RFQ."
+    }
+  },
+  "search": {
+    "title": "Quick truck parts price check",
+    "placeholder": "Part number or English name",
+    "button": "Search",
+    "searching": "Searching...",
+    "example": "Example: SINOTRUK / HOWO / SHACMAN / FAW truck parts.",
+    "noResults": "No parts found for \"{{query}}\". Please try another number or keyword, or send us your RFQ."
+  },
+  "parts": {
+    "image": "Image",
+    "partNumber": "Part Number",
+    "nameEn": "Name (EN)",
+    "brandSeries": "Brand / Series",
+    "quality": "Quality",
+    "priceRange": "Price (CNY)",
+    "referenceNote": "Reference prices in CNY (RMB), EXW China (for indication only)"
+  },
+  "quality": {
+    "original": "Original",
+    "oem": "OEM",
+    "replacement": "Replacement",
+    "unknown": "Unknown"
+  },
+  "contact": {
+    "title": "Send us your RFQ",
+    "nameCompany": "Name / Company",
+    "countryCity": "Country / City",
+    "email": "Email",
+    "whatsapp": "WhatsApp (optional)",
+    "message": "Parts list / Message"
+  },
+  "about": {
+    "title": "Why work with crealink?",
+    "subtitle": "We are a light-asset export team in China focused on truck parts, not a general trading marketplace."
+  },
+  "footer": {
+    "copyright": "© {{year}} crealink. All rights reserved.",
+    "region": "China-based export team for Africa, Middle East, South America."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "retry": "Retry",
+    "submit": "Submit"
+  }
+}

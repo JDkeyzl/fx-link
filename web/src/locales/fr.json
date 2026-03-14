@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "partsSearch": "Recherche de pièces",
+    "about": "À propos",
+    "contact": "Contact / Demande de devis"
+  },
+  "brand": {
+    "name": "crealink",
+    "tagline": "Équipe d'export de pièces camions Chine"
+  },
+  "home": {
+    "hero": {
+      "title": "Pièces camions Chine, sourcées et contrôlées par une équipe d'export dédiée.",
+      "subtitle": "crealink aide les acheteurs de pièces camions en Afrique, au Moyen-Orient et en Amérique du Sud à vérifier rapidement les prix de référence pour SINOTRUK, SHACMAN, FAW et autres marques chinoises, puis à transformer votre liste en demande de devis claire."
+    }
+  },
+  "search": {
+    "title": "Vérification rapide des prix pièces camions",
+    "placeholder": "Numéro de pièce ou nom en anglais",
+    "button": "Rechercher",
+    "searching": "Recherche...",
+    "example": "Exemple : pièces SINOTRUK / HOWO / SHACMAN / FAW.",
+    "noResults": "Aucune pièce trouvée pour « {{query }} ». Essayez un autre numéro ou mot-clé, ou envoyez-nous votre demande de devis."
+  },
+  "parts": {
+    "image": "Image",
+    "partNumber": "Numéro de pièce",
+    "nameEn": "Nom (EN)",
+    "brandSeries": "Marque / Série",
+    "quality": "Qualité",
+    "priceRange": "Prix (CNY)",
+    "referenceNote": "Prix indicatifs en CNY (RMB), EXW Chine (à titre indicatif uniquement)"
+  },
+  "quality": {
+    "original": "Origine",
+    "oem": "OEM",
+    "replacement": "Rechange",
+    "unknown": "Inconnu"
+  },
+  "contact": {
+    "title": "Envoyez-nous votre demande de devis",
+    "nameCompany": "Nom / Société",
+    "countryCity": "Pays / Ville",
+    "email": "E-mail",
+    "whatsapp": "WhatsApp (optionnel)",
+    "message": "Liste de pièces / Message"
+  },
+  "about": {
+    "title": "Pourquoi travailler avec crealink ?",
+    "subtitle": "Nous sommes une équipe d'export légère en Chine, spécialisée dans les pièces camions, et non une place de marché générale."
+  },
+  "footer": {
+    "copyright": "© {{year}} crealink. Tous droits réservés.",
+    "region": "Équipe d'export basée en Chine pour l'Afrique, le Moyen-Orient et l'Amérique du Sud."
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite.",
+    "retry": "Réessayer",
+    "submit": "Envoyer"
+  }
+}

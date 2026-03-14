@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "partsSearch": "零件搜索",
+    "about": "关于我们",
+    "contact": "联系 / 询价"
+  },
+  "brand": {
+    "name": "crealink",
+    "tagline": "中国卡车配件出口团队"
+  },
+  "home": {
+    "hero": {
+      "title": "中国卡车配件，由专业出口团队采购与质检。",
+      "subtitle": "crealink 帮助非洲、中东及南美地区的卡车配件买家快速查询 SINOTRUK、陕汽、一汽等中国卡车品牌参考价，并将您的配件清单转化为规范询价单。"
+    }
+  },
+  "search": {
+    "title": "快速查询配件参考价",
+    "placeholder": "零件号或英文名称",
+    "button": "搜索",
+    "searching": "搜索中...",
+    "example": "示例：SINOTRUK / HOWO / 陕汽 / 一汽 卡车配件。",
+    "noResults": "未找到与「{{query}}」匹配的零件。请换一个零件号或关键词，或直接向我们发送询价。"
+  },
+  "parts": {
+    "image": "图片",
+    "partNumber": "零件号",
+    "nameEn": "名称（英文）",
+    "brandSeries": "品牌 / 系列",
+    "quality": "质量等级",
+    "priceRange": "价格（人民币）",
+    "referenceNote": "参考价，人民币 EXW 中国（仅供参考）"
+  },
+  "quality": {
+    "original": "原厂",
+    "oem": "OEM",
+    "replacement": "替代件",
+    "unknown": "未知"
+  },
+  "contact": {
+    "title": "发送询价",
+    "nameCompany": "姓名 / 公司",
+    "countryCity": "国家 / 城市",
+    "email": "邮箱",
+    "whatsapp": "WhatsApp（选填）",
+    "message": "配件清单 / 留言"
+  },
+  "about": {
+    "title": "为什么选择 crealink？",
+    "subtitle": "我们是在中国专注卡车配件的轻资产出口团队，而非综合贸易平台。"
+  },
+  "footer": {
+    "copyright": "© {{year}} crealink. 保留所有权利。",
+    "region": "立足中国，服务非洲、中东、南美。"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "出错了。",
+    "retry": "重试",
+    "submit": "提交"
+  }
+}
