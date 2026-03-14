@@ -15,7 +15,8 @@ echo "[deploy] Working directory: $WEB_DIR"
 # git pull origin main
 
 echo "[deploy] Installing dependencies (incl. devDependencies for build)..."
-npm ci 2>/dev/null || npm install
+# 避免 NODE_ENV=production 导致不装 devDependencies（构建需要 typescript 等）
+NODE_ENV=development npm ci 2>/dev/null || NODE_ENV=development npm install
 
 echo "[deploy] Building Next.js..."
 npm run build
