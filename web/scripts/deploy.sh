@@ -14,8 +14,8 @@ echo "[deploy] Working directory: $WEB_DIR"
 # 若在 git 仓库且存在远程，可拉取最新代码（按需取消注释）
 # git pull origin main
 
-echo "[deploy] Installing dependencies..."
-npm ci --omit=dev 2>/dev/null || npm install --omit=dev
+echo "[deploy] Installing dependencies (incl. devDependencies for build)..."
+npm ci 2>/dev/null || npm install
 
 echo "[deploy] Building Next.js..."
 npm run build
