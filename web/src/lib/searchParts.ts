@@ -10,16 +10,22 @@ export function searchParts(parts: Part[], query: string, limit = 50): Part[] {
 
   const results = parts.filter((part) => {
     const num = normalize(part.partNumber);
-    const name = normalize(part.nameEn);
     const brand = normalize(part.brand);
+    const nameEn = part.nameEn ? normalize(part.nameEn) : "";
+    const nameZh = part.name ? normalize(part.name) : "";
+    const nameFr = part.nameFr ? normalize(part.nameFr) : "";
+    const nameAr = part.nameAr ? normalize(part.nameAr) : "";
 
-    return (
-      num === q ||
-      num.startsWith(q) ||
-      num.includes(q) ||
-      name.includes(q) ||
-      brand.includes(q)
-    );
+    const matchesNumber =
+      num === q || num.startsWith(q) || num.includes(q);
+    const matchesName =
+      nameEn.includes(q) ||
+      nameZh.includes(q) ||
+      nameFr.includes(q) ||
+      nameAr.includes(q);
+    const matchesBrand = brand.includes(q);
+
+    return matchesNumber || matchesName || matchesBrand;
   });
 
   return results.slice(0, limit);

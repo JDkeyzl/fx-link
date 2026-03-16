@@ -10,7 +10,12 @@ const LABELS: Record<Locale, string> = {
   ar: "ع",
 };
 
-export function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  /** Tighter layout for desktop top-right */
+  compact?: boolean;
+}
+
+export function LanguageSwitcher({ compact }: LanguageSwitcherProps) {
   const { locale, setLocale, isRTL } = useI18n();
 
   function handleChange(next: Locale) {
@@ -23,16 +28,20 @@ export function LanguageSwitcher() {
 
   return (
     <div
-      className={`inline-flex items-center gap-1 rounded-full border border-zinc-300 bg-white/80 px-2 py-1 text-[11px] shadow-sm ${
-        isRTL ? "flex-row-reverse" : ""
-      }`}
+      className={`inline-flex items-center rounded-full border border-zinc-300 bg-white/80 shadow-sm ${
+        compact
+          ? "gap-0.5 px-1.5 py-0.5 text-[10px]"
+          : "gap-1 px-2 py-1 text-[11px]"
+      } ${isRTL ? "flex-row-reverse" : ""}`}
     >
       {(Object.keys(LABELS) as Locale[]).map((code) => (
         <button
           key={code}
           type="button"
           onClick={() => handleChange(code)}
-          className={`rounded-full px-2 py-0.5 ${
+          className={`rounded-full ${
+            compact ? "px-1.5 py-0.5" : "px-2 py-0.5"
+          } ${
             locale === code
               ? "bg-zinc-900 text-white"
               : "text-zinc-600 hover:bg-zinc-100"

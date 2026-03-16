@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "crealink – China truck parts export team",
+  title: "Crealink – China truck parts export team",
   description:
-    "crealink helps overseas truck parts buyers quickly check reference prices and source SINOTRUK, SHACMAN, FAW and other China truck parts.",
+    "Crealink helps overseas truck parts buyers quickly check reference prices and source SINOTRUK, SHACMAN, FAW and other China truck parts.",
 };
 
 export default function RootLayout({
