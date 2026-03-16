@@ -45,13 +45,18 @@
   },
   "contact": {
     "title": "Contact us",
-    "intro": "[Placeholder] Get in touch for parts quotes and export services.",
-    "emailLabel": "[Placeholder] Email",
-    "emailPlaceholder": "[Placeholder] Your email address",
-    "phoneLabel": "[Placeholder] Phone / WhatsApp",
-    "phonePlaceholder": "[Placeholder] Your phone number",
-    "addressLabel": "[Placeholder] Address / Region",
-    "addressPlaceholder": "[Placeholder] Company or region",
+    "intro": "Get in touch for parts quotes and export services.",
+    "hotlineStationLabel": "Hotline station",
+    "hotlineStation": "+86-531-68829096",
+    "serviceHotlineLabel": "Mobile",
+    "serviceHotline1": "+86 18615287132",
+    "whatsAppLabel": "WhatsApp",
+    "whatsAppNote": "Scan the QR code to chat with our service team.",
+    "emailLabel": "Email",
+    "email1": "admin@sinotruckpart.com",
+    "email2": "rose@sinotruckpart.com",
+    "addressLabel": "Address",
+    "address": "57 Lanxiang Road, Tianqiao District, Jinan City, Shandong Province, China",
     "nameCompany": "Name / Company",
     "countryCity": "Country / City",
     "email": "Email",
@@ -60,7 +65,7 @@
   },
   "about": {
     "title": "Why choose us",
-    "subtitle": "We are a light-asset export team in China focused on truck parts, delivering reliable and efficient sourcing and export services.",
+    "subtitle": "We are a China-based team specializing in SINOTRUK aftermarket parts, supplying genuine OE components, high-value quality alternatives and turnkey export solutions.",
     "feature": {
       "globalShippingTitle": "Global shipping",
       "globalShippingDesc": "We ship to Africa, Middle East, South America and more. Trackable logistics with reliable lead times.",
@@ -70,11 +75,29 @@
       "realTimeQuoteDesc": "Check reference prices online, get fast RFQ responses, and turn your list into a clear quote request."
     }
   },
+  "partners": {
+    "title": "Trusted Partners & Brands"
+  },
   "footer": {
     "copyright": "© {{year}} CreaLink. All rights reserved.",
-    "region": "China-based export team for Africa, Middle East, South America.",
     "brand": "CreaLink",
-    "partnerPlaceholder": "Sinotruk official parts partner"
+    "partnerPlaceholder": "Sinotruk official parts partner",
+    "quickLinks": {
+      "title": "Quick links",
+      "search": "Parts search",
+      "about": "Why choose us",
+      "contact": "Contact"
+    },
+    "business": {
+      "title": "Business scope",
+      "line1": "SINOTRUK aftermarket parts · Heavy truck chassis · Engine and transmission assemblies",
+      "line2": "Genuine OE and high-value quality alternatives · Export packing and logistics support"
+    },
+    "legal": {
+      "title": "Legal & compliance",
+      "line1": "Company registration and export qualifications available on request.",
+      "line2": "Data and quotations on this site are for reference only and do not constitute a formal offer."
+    }
   },
   "common": {
     "loading": "Loading...",

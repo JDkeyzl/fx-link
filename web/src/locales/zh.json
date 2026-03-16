@@ -44,14 +44,19 @@
     "unknown": "未知"
   },
   "contact": {
-    "title": "发送询价",
-    "intro": "[占位] 欢迎通过以下方式联系我们，获取配件报价与出口服务。",
-    "emailLabel": "[占位] 邮箱",
-    "emailPlaceholder": "[占位] 请填写邮箱地址",
-    "phoneLabel": "[占位] 电话 / WhatsApp",
-    "phonePlaceholder": "[占位] 请填写联系电话",
-    "addressLabel": "[占位] 地址 / 地区",
-    "addressPlaceholder": "[占位] 请填写公司或地区信息",
+    "title": "联系我们",
+    "intro": "欢迎通过以下方式联系我们，获取配件报价与出口服务。",
+    "hotlineStationLabel": "热线座机",
+    "hotlineStation": "+86-531-68829096",
+    "serviceHotlineLabel": "服务手机",
+    "serviceHotline1": "+86 18615287132",
+    "whatsAppLabel": "WhatsApp",
+    "whatsAppNote": "扫描二维码，与服务团队取得联系。",
+    "emailLabel": "邮箱",
+    "email1": "admin@sinotruckpart.com",
+    "email2": "rose@sinotruckpart.com",
+    "addressLabel": "地址",
+    "address": "山东省济南市天桥区蓝翔路57号",
     "nameCompany": "姓名 / 公司",
     "countryCity": "国家 / 城市",
     "email": "邮箱",
@@ -60,7 +65,7 @@
   },
   "about": {
     "title": "为什么选择我们",
-    "subtitle": "我们是在中国专注卡车配件的轻资产出口团队，为您提供可靠、高效的配件采购与出口服务。",
+    "subtitle": "我们专注中国重卡后市场配件服务，可根据不同工况与预算，提供原厂件、高性价比高质量副厂件，以及打包配货、出口报关、售后技术支持在内的一站式解决方案。",
     "feature": {
       "globalShippingTitle": "全球发货",
       "globalShippingDesc": "支持发往非洲、中东、南美等地区，物流可追踪，时效有保障。",
@@ -70,11 +75,29 @@
       "realTimeQuoteDesc": "在线查询参考价，快速响应询价需求，清单可转规范 RFQ。"
     }
   },
+  "partners": {
+    "title": "合作伙伴与品牌"
+  },
   "footer": {
     "copyright": "© {{year}} CreaLink. 保留所有权利。",
-    "region": "立足中国，服务非洲、中东、南美。",
     "brand": "CreaLink",
-    "partnerPlaceholder": "中国重汽官方零件合作标识"
+    "partnerPlaceholder": "中国重汽官方零件合作标识",
+    "quickLinks": {
+      "title": "快捷入口",
+      "search": "零件搜索",
+      "about": "为什么选择我们",
+      "contact": "联系我们"
+    },
+    "business": {
+      "title": "业务范围",
+      "line1": "中国重卡后市场配件 · 底盘总成 · 发动机与变速箱总成",
+      "line2": "原厂件与高性价比副厂件 · 出口包装与物流配套"
+    },
+    "legal": {
+      "title": "合规与声明",
+      "line1": "完整营业资质与出口备案信息可按需提供。",
+      "line2": "本网站价格与数据仅供参考，不构成正式报价。"
+    }
   },
   "common": {
     "loading": "加载中...",

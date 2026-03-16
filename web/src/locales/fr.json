@@ -45,13 +45,19 @@
   },
   "contact": {
     "title": "Contactez-nous",
-    "intro": "[Placeholder] Contactez-nous pour des devis pièces et services d'export.",
-    "emailLabel": "[Placeholder] E-mail",
-    "emailPlaceholder": "[Placeholder] Votre adresse e-mail",
-    "phoneLabel": "[Placeholder] Téléphone / WhatsApp",
-    "phonePlaceholder": "[Placeholder] Votre numéro",
-    "addressLabel": "[Placeholder] Adresse / Région",
-    "addressPlaceholder": "[Placeholder] Société ou région",
+    "intro": "Contactez-nous pour des devis pièces et services d'export.",
+    "hotlineStationLabel": "Standard",
+    "hotlineStation": "+86-531-68829096",
+    "serviceHotlineLabel": "Hotline service",
+    "serviceHotline1": "+86 18615287132",
+    "serviceHotline2": "+86 13156186385",
+    "phoneLabel": "Téléphone",
+    "phone": "+86-531-88629096",
+    "emailLabel": "E-mail",
+    "email1": "admin@sinotruckpart.com",
+    "email2": "rose@sinotruckpart.com",
+    "addressLabel": "Adresse",
+    "address": "57 Lanxiang Road, Tianqiao District, Jinan City, Shandong Province, China",
     "nameCompany": "Nom / Société",
     "countryCity": "Pays / Ville",
     "email": "E-mail",
@@ -60,7 +66,7 @@
   },
   "about": {
     "title": "Pourquoi nous choisir",
-    "subtitle": "Nous sommes une équipe d'export légère en Chine spécialisée dans les pièces camions, pour un approvisionnement et un export fiables et efficaces.",
+    "subtitle": "Nous sommes une équipe basée en Chine, spécialisée dans le marché après-vente des poids lourds chinois, capable de fournir des pièces d'origine, des alternatives de haute qualité à fort rapport qualité/prix et des solutions export clés en main.",
     "feature": {
       "globalShippingTitle": "Livraison mondiale",
       "globalShippingDesc": "Expédition vers l'Afrique, le Moyen-Orient, l'Amérique du Sud et ailleurs. Logistique traçable, délais maîtrisés.",
@@ -69,6 +75,9 @@
       "realTimeQuoteTitle": "Devis en temps réel",
       "realTimeQuoteDesc": "Vérification des prix en ligne, réponses rapides aux demandes de devis, liste transformée en RFQ claire."
     }
+  },
+  "partners": {
+    "title": "Partenaires & Marques de confiance"
   },
   "footer": {
     "copyright": "© {{year}} CreaLink. Tous droits réservés.",

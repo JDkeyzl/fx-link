@@ -94,3 +94,24 @@ body {
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
 }
+
+/* Trusted Partners marquee (infinite loop) */
+@keyframes partners-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.partners-marquee-track {
+  animation: partners-marquee 45s linear infinite;
+}
+.partners-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Partner logo: always full-color; only scale on hover */
+.partner-logo {
+  opacity: 1;
+  transition: transform 0.3s ease;
+}
+.partner-logo:hover {
+  transform: scale(1.08);
+}

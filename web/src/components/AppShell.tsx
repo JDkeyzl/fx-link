@@ -50,19 +50,68 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
           <main className="flex-1 px-0 py-0">
             {children}
           </main>
-          <footer className="border-t border-gray-200 bg-white/80 backdrop-blur-sm px-6 py-6 text-sm text-zinc-600 lg:px-10">
-            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-              <div className="flex flex-col gap-1">
-                <span className="font-semibold text-[#002d54]">
+          <footer className="border-t border-gray-200 bg-white/80 backdrop-blur-sm px-6 py-6 text-xs text-zinc-600 lg:px-10">
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
+              <div className="flex flex-col gap-1 max-w-xs">
+                <span className="text-sm font-semibold text-[#002d54]">
                   {t("footer.brand")}
                 </span>
-                <span className="text-xs text-zinc-500">
+                <span className="text-[11px] text-zinc-500">
                   {t("footer.partnerPlaceholder")}
                 </span>
               </div>
-              <div className="flex flex-col gap-0.5 text-xs text-zinc-500">
-                <span>© {year} {t("footer.brand")}. All rights reserved.</span>
-                <span>{t("footer.region")}</span>
+              <div className="flex flex-col gap-1 max-w-xs">
+                <span className="font-semibold text-[#002d54]">
+                  {t("footer.business.title")}
+                </span>
+                <span className="text-[11px]">
+                  {t("footer.business.line1")}
+                </span>
+                <span className="text-[11px]">
+                  {t("footer.business.line2")}
+                </span>
+              </div>
+              <div className="flex flex-col gap-1 max-w-xs">
+                <span className="font-semibold text-[#002d54]">
+                  {t("footer.quickLinks.title")}
+                </span>
+                <nav className="mt-0.5 flex flex-col gap-0.5">
+                  <button
+                    type="button"
+                    className="text-[11px] text-zinc-600 hover:text-[#002d54] text-left"
+                    onClick={() => scrollTo("search")}
+                  >
+                    {t("footer.quickLinks.search")}
+                  </button>
+                  <button
+                    type="button"
+                    className="text-[11px] text-zinc-600 hover:text-[#002d54] text-left"
+                    onClick={() => scrollTo("about")}
+                  >
+                    {t("footer.quickLinks.about")}
+                  </button>
+                  <button
+                    type="button"
+                    className="text-[11px] text-zinc-600 hover:text-[#002d54] text-left"
+                    onClick={() => scrollTo("contact")}
+                  >
+                    {t("footer.quickLinks.contact")}
+                  </button>
+                </nav>
+              </div>
+              <div className="flex flex-col gap-1 max-w-xs">
+                <span className="font-semibold text-[#002d54]">
+                  {t("footer.legal.title")}
+                </span>
+                <span className="text-[11px]">
+                  {t("footer.legal.line1")}
+                </span>
+                <span className="text-[11px]">
+                  {t("footer.legal.line2")}
+                </span>
+                <span className="mt-2 text-[11px] text-zinc-500">
+                  © {year} {t("footer.brand")}. All rights reserved.
+                </span>
               </div>
             </div>
           </footer>
@@ -184,8 +233,8 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
           </a>
         </nav>
 
-        {/* Footer: CreaLink + Sinotruk partner placeholder */}
-        <footer className="border-t border-gray-200 bg-white/90 px-4 py-4 text-xs text-zinc-500">
+        {/* Footer: condensed business/brand info on mobile */}
+        <footer className="border-t border-gray-200 bg-white/90 px-4 py-4 text-[11px] text-zinc-500">
           <div className="flex flex-col gap-2">
             <span className="font-semibold text-[#002d54]">
               {t("footer.brand")}
@@ -193,8 +242,12 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
             <span className="text-[11px] text-zinc-500">
               {t("footer.partnerPlaceholder")}
             </span>
+            <span className="mt-1 font-semibold text-[#002d54]">
+              {t("footer.business.title")}
+            </span>
+            <span>{t("footer.business.line1")}</span>
+            <span>{t("footer.business.line2")}</span>
             <span className="mt-1">© {year} {t("footer.brand")}.</span>
-            <span>{t("footer.region")}</span>
           </div>
         </footer>
       </div>

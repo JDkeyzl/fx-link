@@ -45,14 +45,20 @@
     "unknown": "[مراجعة: غير معروف]"
   },
   "contact": {
-    "title": "[مراجعة: اتصل بنا]",
-    "intro": "[Placeholder] تواصل معنا للحصول على عروض الأسعار وخدمات التصدير.",
-    "emailLabel": "[Placeholder] البريد الإلكتروني",
-    "emailPlaceholder": "[Placeholder] عنوان بريدك الإلكتروني",
-    "phoneLabel": "[Placeholder] الهاتف / واتساب",
-    "phonePlaceholder": "[Placeholder] رقم هاتفك",
-    "addressLabel": "[Placeholder] العنوان / المنطقة",
-    "addressPlaceholder": "[Placeholder] الشركة أو المنطقة",
+    "title": "اتصل بنا",
+    "intro": "تواصل معنا للحصول على عروض الأسعار وخدمات التصدير.",
+    "hotlineStationLabel": "الهاتف الثابت",
+    "hotlineStation": "+86-531-68829096",
+    "serviceHotlineLabel": "خط المساعدة",
+    "serviceHotline1": "+86 18615287132",
+    "serviceHotline2": "+86 13156186385",
+    "phoneLabel": "الهاتف",
+    "phone": "+86-531-88629096",
+    "emailLabel": "البريد الإلكتروني",
+    "email1": "admin@sinotruckpart.com",
+    "email2": "rose@sinotruckpart.com",
+    "addressLabel": "العنوان",
+    "address": "57 Lanxiang Road, Tianqiao District, Jinan City, Shandong Province, China",
     "nameCompany": "[مراجعة: الاسم / الشركة]",
     "countryCity": "[مراجعة: البلد / المدينة]",
     "email": "[مراجعة: البريد الإلكتروني]",
@@ -61,7 +67,7 @@
   },
   "about": {
     "title": "[مراجعة: لماذا تختارنا]",
-    "subtitle": "[مراجعة: نحن فريق تصدير خفيف في الصين متخصص في قطع غيار الشاحنات، نقدم خدمات مصدر وموثوقة.]",
+    "subtitle": "[مراجعة: نحن فريق مقيم في الصين متخصص في سوق ما بعد البيع للشاحنات الثقيلة الصينية، نوفر قطعاً أصلية وبدائل عالية الجودة ذات قيمة عالية وحلول تصدير متكاملة.]",
     "feature": {
       "globalShippingTitle": "[مراجعة: شحن عالمي]",
       "globalShippingDesc": "[مراجعة: شحن لأفريقيا والشرق الأوسط وأمريكا الجنوبية. لوجستيات قابلة للتتبع.]",
@@ -70,6 +76,9 @@
       "realTimeQuoteTitle": "[مراجعة: عرض سعر فوري]",
       "realTimeQuoteDesc": "[مراجعة: التحقق من الأسعار عبر الإنترنت، استجابة سريعة لطلبات العرض، تحويل القائمة إلى RFQ.]"
     }
+  },
+  "partners": {
+    "title": "[مراجعة: الشركاء والعلامات الموثوقة]"
   },
   "footer": {
     "copyright": "[مراجعة: © {{year}} CreaLink. جميع الحقوق محفوظة.]",

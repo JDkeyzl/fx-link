@@ -23,6 +23,30 @@ const FEATURE_ICONS: Record<string, string> = {
   realTimeQuote: encodeURI("/icon_svg/实时报价.png"),
 };
 
+const PARTNERS: { placeholder: string; label: string; logoFile?: string }[] = [
+  { placeholder: "[LOGO_SINOTRUK]", label: "SINOTRUK", logoFile: "SINOTRUK.jpeg" },
+  { placeholder: "[LOGO_SHACMAN]", label: "SHACMAN", logoFile: "shacman.png" },
+  { placeholder: "[LOGO_FAW]", label: "FAW Jiefang", logoFile: "FAW jiefang.png" },
+  { placeholder: "[LOGO_FOTON]", label: "FOTON Auman", logoFile: "foton.png" },
+  { placeholder: "[LOGO_DONGFENG]", label: "DONGFENG", logoFile: "dongfeng.png" },
+  { placeholder: "[LOGO_BEIBEN]", label: "BeiBen Truck", logoFile: "beiben truck.png" },
+  { placeholder: "[LOGO_JAC]", label: "JAC Motors", logoFile: "Jac_.png" },
+  { placeholder: "[LOGO_WEICHAI]", label: "WEICHAI Power", logoFile: "weichai.png" },
+  { placeholder: "[LOGO_CUMMINS]", label: "CUMMINS", logoFile: "Cummins.png" },
+  { placeholder: "[LOGO_FAST]", label: "FAST Gear", logoFile: "fast gear.jpg" },
+  { placeholder: "[LOGO_HANDE]", label: "HanDe Axle", logoFile: "hande axle.jpg" },
+  { placeholder: "[LOGO_WANXIANG]", label: "Wanxiang Group", logoFile: "Wanxiang.jpg" },
+  { placeholder: "[LOGO_TIANRUN]", label: "Tianrun Industry", logoFile: "tianrun industry.jpg" },
+  { placeholder: "[LOGO_TORCH]", label: "Torch Spark Plug", logoFile: "troch spark plug.png" },
+  { placeholder: "[LOGO_SANY]", label: "SANY", logoFile: "SANY_Group_logo.svg.png" },
+  { placeholder: "[LOGO_XCMG]", label: "XCMG", logoFile: "XCMG_logo.svg.png" },
+  { placeholder: "[LOGO_ZOOMLION]", label: "ZOOMLION", logoFile: "Zoomlion logo.png" },
+  { placeholder: "[LOGO_LIUGONG]", label: "LIUGONG", logoFile: "LiuGong_logo.svg.png" },
+  { placeholder: "[LOGO_SDLG]", label: "SDLG", logoFile: "SDLG.png" },
+  { placeholder: "[LOGO_SHANTUI]", label: "SHANTUI", logoFile: "SHANTUI.png" },
+  { placeholder: "[LOGO_HONGYAN]", label: "SAIC Hongyan", logoFile: "hongyan.jpg" },
+];
+
 export function HomeContent() {
   const { t } = useI18n();
   const [query, setQuery] = useState("");
@@ -144,7 +168,7 @@ export function HomeContent() {
           <h2 className="text-xl font-semibold text-[#002d54] md:text-2xl text-center">
             {t("about.title")}
           </h2>
-          <p className="mt-3 text-sm text-zinc-600 md:text-base text-center max-w-2xl mx-auto">
+          <p className="mt-3 text-sm md:text-lg text-zinc-800 text-center max-w-3xl mx-auto">
             {t("about.subtitle")}
           </p>
           <div className="mt-10 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
@@ -207,23 +231,104 @@ export function HomeContent() {
           <p className="mt-3 text-sm text-gray-200 md:text-base leading-relaxed drop-shadow-sm">
             {t("contact.intro")}
           </p>
-          <div className="mt-8 space-y-4 sm:space-y-5">
+          <div className="mt-8 space-y-3 sm:space-y-4">
             <p className="text-gray-100 text-sm md:text-base">
+              <span className="font-medium text-white/95">{t("contact.hotlineStationLabel")}</span>
+              <span className="ml-2">
+                <a href="tel:+8653168829096" className="text-gray-300 hover:text-white transition-colors">
+                  {t("contact.hotlineStation")}
+                </a>
+              </span>
+            </p>
+            <p className="text-gray-100 text-sm md:text-base">
+              <span className="font-medium text-white/95">{t("contact.serviceHotlineLabel")}</span>
+              <span className="ml-2">
+                <a href="tel:+8618615287132" className="text-gray-300 hover:text-white transition-colors">
+                  {t("contact.serviceHotline1")}
+                </a>
+              </span>
+            </p>
+            <div className="flex items-start gap-4 pt-2">
+              <div className="text-gray-100 text-sm md:text-base">
+                <p className="font-medium text-white/95">{t("contact.whatsAppLabel")}</p>
+                <p className="mt-1 text-gray-300 text-xs md:text-sm max-w-xs">
+                  {t("contact.whatsAppNote")}
+                </p>
+              </div>
+              <a
+                href="/WhatsApp.png"
+                target="_blank"
+                rel="noreferrer"
+                className="shrink-0 block"
+              >
+                <Image
+                  src="/WhatsApp.png"
+                  alt="WhatsApp QR"
+                  width={80}
+                  height={80}
+                  className="rounded-md border border-white/40 shadow-sm object-contain bg-white/10 hover:border-white/70 transition-colors"
+                />
+              </a>
+            </div>
+            <div className="text-gray-100 text-sm md:text-base">
               <span className="font-medium text-white/95">{t("contact.emailLabel")}</span>
-              <span className="ml-2 text-gray-300">{t("contact.emailPlaceholder")}</span>
-            </p>
-            <p className="text-gray-100 text-sm md:text-base">
-              <span className="font-medium text-white/95">{t("contact.phoneLabel")}</span>
-              <span className="ml-2 text-gray-300">{t("contact.phonePlaceholder")}</span>
-            </p>
+              <div className="ml-2 mt-1 space-y-1">
+                <a href="mailto:admin@sinotruckpart.com" className="block text-gray-300 hover:text-white transition-colors">
+                  {t("contact.email1")}
+                </a>
+                <a href="mailto:rose@sinotruckpart.com" className="block text-gray-300 hover:text-white transition-colors">
+                  {t("contact.email2")}
+                </a>
+              </div>
+            </div>
             <p className="text-gray-100 text-sm md:text-base">
               <span className="font-medium text-white/95">{t("contact.addressLabel")}</span>
-              <span className="ml-2 text-gray-300">{t("contact.addressPlaceholder")}</span>
+              <span className="ml-2 text-gray-300">
+                {t("contact.address")}
+              </span>
             </p>
           </div>
-          <p className="mt-6 text-xs text-gray-400 md:text-sm">
-            {t("footer.region")}
-          </p>
+        </div>
+      </section>
+
+      {/* Trusted Partners & Brands: infinite marquee, grayscale → color on hover */}
+      <section
+        id="partners"
+        className="scroll-mt-20 border-t border-gray-200 bg-white py-10 md:py-12 overflow-hidden"
+      >
+        <h2 className="text-center text-lg font-semibold text-[#002d54] md:text-xl mb-8 px-4">
+          {t("partners.title")}
+        </h2>
+        <div className="relative w-full overflow-hidden">
+          <div className="partners-marquee-track flex w-max gap-10 md:gap-14 pl-4">
+            {[...PARTNERS, ...PARTNERS].map((partner, i) => (
+              <a
+                key={`${partner.label}-${i}`}
+                href="#partners"
+                className="partner-logo flex flex-col items-center justify-center shrink-0 px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002d54]/30 focus-visible:ring-offset-2 rounded-lg"
+                aria-label={partner.label}
+              >
+                <div className="flex items-center justify-center overflow-hidden h-14 md:h-16 rounded-md">
+                  {partner.logoFile ? (
+                    <Image
+                      src={`/logo/${encodeURIComponent(partner.logoFile)}`}
+                      alt=""
+                      width={80}
+                      height={64}
+                      className="max-h-14 md:max-h-16 w-auto object-contain"
+                    />
+                  ) : (
+                    <span className="text-[10px] md:text-xs text-gray-500 font-medium text-center leading-tight">
+                      {partner.placeholder}
+                    </span>
+                  )}
+                </div>
+                <span className="mt-2 text-[11px] md:text-xs font-medium text-gray-600 tracking-wide">
+                  {partner.label}
+                </span>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
     </div>
