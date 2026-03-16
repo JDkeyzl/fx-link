@@ -11,12 +11,18 @@
   "home": {
     "hero": {
       "title": "China truck parts, sourced and checked by a dedicated export team.",
-      "subtitle": "crealink helps truck parts buyers in Africa, Middle East and South America quickly check reference prices for SINOTRUK, SHACMAN, FAW and other China truck brands – then turn your parts list into a clean RFQ."
+      "subtitle": "crealink helps truck parts buyers in Africa, Middle East and South America quickly check reference prices for SINOTRUK, SHACMAN, FAW and other China truck brands – then turn your parts list into a clean RFQ.",
+      "searchPlaceholder": "Part number or name to check price"
+    },
+    "feature": {
+      "globalShipping": "Global shipping",
+      "authentic": "Genuine parts",
+      "realTimeQuote": "Real-time quote"
     }
   },
   "search": {
     "title": "Quick truck parts price check",
-    "placeholder": "Part number or English name",
+    "placeholder": "Part number or name",
     "button": "Search",
     "searching": "Searching...",
     "example": "Example: SINOTRUK / HOWO / SHACMAN / FAW truck parts.",
@@ -38,7 +44,14 @@
     "unknown": "Unknown"
   },
   "contact": {
-    "title": "Send us your RFQ",
+    "title": "Contact us",
+    "intro": "[Placeholder] Get in touch for parts quotes and export services.",
+    "emailLabel": "[Placeholder] Email",
+    "emailPlaceholder": "[Placeholder] Your email address",
+    "phoneLabel": "[Placeholder] Phone / WhatsApp",
+    "phonePlaceholder": "[Placeholder] Your phone number",
+    "addressLabel": "[Placeholder] Address / Region",
+    "addressPlaceholder": "[Placeholder] Company or region",
     "nameCompany": "Name / Company",
     "countryCity": "Country / City",
     "email": "Email",
@@ -46,12 +59,22 @@
     "message": "Parts list / Message"
   },
   "about": {
-    "title": "Why work with crealink?",
-    "subtitle": "We are a light-asset export team in China focused on truck parts, not a general trading marketplace."
+    "title": "Why choose us",
+    "subtitle": "We are a light-asset export team in China focused on truck parts, delivering reliable and efficient sourcing and export services.",
+    "feature": {
+      "globalShippingTitle": "Global shipping",
+      "globalShippingDesc": "We ship to Africa, Middle East, South America and more. Trackable logistics with reliable lead times.",
+      "authenticTitle": "Genuine parts",
+      "authenticDesc": "Direct factory and authorized channels. Traceable sourcing and quality you can trust.",
+      "realTimeQuoteTitle": "Real-time quote",
+      "realTimeQuoteDesc": "Check reference prices online, get fast RFQ responses, and turn your list into a clear quote request."
+    }
   },
   "footer": {
-    "copyright": "© {{year}} crealink. All rights reserved.",
-    "region": "China-based export team for Africa, Middle East, South America."
+    "copyright": "© {{year}} CreaLink. All rights reserved.",
+    "region": "China-based export team for Africa, Middle East, South America.",
+    "brand": "CreaLink",
+    "partnerPlaceholder": "Sinotruk official parts partner"
   },
   "common": {
     "loading": "Loading...",

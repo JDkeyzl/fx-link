@@ -21,22 +21,22 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
 
   return (
     <div
-      className={`min-h-screen bg-zinc-50 text-zinc-900 ${directionClass}`}
+      className={`min-h-screen bg-tech-grid text-zinc-900 ${directionClass}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
       {/* ========== DESKTOP LAYOUT (md and up) ========== */}
       <div className="hidden min-h-screen md:flex md:flex-col md:max-w-[1600px] md:mx-auto">
-        {/* Top bar: logo + company name (left), language (right) */}
-        <header className="flex shrink-0 items-center justify-between border-b border-zinc-200 bg-white/95 px-4 py-2 backdrop-blur">
+        {/* Top bar: 毛玻璃 Glassmorphism，重工业+AI 层级感 */}
+        <header className="glass-header flex shrink-0 items-center justify-between px-4 py-2.5 lg:px-8">
           <div className="flex items-center gap-3">
             <img
               src="/logo.png"
-              alt="Crealink"
+              alt="CreaLink"
               className="h-9 w-auto object-contain"
             />
             <div className="min-w-0">
-              <div className="text-sm font-semibold tracking-tight text-zinc-900">
-                Crealink
+              <div className="text-sm font-semibold tracking-tight text-[#002d54]">
+                {t("footer.brand")}
               </div>
               <div className="text-[11px] text-zinc-500">
                 {t("brand.tagline")}
@@ -45,42 +45,25 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
           </div>
           <LanguageSwitcher compact />
         </header>
-        {/* Main content */}
+        {/* Main content: no horizontal padding so hero can be full-bleed */}
         <div className="flex min-h-0 flex-1 flex-col min-w-0">
-          <main className="flex-1 px-6 py-8 lg:px-10 lg:py-10">
-            {/* Stats: desktop-only, compact strip */}
-            <div className="mb-8 grid grid-cols-3 gap-4">
-              <div className="rounded-xl border border-zinc-200 bg-white px-4 py-3 shadow-sm">
-                <div className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
-                  Parts in database
-                </div>
-                <div className="mt-0.5 text-lg font-semibold text-zinc-900">
-                  30,000+
-                </div>
-              </div>
-              <div className="rounded-xl border border-zinc-200 bg-white px-4 py-3 shadow-sm">
-                <div className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
-                  Brands
-                </div>
-                <div className="mt-0.5 text-lg font-semibold text-zinc-900">
-                  SINOTRUK, SHACMAN, FAW, BEIBEN
-                </div>
-              </div>
-              <div className="rounded-xl border border-zinc-200 bg-white px-4 py-3 shadow-sm">
-                <div className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">
-                  Regions
-                </div>
-                <div className="mt-0.5 text-lg font-semibold text-zinc-900">
-                  Africa, Middle East, South America
-                </div>
-              </div>
-            </div>
+          <main className="flex-1 px-0 py-0">
             {children}
           </main>
-          <footer className="border-t border-zinc-200 bg-white/90 px-6 py-4 text-xs text-zinc-500 lg:px-10">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <span>© {year} Crealink. All rights reserved.</span>
-              <span>{t("footer.region")}</span>
+          <footer className="border-t border-gray-200 bg-white/80 backdrop-blur-sm px-6 py-6 text-sm text-zinc-600 lg:px-10">
+            <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-1">
+                <span className="font-semibold text-[#002d54]">
+                  {t("footer.brand")}
+                </span>
+                <span className="text-xs text-zinc-500">
+                  {t("footer.partnerPlaceholder")}
+                </span>
+              </div>
+              <div className="flex flex-col gap-0.5 text-xs text-zinc-500">
+                <span>© {year} {t("footer.brand")}. All rights reserved.</span>
+                <span>{t("footer.region")}</span>
+              </div>
             </div>
           </footer>
         </div>
@@ -88,16 +71,18 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
 
       {/* ========== MOBILE LAYOUT ========== */}
       <div className="flex flex-col min-h-screen md:hidden">
-        {/* Sticky top bar */}
-        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur">
+        {/* Sticky top bar: 毛玻璃 Glassmorphism */}
+        <header className="glass-header sticky top-0 z-20 flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
             <img
               src="/logo.png"
-              alt="Crealink"
+              alt="CreaLink"
               className="h-9 w-auto object-contain"
             />
             <div>
-              <div className="text-sm font-semibold text-zinc-900">Crealink</div>
+              <div className="text-sm font-semibold text-[#002d54]">
+                {t("footer.brand")}
+              </div>
               <div className="text-[11px] text-zinc-500">
                 {t("brand.tagline")}
               </div>
@@ -106,27 +91,9 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
           <LanguageSwitcher />
         </header>
 
-        {/* Stats: mobile compact */}
-        <div className="border-b border-zinc-200 bg-white px-3 py-2">
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            <div className="shrink-0 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-center">
-              <div className="text-[10px] text-zinc-500">Parts</div>
-              <div className="text-sm font-semibold text-zinc-900">30K+</div>
-            </div>
-            <div className="shrink-0 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-center">
-              <div className="text-[10px] text-zinc-500">Brands</div>
-              <div className="text-sm font-semibold text-zinc-900">4+</div>
-            </div>
-            <div className="shrink-0 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-center">
-              <div className="text-[10px] text-zinc-500">Regions</div>
-              <div className="text-sm font-semibold text-zinc-900">3</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main content: padding-bottom for bottom nav + safe area */}
+        {/* Main content: no horizontal padding for full-bleed hero; bottom pad for nav */}
         <main
-          className="flex-1 px-4 py-5"
+          className="flex-1 px-0 py-0"
           style={{
             paddingBottom: "calc(4rem + env(safe-area-inset-bottom, 0px))",
           }}
@@ -134,10 +101,13 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
           {children}
         </main>
 
-        {/* Sticky bottom nav: touch-friendly */}
+        {/* Sticky bottom nav: touch-friendly, glass */}
         <nav
-          className="fixed bottom-0 left-0 right-0 z-20 flex border-t border-zinc-200 bg-white/95 backdrop-blur"
-          style={{ paddingBottom: "var(--safe-area-inset-bottom)" }}
+          className="fixed bottom-0 left-0 right-0 z-20 flex border-t border-gray-200 bg-white/80 backdrop-blur-md"
+          style={{
+            paddingBottom: "var(--safe-area-inset-bottom)",
+            backdropFilter: "blur(12px)",
+          }}
           aria-label="Primary"
         >
           <a
@@ -146,7 +116,7 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
               e.preventDefault();
               scrollTo("search");
             }}
-            className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-zinc-600 transition active:bg-zinc-100"
+            className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#002d54] transition active:bg-[#002d54]/05"
           >
             <svg
               className="h-6 w-6"
@@ -170,7 +140,7 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
               e.preventDefault();
               scrollTo("about");
             }}
-            className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-zinc-600 transition active:bg-zinc-100"
+            className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#002d54] transition active:bg-[#002d54]/05"
           >
             <svg
               className="h-6 w-6"
@@ -194,7 +164,7 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
               e.preventDefault();
               scrollTo("contact");
             }}
-            className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-zinc-600 transition active:bg-zinc-100"
+            className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#002d54] transition active:bg-[#002d54]/05"
           >
             <svg
               className="h-6 w-6"
@@ -214,10 +184,16 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
           </a>
         </nav>
 
-        {/* Footer: below content, not covered by bottom nav on scroll */}
-        <footer className="border-t border-zinc-200 bg-white px-4 py-3 text-[11px] text-zinc-500">
-          <div className="flex flex-col gap-1">
-            <span>© {year} Crealink.</span>
+        {/* Footer: CreaLink + Sinotruk partner placeholder */}
+        <footer className="border-t border-gray-200 bg-white/90 px-4 py-4 text-xs text-zinc-500">
+          <div className="flex flex-col gap-2">
+            <span className="font-semibold text-[#002d54]">
+              {t("footer.brand")}
+            </span>
+            <span className="text-[11px] text-zinc-500">
+              {t("footer.partnerPlaceholder")}
+            </span>
+            <span className="mt-1">© {year} {t("footer.brand")}.</span>
             <span>{t("footer.region")}</span>
           </div>
         </footer>

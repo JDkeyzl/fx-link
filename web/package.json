@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run copy-assets && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "copy-assets": "node scripts/copy-assets.cjs"
   },
   "dependencies": {
     "next": "16.1.6",

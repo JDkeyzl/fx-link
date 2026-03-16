@@ -11,7 +11,13 @@
   "home": {
     "hero": {
       "title": "中国卡车配件，由专业出口团队采购与质检。",
-      "subtitle": "crealink 帮助非洲、中东及南美地区的卡车配件买家快速查询 SINOTRUK、陕汽、一汽等中国卡车品牌参考价，并将您的配件清单转化为规范询价单。"
+      "subtitle": "crealink 帮助非洲、中东及南美地区的卡车配件买家快速查询 SINOTRUK、陕汽、一汽等中国卡车品牌参考价，并将您的配件清单转化为规范询价单。",
+      "searchPlaceholder": "输入配件编号或名称查询价格"
+    },
+    "feature": {
+      "globalShipping": "全球发货",
+      "authentic": "正品保障",
+      "realTimeQuote": "实时报价"
     }
   },
   "search": {
@@ -39,6 +45,13 @@
   },
   "contact": {
     "title": "发送询价",
+    "intro": "[占位] 欢迎通过以下方式联系我们，获取配件报价与出口服务。",
+    "emailLabel": "[占位] 邮箱",
+    "emailPlaceholder": "[占位] 请填写邮箱地址",
+    "phoneLabel": "[占位] 电话 / WhatsApp",
+    "phonePlaceholder": "[占位] 请填写联系电话",
+    "addressLabel": "[占位] 地址 / 地区",
+    "addressPlaceholder": "[占位] 请填写公司或地区信息",
     "nameCompany": "姓名 / 公司",
     "countryCity": "国家 / 城市",
     "email": "邮箱",
@@ -46,12 +59,22 @@
     "message": "配件清单 / 留言"
   },
   "about": {
-    "title": "为什么选择 crealink？",
-    "subtitle": "我们是在中国专注卡车配件的轻资产出口团队，而非综合贸易平台。"
+    "title": "为什么选择我们",
+    "subtitle": "我们是在中国专注卡车配件的轻资产出口团队，为您提供可靠、高效的配件采购与出口服务。",
+    "feature": {
+      "globalShippingTitle": "全球发货",
+      "globalShippingDesc": "支持发往非洲、中东、南美等地区，物流可追踪，时效有保障。",
+      "authenticTitle": "正品保障",
+      "authenticDesc": "直连工厂与正规渠道，配件来源可追溯，品质经得起检验。",
+      "realTimeQuoteTitle": "实时报价",
+      "realTimeQuoteDesc": "在线查询参考价，快速响应询价需求，清单可转规范 RFQ。"
+    }
   },
   "footer": {
-    "copyright": "© {{year}} crealink. 保留所有权利。",
-    "region": "立足中国，服务非洲、中东、南美。"
+    "copyright": "© {{year}} CreaLink. 保留所有权利。",
+    "region": "立足中国，服务非洲、中东、南美。",
+    "brand": "CreaLink",
+    "partnerPlaceholder": "中国重汽官方零件合作标识"
   },
   "common": {
     "loading": "加载中...",

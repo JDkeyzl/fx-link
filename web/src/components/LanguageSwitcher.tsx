@@ -28,7 +28,7 @@ export function LanguageSwitcher({ compact }: LanguageSwitcherProps) {
 
   return (
     <div
-      className={`inline-flex items-center rounded-full border border-zinc-300 bg-white/80 shadow-sm ${
+      className={`inline-flex items-center rounded-full border border-gray-300 bg-white/80 shadow-sm ${
         compact
           ? "gap-0.5 px-1.5 py-0.5 text-[10px]"
           : "gap-1 px-2 py-1 text-[11px]"

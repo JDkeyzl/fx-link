@@ -1,9 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f5f7;
+  --foreground: #1a1a1a;
   --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  /* Sinotruk / CreaLink portal */
+  --color-deep-blue: #002d54;
+  --color-sinotruk-red: #e31d22;
+  --color-page-bg: #f4f5f7;
+  /* 江南烟雨风：朦胧灰蓝，与 hero 雾感协调 */
+  --header-bg: #dce2e9;
+  --header-bg-glass: rgba(220, 226, 233, 0.88);
+  --hero-overlay: rgba(180, 195, 210, 0.38);
+  /* 重工业+AI科技：毛玻璃与背景 */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.45);
+  --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --grid-line: rgba(0, 45, 84, 0.04);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-button-hover: 0 6px 24px rgba(0, 45, 84, 0.2);
+  --radius-card: 16px;
 }
 
 @theme inline {
@@ -13,19 +29,68 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  background: var(--color-page-bg);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* 重工业+AI科技：极淡几何网格背景，避免纯白 */
+.bg-tech-grid {
+  background-color: var(--color-page-bg);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Header 毛玻璃：增强层级与科技感 */
+.glass-header {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Image placeholder: light gray gradient + "Image Loading..." */
+.hero-image-placeholder,
+.image-placeholder {
+  background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+}
+
+/* Search input focus glow (deep blue) */
+.search-input-glow:focus-within {
+  box-shadow: 0 0 0 3px rgba(0, 45, 84, 0.15), 0 0 20px rgba(0, 45, 84, 0.08);
+}
+
+/* Primary button: subtle gradient + hover shadow */
+.btn-primary-portal {
+  background: linear-gradient(180deg, #e31d22 0%, #c9181e 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(227, 29, 34, 0.25);
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+.btn-primary-portal:hover:not(:disabled) {
+  box-shadow: 0 6px 24px rgba(227, 29, 34, 0.35);
+}
+.btn-primary-portal:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Card container */
+.card-portal {
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
 }

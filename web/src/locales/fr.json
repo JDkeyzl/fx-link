@@ -11,7 +11,13 @@
   "home": {
     "hero": {
       "title": "Pièces camions Chine, sourcées et contrôlées par une équipe d'export dédiée.",
-      "subtitle": "crealink aide les acheteurs de pièces camions en Afrique, au Moyen-Orient et en Amérique du Sud à vérifier rapidement les prix de référence pour SINOTRUK, SHACMAN, FAW et autres marques chinoises, puis à transformer votre liste en demande de devis claire."
+      "subtitle": "crealink aide les acheteurs de pièces camions en Afrique, au Moyen-Orient et en Amérique du Sud à vérifier rapidement les prix de référence pour SINOTRUK, SHACMAN, FAW et autres marques chinoises, puis à transformer votre liste en demande de devis claire.",
+      "searchPlaceholder": "Numéro ou nom de pièce pour vérifier le prix"
+    },
+    "feature": {
+      "globalShipping": "Livraison mondiale",
+      "authentic": "Pièces d'origine",
+      "realTimeQuote": "Devis en temps réel"
     }
   },
   "search": {
@@ -38,7 +44,14 @@
     "unknown": "Inconnu"
   },
   "contact": {
-    "title": "Envoyez-nous votre demande de devis",
+    "title": "Contactez-nous",
+    "intro": "[Placeholder] Contactez-nous pour des devis pièces et services d'export.",
+    "emailLabel": "[Placeholder] E-mail",
+    "emailPlaceholder": "[Placeholder] Votre adresse e-mail",
+    "phoneLabel": "[Placeholder] Téléphone / WhatsApp",
+    "phonePlaceholder": "[Placeholder] Votre numéro",
+    "addressLabel": "[Placeholder] Adresse / Région",
+    "addressPlaceholder": "[Placeholder] Société ou région",
     "nameCompany": "Nom / Société",
     "countryCity": "Pays / Ville",
     "email": "E-mail",
@@ -46,12 +59,22 @@
     "message": "Liste de pièces / Message"
   },
   "about": {
-    "title": "Pourquoi travailler avec crealink ?",
-    "subtitle": "Nous sommes une équipe d'export légère en Chine, spécialisée dans les pièces camions, et non une place de marché générale."
+    "title": "Pourquoi nous choisir",
+    "subtitle": "Nous sommes une équipe d'export légère en Chine spécialisée dans les pièces camions, pour un approvisionnement et un export fiables et efficaces.",
+    "feature": {
+      "globalShippingTitle": "Livraison mondiale",
+      "globalShippingDesc": "Expédition vers l'Afrique, le Moyen-Orient, l'Amérique du Sud et ailleurs. Logistique traçable, délais maîtrisés.",
+      "authenticTitle": "Pièces d'origine",
+      "authenticDesc": "Connexion directe aux usines et canaux autorisés. Sourcing traçable, qualité fiable.",
+      "realTimeQuoteTitle": "Devis en temps réel",
+      "realTimeQuoteDesc": "Vérification des prix en ligne, réponses rapides aux demandes de devis, liste transformée en RFQ claire."
+    }
   },
   "footer": {
-    "copyright": "© {{year}} crealink. Tous droits réservés.",
-    "region": "Équipe d'export basée en Chine pour l'Afrique, le Moyen-Orient et l'Amérique du Sud."
+    "copyright": "© {{year}} CreaLink. Tous droits réservés.",
+    "region": "Équipe d'export basée en Chine pour l'Afrique, le Moyen-Orient et l'Amérique du Sud.",
+    "brand": "CreaLink",
+    "partnerPlaceholder": "Partenaire pièces officielles Sinotruk"
   },
   "common": {
     "loading": "Chargement...",
