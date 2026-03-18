@@ -95,16 +95,19 @@ body {
   box-shadow: var(--shadow-card);
 }
 
-/* Trusted Partners marquee (infinite loop) */
-@keyframes partners-marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+/* Trusted Partners: draggable horizontal scroller */
+.partners-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  cursor: grab;
 }
-.partners-marquee-track {
-  animation: partners-marquee 45s linear infinite;
+.partners-scroll::-webkit-scrollbar {
+  display: none; /* Safari/Chrome */
 }
-.partners-marquee-track:hover {
-  animation-play-state: paused;
+.partners-scroll:active {
+  cursor: grabbing;
 }
 
 /* Partner logo: always full-color; only scale on hover */

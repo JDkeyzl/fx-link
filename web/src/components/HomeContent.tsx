@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import type { Part } from "@/types/part";
 import { PartsSearchForm, PartsSearchResults } from "@/components/PartsSearch";
@@ -55,12 +55,42 @@ export function HomeContent() {
   const [results, setResults] = useState<Part[]>([]);
   const [queried, setQueried] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
+  const partnersScrollRef = useRef<HTMLDivElement | null>(null);
+  const partnersDragRef = useRef<{
+    isDown: boolean;
+    startX: number;
+    startScrollLeft: number;
+    pausedUntilTs: number;
+  }>({ isDown: false, startX: 0, startScrollLeft: 0, pausedUntilTs: 0 });
 
   useEffect(() => {
     const timer = setInterval(() => {
       setHeroIndex((i) => (i + 1) % HERO_IMAGES.length);
     }, HERO_CAROUSEL_INTERVAL_MS);
     return () => clearInterval(timer);
+  }, []);
+
+  // Auto-scroll partners bar (pause briefly after user interaction)
+  useEffect(() => {
+    let raf = 0;
+    const speedPxPerFrame = 0.35;
+
+    const tick = () => {
+      const el = partnersScrollRef.current;
+      if (el) {
+        const now = Date.now();
+        const isPaused = now < partnersDragRef.current.pausedUntilTs;
+        if (!partnersDragRef.current.isDown && !isPaused) {
+          el.scrollLeft += speedPxPerFrame;
+          const half = el.scrollWidth / 2;
+          if (el.scrollLeft >= half) el.scrollLeft -= half;
+        }
+      }
+      raf = window.requestAnimationFrame(tick);
+    };
+
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
   }, []);
 
   async function handleSearch(e: React.FormEvent) {
@@ -291,31 +321,63 @@ export function HomeContent() {
         </div>
       </section>
 
-      {/* Trusted Partners & Brands: infinite marquee, grayscale → color on hover */}
+      {/* Trusted Partners & Brands: infinite marquee */}
       <section
         id="partners"
-        className="scroll-mt-20 border-t border-gray-200 bg-white py-10 md:py-12 overflow-hidden"
+        className="scroll-mt-20 border-t border-gray-200 bg-white pt-8 pb-6 md:pt-10 md:pb-8 overflow-hidden"
       >
         <h2 className="text-center text-lg font-semibold text-[#002d54] md:text-xl mb-8 px-4">
           {t("partners.title")}
         </h2>
-        <div className="relative w-full overflow-hidden">
-          <div className="partners-marquee-track flex w-max gap-10 md:gap-14 pl-4">
+        <div
+          ref={partnersScrollRef}
+          className="partners-scroll px-4"
+          style={{ touchAction: "pan-x" }}
+          onPointerDown={(e) => {
+            const el = partnersScrollRef.current;
+            if (!el) return;
+            partnersDragRef.current.isDown = true;
+            partnersDragRef.current.startX = e.clientX;
+            partnersDragRef.current.startScrollLeft = el.scrollLeft;
+            partnersDragRef.current.pausedUntilTs = Date.now() + 1200;
+            // capture pointer so dragging continues outside element
+            (e.currentTarget as HTMLDivElement).setPointerCapture?.(e.pointerId);
+          }}
+          onPointerMove={(e) => {
+            const el = partnersScrollRef.current;
+            if (!el || !partnersDragRef.current.isDown) return;
+            partnersDragRef.current.pausedUntilTs = Date.now() + 1200;
+            const dx = e.clientX - partnersDragRef.current.startX;
+            el.scrollLeft = partnersDragRef.current.startScrollLeft - dx;
+          }}
+          onPointerUp={() => {
+            partnersDragRef.current.isDown = false;
+            partnersDragRef.current.pausedUntilTs = Date.now() + 1200;
+          }}
+          onPointerCancel={() => {
+            partnersDragRef.current.isDown = false;
+            partnersDragRef.current.pausedUntilTs = Date.now() + 1200;
+          }}
+        >
+          <div className="flex w-max gap-10 md:gap-14">
             {[...PARTNERS, ...PARTNERS].map((partner, i) => (
               <a
                 key={`${partner.label}-${i}`}
                 href="#partners"
                 className="partner-logo flex flex-col items-center justify-center shrink-0 px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002d54]/30 focus-visible:ring-offset-2 rounded-lg"
                 aria-label={partner.label}
+                draggable={false}
+                onDragStart={(e) => e.preventDefault()}
               >
                 <div className="flex items-center justify-center overflow-hidden h-14 md:h-16 rounded-md">
                   {partner.logoFile ? (
                     <Image
                       src={`/logo/${encodeURIComponent(partner.logoFile)}`}
                       alt=""
-                      width={80}
+                      width={96}
                       height={64}
-                      className="max-h-14 md:max-h-16 w-auto object-contain"
+                      className="max-h-14 md:max-h-16 w-auto object-contain select-none"
+                      draggable={false}
                     />
                   ) : (
                     <span className="text-[10px] md:text-xs text-gray-500 font-medium text-center leading-tight">

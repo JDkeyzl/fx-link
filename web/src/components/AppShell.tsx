@@ -140,98 +140,12 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
           <LanguageSwitcher />
         </header>
 
-        {/* Main content: no horizontal padding for full-bleed hero; bottom pad for nav */}
+        {/* Main content: no horizontal padding for full-bleed hero (mobile) */}
         <main
           className="flex-1 px-0 py-0"
-          style={{
-            paddingBottom: "calc(4rem + env(safe-area-inset-bottom, 0px))",
-          }}
         >
           {children}
         </main>
-
-        {/* Sticky bottom nav: touch-friendly, glass */}
-        <nav
-          className="fixed bottom-0 left-0 right-0 z-20 flex border-t border-gray-200 bg-white/80 backdrop-blur-md"
-          style={{
-            paddingBottom: "var(--safe-area-inset-bottom)",
-            backdropFilter: "blur(12px)",
-          }}
-          aria-label="Primary"
-        >
-          <a
-            href="#search"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollTo("search");
-            }}
-            className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#002d54] transition active:bg-[#002d54]/05"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <span className="text-[11px] font-medium">{t("nav.partsSearch")}</span>
-          </a>
-          <a
-            href="#about"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollTo("about");
-            }}
-            className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#002d54] transition active:bg-[#002d54]/05"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span className="text-[11px] font-medium">{t("nav.about")}</span>
-          </a>
-          <a
-            href="#contact"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollTo("contact");
-            }}
-            className="flex min-h-[3.5rem] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#002d54] transition active:bg-[#002d54]/05"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-            <span className="text-[11px] font-medium">{t("nav.contact")}</span>
-          </a>
-        </nav>
 
         {/* Footer: condensed business/brand info on mobile */}
         <footer className="border-t border-gray-200 bg-white/90 px-4 py-4 text-[11px] text-zinc-500">
