@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useMemo,
+  useEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -22,7 +23,16 @@ interface LocaleContextValue {
 const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>(getInitialLocale);
+  // Hydration-safe init:
+  // Server has no `navigator`, so getInitialLocale() would always be "en".
+  // If the client immediately picks the real browser language, React may throw
+  // "Minified React error #418" (hydration mismatch). We keep the first
+  // client render aligned with the server ("en") and switch after mount.
+  const [locale, setLocale] = useState<Locale>("en");
+
+  useEffect(() => {
+    setLocale(getInitialLocale());
+  }, []);
 
   const value = useMemo<LocaleContextValue>(() => {
     const messages = locales[locale];

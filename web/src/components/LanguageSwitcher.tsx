@@ -21,8 +21,12 @@ export function LanguageSwitcher({ compact }: LanguageSwitcherProps) {
   function handleChange(next: Locale) {
     setLocale(next);
     if (typeof document !== "undefined") {
-      document.documentElement.lang = next;
-      document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
+      // Use setAttribute to avoid TS read-only property issues
+      document.documentElement.setAttribute("lang", next);
+      document.documentElement.setAttribute(
+        "dir",
+        next === "ar" ? "rtl" : "ltr"
+      );
     }
   }
 
