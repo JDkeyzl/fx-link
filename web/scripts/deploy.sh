@@ -37,11 +37,12 @@ echo "[deploy] Node $(node -v) / npm $(npm -v)"
 # git pull origin main
 
 # -----------------------------------------------------------------------------
-# 3. 安装依赖（必须包含 devDependencies，构建需要 typescript 等）
+# 3. 安装依赖（不安装 devDependencies）
+#    由于 build 依赖的 packages（typescript/tailwind 等）已移到 dependencies，
+#    生产构建时无需安装 devDependencies。
 # -----------------------------------------------------------------------------
-echo "[deploy] 安装依赖（含 devDependencies）..."
-# 生产环境常见 NODE_ENV=production，会导致 npm 不装 devDependencies，此处显式指定
-NODE_ENV=development npm ci 2>/dev/null || NODE_ENV=development npm install
+echo "[deploy] 安装依赖（omit devDependencies）..."
+npm ci --omit=dev 2>/dev/null || npm install --omit=dev
 
 # -----------------------------------------------------------------------------
 # 4. 构建 Next.js
