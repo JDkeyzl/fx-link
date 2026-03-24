@@ -16,6 +16,12 @@ web/.next/
 web/out/
 web/build/
 
+# Generated part sitemaps (run: cd server && npm run generate-part-sitemaps)
+web/public/sitemaps/*.xml
+
+# Excel source data (for backend ingestion)
+web/data/format\ data/
+
 # Logs
 *.log
 web/logs/

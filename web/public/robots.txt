@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# HTTP only until TLS is enabled; after HTTPS, switch to https:// and regenerate sitemaps.
+Sitemap: http://crealink.shop/sitemaps/parts-sitemap-index.xml

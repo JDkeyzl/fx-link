@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import type { Part } from "@/types/part";
 import { useI18n } from "@/context/LocaleContext";
 
@@ -193,7 +194,12 @@ export function PartsSearchResults({
                 className="border-b border-gray-100 last:border-0 hover:bg-gray-50/60 md:hover:bg-gray-100/80"
               >
                 <td className="px-2 py-3 sm:px-3 md:px-4 md:py-3 font-mono text-xs md:text-sm text-zinc-900 align-top break-all">
-                  {part.partNumber}
+                  <Link
+                    href={`/parts/${encodeURIComponent(part.partNumber)}`}
+                    className="text-[#002d54] underline decoration-[#002d54]/30 underline-offset-2 hover:text-[#e31d22] hover:decoration-[#e31d22]/40"
+                  >
+                    {part.partNumber}
+                  </Link>
                 </td>
                 <td className="px-2 py-3 sm:px-3 md:px-4 md:py-3 text-zinc-800 align-top break-words min-w-0">
                   {getPartNameByLocale(part, locale)}

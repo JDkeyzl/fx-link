@@ -1,0 +1,20 @@
+{
+  "name": "crealink-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "ingest": "node src/ingest.js",
+    "dev": "node src/server.js",
+    "generate-part-sitemaps": "node scripts/generate-part-sitemaps.cjs"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.4.1",
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "xlsx": "^0.18.5"
+  }
+}
+

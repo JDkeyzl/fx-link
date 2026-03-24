@@ -37,6 +37,17 @@
     "priceRange": "价格（人民币）",
     "referenceNote": "参考价，人民币 EXW 中国（仅供参考）"
   },
+  "partDetail": {
+    "name": "名称",
+    "partNumber": "零件号",
+    "brand": "品牌",
+    "category": "品类",
+    "categoryDefault": "重卡零配件",
+    "priceLabel": "参考价（人民币）",
+    "inquirySection": "联系我们",
+    "inquiryIntro": "如需正式报价、货期或起订量，请通过 WhatsApp 联系我们，工作时间将尽快回复。",
+    "inquiryWhatsApp": "通过 WhatsApp 询价"
+  },
   "quality": {
     "original": "原厂",
     "oem": "OEM",

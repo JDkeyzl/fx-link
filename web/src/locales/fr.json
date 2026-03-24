@@ -37,6 +37,17 @@
     "priceRange": "Prix (CNY)",
     "referenceNote": "Prix indicatifs en CNY (RMB), EXW Chine (à titre indicatif uniquement)"
   },
+  "partDetail": {
+    "name": "Nom",
+    "partNumber": "Numéro de pièce",
+    "brand": "Marque",
+    "category": "Catégorie",
+    "categoryDefault": "Pièces détachées poids lourds",
+    "priceLabel": "Prix indicatif (CNY)",
+    "inquirySection": "Contact",
+    "inquiryIntro": "Demandez un devis formel, un délai ou une MOQ pour cette pièce. Notre équipe répond sur WhatsApp pendant les heures ouvrées.",
+    "inquiryWhatsApp": "Demander un devis via WhatsApp"
+  },
   "quality": {
     "original": "Origine",
     "oem": "OEM",

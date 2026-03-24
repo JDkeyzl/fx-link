@@ -16,6 +16,10 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3000,
+        // 公网域名（HTTP；上 HTTPS 后改为 https://crealink.shop 并重新 build）
+        NEXT_PUBLIC_SITE_URL: "http://crealink.shop",
+        // SSR 查零件 API：必须指向本机后端，不要写公网域名
+        PARTS_API_BASE_URL: "http://127.0.0.1:3001",
       },
       error_file: "logs/err.log",
       out_file: "logs/out.log",

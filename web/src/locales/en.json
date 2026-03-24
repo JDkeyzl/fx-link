@@ -37,6 +37,17 @@
     "priceRange": "Price (CNY)",
     "referenceNote": "Reference prices in CNY (RMB), EXW China (for indication only)"
   },
+  "partDetail": {
+    "name": "Name",
+    "partNumber": "Part number",
+    "brand": "Brand",
+    "category": "Category",
+    "categoryDefault": "Heavy truck spare parts",
+    "priceLabel": "Reference price (CNY)",
+    "inquirySection": "Contact us",
+    "inquiryIntro": "Request a formal quote, lead time, or MOQ for this part. Our team replies on WhatsApp during business hours.",
+    "inquiryWhatsApp": "Inquiry via WhatsApp"
+  },
   "quality": {
     "original": "Original",
     "oem": "OEM",
