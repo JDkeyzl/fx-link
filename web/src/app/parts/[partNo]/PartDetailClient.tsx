@@ -3,7 +3,7 @@
 import type { SqlitePartDetail } from "@/lib/partsApi";
 import { useI18n } from "@/context/LocaleContext";
 
-const DEFAULT_WA = "8618615287132";
+const DEFAULT_WA = "8618746232944";
 
 function buildWhatsAppHref(part: SqlitePartDetail): string {
   const num = process.env.NEXT_PUBLIC_WHATSAPP_E164 || DEFAULT_WA;
