@@ -1,5 +1,6 @@
 /node_modules
-/data
 .env*
+# SQLite: ignore by default; allow this one file for deploy via git pull (~32MB)
 *.db
-
+data/*
+!data/parts.db
