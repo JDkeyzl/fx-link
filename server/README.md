@@ -32,8 +32,10 @@ PORT=3001 npm start
 ## Example
 ```bash
 curl http://localhost:3001/api/parts/WG9000360521
+curl "http://localhost:3001/api/parts/search?q=201V25441&limit=30"
 curl http://localhost:3001/parts/sinotruk/WG9000360521
 ```
+Fuzzy search requires `q` length ≥ 2; `limit` default 30, max 50.
 
 ## Generate part sitemaps (350k+ URLs)
 Writes chunked `parts-sitemap-*.xml` + `parts-sitemap-index.xml` under `web/public/sitemaps/`.

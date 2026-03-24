@@ -93,8 +93,7 @@ export function HomeContent() {
     return () => window.cancelAnimationFrame(raf);
   }, []);
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSearch() {
     const q = query.trim();
     if (!q) return;
 
@@ -157,7 +156,7 @@ export function HomeContent() {
             variant="hero"
             query={query}
             onQueryChange={setQuery}
-            onSubmit={handleSearch}
+            onSearch={() => void handleSearch()}
             loading={loading}
           />
         </div>

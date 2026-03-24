@@ -32,7 +32,8 @@ export interface PartsSearchFormProps {
   variant?: "default" | "hero";
   query: string;
   onQueryChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  /** Invoked on search button click or Enter in the input (form submit). */
+  onSearch: () => void;
   loading: boolean;
 }
 
@@ -40,7 +41,7 @@ export function PartsSearchForm({
   variant = "default",
   query,
   onQueryChange,
-  onSubmit,
+  onSearch,
   loading,
 }: PartsSearchFormProps) {
   const { t } = useI18n();
@@ -52,7 +53,10 @@ export function PartsSearchForm({
   if (isHero) {
     return (
       <form
-        onSubmit={onSubmit}
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSearch();
+        }}
         className="search-input-glow w-full rounded-2xl border-2 border-white/90 bg-white/95 backdrop-blur p-2 shadow-[0_8px_32px_rgba(0,0,0,0.12)] transition-shadow focus-within:border-white"
       >
         <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
@@ -85,7 +89,10 @@ export function PartsSearchForm({
         {t("home.hero.subtitle")}
       </p>
       <form
-        onSubmit={onSubmit}
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSearch();
+        }}
         className="search-input-glow flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-stretch rounded-xl"
       >
         <input
