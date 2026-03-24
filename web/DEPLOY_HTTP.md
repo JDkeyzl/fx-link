@@ -13,19 +13,91 @@ cd /home/admin/fx-link/web
 NEXT_PUBLIC_SITE_URL=http://crealink.shop PARTS_API_BASE_URL=http://127.0.0.1:3001 npm run build
 ```
 
-### 小内存机器（约 1GB RAM）构建被 `Killed`（OOM）
+## 服务器稳定构建（不换本机，避免被 `Killed`）
 
-Next 16 默认生产构建可能走 Turbopack，峰值内存较高。可改用 **Webpack 构建**（仓库已加脚本）：
+思路：**加足 swap**（内核 OOM 杀手杀进程前可先换页）+ **不用 Turbopack**（用 Webpack）+ **临时目录放到磁盘** + **可选限制 V8 堆**，避免和系统/子进程抢光物理内存。
+
+### 1）先加 Swap（强烈建议，约 1～2GB 内存的机器几乎必备）
+
+**Ubuntu / Debian**（有 `fallocate` 时）：
+
+```bash
+sudo fallocate -l 4G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=4096
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+**Alibaba Cloud Linux / CentOS / RHEL**（无 `fallocate` 时用 `dd`）：
+
+```bash
+sudo dd if=/dev/zero of=/swapfile bs=1M count=4096 status=progress
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+检查：
+
+```bash
+free -h
+swapon --show
+```
+
+磁盘要留足空间（swap 文件约 **4G**；若盘紧可改为 `count=2048` 做 2G，但更容易仍被 Kill）。
+
+### 1.5）`npm ci` 也被 `Killed` 时
+
+`npm ci` 同样吃内存，**务必先做 swap** 再装依赖。可再略降峰值：
+
+```bash
+export TMPDIR=/home/admin/tmp
+mkdir -p "$TMPDIR"
+export NODE_OPTIONS="--max-old-space-size=512"
+npm ci --omit=dev
+```
+
+仍不行就**加大 swap** 或换更大内存规格；不要指望在几乎无 swap 的 1G 机器上稳定跑 `npm ci` + `next build`。
+
+### 2）构建前释放内存
+
+```bash
+pm2 stop crealink-web 2>/dev/null || true
+```
+
+### 3）一键构建（推荐）
+
+在 **`web`** 目录，**已成功执行过 `npm ci`** 的前提下：
 
 ```bash
 cd /home/admin/fx-link/web
-pm2 stop crealink-web 2>/dev/null || true
 export TMPDIR=/home/admin/tmp
 mkdir -p "$TMPDIR"
+NEXT_PUBLIC_SITE_URL=http://crealink.shop PARTS_API_BASE_URL=http://127.0.0.1:3001 npm run build:vps
+```
+
+`build:vps` 会执行 `scripts/build-on-vps.sh`：默认 **`next build --webpack`**、设置 **`TMPDIR`**、按机器内存自动加 **`NODE_OPTIONS=--max-old-space-size=768|1536`**（若你已在环境变量里设了 `NODE_OPTIONS` 则不会覆盖）。
+
+仍失败时可**手动加大堆**（在物理内存 + swap 能承受的前提下，例如 2G 内存试 `1536` 或 `2048`）：
+
+```bash
+export NODE_OPTIONS="--max-old-space-size=1536"
 NEXT_PUBLIC_SITE_URL=http://crealink.shop PARTS_API_BASE_URL=http://127.0.0.1:3001 npm run build:low-mem
 ```
 
-仍被杀死时：加大 **swap**（例如再挂 2～4G swap 文件），或改用下面 **「本地构建 + 同步 `.next`」**（不在服务器上 build）。
+### 4）构建完成后
+
+```bash
+pm2 start crealink-web
+# 或 pm2 restart crealink-web
+```
+
+### 5）仍不稳定时
+
+- 把 ECS **升到 2G 及以上内存**，通常比反复调参更省事。
+- 或改用下文 **「本地构建 + 同步 `.next`」** / **GitHub Actions（Linux）构建**，服务器只 `npm ci` + `next start`。
 
 ## 本地构建 + 同步到服务器（推荐：小内存 VPS）
 
