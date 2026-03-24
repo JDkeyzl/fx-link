@@ -25,7 +25,54 @@ mkdir -p "$TMPDIR"
 NEXT_PUBLIC_SITE_URL=http://crealink.shop PARTS_API_BASE_URL=http://127.0.0.1:3001 npm run build:low-mem
 ```
 
-仍被杀死时：加大 **swap**（例如再挂 2～4G swap 文件），或在本机/大内存 CI 上 `npm run build` 后将整个 **`web/.next`** 同步到服务器（需同 Node/同平台更稳妥）。
+仍被杀死时：加大 **swap**（例如再挂 2～4G swap 文件），或改用下面 **「本地构建 + 同步 `.next`」**（不在服务器上 build）。
+
+## 本地构建 + 同步到服务器（推荐：小内存 VPS）
+
+服务器只做 **安装依赖 + `next start`**，**不在服务器执行 `npm run build`**。
+
+### 1. 在你自己的电脑（Mac）上
+
+在仓库 **`web`** 目录，**与线上一致的** `NEXT_PUBLIC_SITE_URL` 必须出现在 build 时（会打进前端包）：
+
+```bash
+cd /path/to/tk-link/web
+export NEXT_PUBLIC_SITE_URL=http://crealink.shop
+export PARTS_API_BASE_URL=http://127.0.0.1:3001
+npm ci
+npm run build
+# 若本机构建也吃紧，可用：npm run build:low-mem
+```
+
+### 2. 把构建产物拷到服务器
+
+用 **`rsync`**（推荐，可增量、可删过期 chunk）或 **`scp`**。示例（把 `IP`、路径改成你的）：
+
+```bash
+# 仍在本地 web 目录；若用密钥：rsync -avz -e "ssh -i ~/.ssh/你的.pem" ...
+
+rsync -avz --delete ./.next/ admin@IP:/home/admin/fx-link/web/.next/
+rsync -avz ./public/ admin@IP:/home/admin/fx-link/web/public/
+```
+
+代码仍建议用 **`git pull`** 更新（`package.json` / `package-lock.json` / `src` 等与线上一致）；**`.next` 以你本机这次 build 为准覆盖服务器**。
+
+### 3. 在服务器上
+
+```bash
+cd /home/admin/fx-link/web
+git pull   # 若已在仓库根 pull 过可省略
+npm ci --omit=dev
+pm2 restart crealink-web
+```
+
+**不要**再执行 `npm run build`。
+
+### 注意
+
+- **Node 主版本**尽量与服务器一致（例如都用 **Node 20**），减少差异。
+- 从 **macOS 构建、Linux 运行**在多数纯 JS 项目上可行；若 `next/image` 等出现异常，可改为在 **Linux CI（如 GitHub Actions）** 上 build 再同步 `.next`，或换用与线上一致的 Docker 里构建。
+- 改了 **`NEXT_PUBLIC_*`** 必须在本地 **重新 build** 后再同步 `.next`。
 
 运行时（PM2）仍需与 build 时一致的 `NEXT_PUBLIC_SITE_URL`（已在 ecosystem 中）。
 
