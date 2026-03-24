@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     const baseUrl =
       process.env.PARTS_API_BASE_URL ||
       process.env.NEXT_PUBLIC_PARTS_API_BASE_URL ||
-      "http://localhost:3001";
+      "http://127.0.0.1:3001";
 
     const url = `${baseUrl.replace(/\/$/, "")}/api/parts/${encodeURIComponent(
       q

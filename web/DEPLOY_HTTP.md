@@ -13,6 +13,20 @@ cd /home/admin/fx-link/web
 NEXT_PUBLIC_SITE_URL=http://crealink.shop PARTS_API_BASE_URL=http://127.0.0.1:3001 npm run build
 ```
 
+### 小内存机器（约 1GB RAM）构建被 `Killed`（OOM）
+
+Next 16 默认生产构建可能走 Turbopack，峰值内存较高。可改用 **Webpack 构建**（仓库已加脚本）：
+
+```bash
+cd /home/admin/fx-link/web
+pm2 stop crealink-web 2>/dev/null || true
+export TMPDIR=/home/admin/tmp
+mkdir -p "$TMPDIR"
+NEXT_PUBLIC_SITE_URL=http://crealink.shop PARTS_API_BASE_URL=http://127.0.0.1:3001 npm run build:low-mem
+```
+
+仍被杀死时：加大 **swap**（例如再挂 2～4G swap 文件），或在本机/大内存 CI 上 `npm run build` 后将整个 **`web/.next`** 同步到服务器（需同 Node/同平台更稳妥）。
+
 运行时（PM2）仍需与 build 时一致的 `NEXT_PUBLIC_SITE_URL`（已在 ecosystem 中）。
 
 ```bash

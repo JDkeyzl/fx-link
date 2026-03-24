@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npm run copy-assets && next build",
+    "build:low-mem": "npm run copy-assets && next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "copy-assets": "node scripts/copy-assets.cjs"
