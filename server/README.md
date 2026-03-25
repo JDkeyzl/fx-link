@@ -41,7 +41,7 @@ Fuzzy search requires `q` length ≥ 2; `limit` default 30, max 50.
 Writes chunked `parts-sitemap-*.xml` + `parts-sitemap-index.xml` under `web/public/sitemaps/`.
 
 ```bash
-SITE_URL=http://crealink.shop npm run generate-part-sitemaps
+SITE_URL=https://crealink.shop npm run generate-part-sitemaps
 ```
 
 Optional env:

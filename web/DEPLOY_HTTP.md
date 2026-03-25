@@ -178,7 +178,7 @@ server {
 ## Sitemap
 
 ```bash
-cd ../server && SITE_URL=http://crealink.shop npm run generate-part-sitemaps
+cd ../server && SITE_URL=https://crealink.shop npm run generate-part-sitemaps
 ```
 
 然后重新 `npm run build`（或把生成的 `public/sitemaps/*.xml` 放到构建环境）。

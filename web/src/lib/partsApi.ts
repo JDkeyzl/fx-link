@@ -15,7 +15,7 @@ export function getPartsApiBaseUrl(): string {
 
 export function getSiteOrigin(): string {
   return (
-    process.env.NEXT_PUBLIC_SITE_URL || "http://crealink.shop"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://crealink.shop"
   ).replace(/\/$/, "");
 }
 

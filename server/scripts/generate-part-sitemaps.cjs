@@ -3,7 +3,7 @@
  * Export all part_no from SQLite into multiple sitemap.xml files (max URLs per file).
  *
  * Usage:
- *   SITE_URL=http://crealink.shop node scripts/generate-part-sitemaps.cjs
+ *   SITE_URL=https://crealink.shop node scripts/generate-part-sitemaps.cjs
  *
  * Env:
  *   SITE_URL          – canonical site origin (no trailing slash)
@@ -16,7 +16,7 @@ const fs = require("fs");
 const path = require("path");
 const Database = require("better-sqlite3");
 
-const SITE_URL = (process.env.SITE_URL || "http://crealink.shop").replace(
+const SITE_URL = (process.env.SITE_URL || "https://crealink.shop").replace(
   /\/$/,
   ""
 );
