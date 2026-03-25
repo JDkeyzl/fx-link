@@ -4,9 +4,13 @@ import { notFound } from "next/navigation";
 import {
   fetchPartByPartNo,
   getSiteOrigin,
+  normalizePartNoFromRouteParam,
   type SqlitePartDetail,
 } from "@/lib/partsApi";
 import { PartDetailClient } from "./PartDetailClient";
+
+/** Avoid caching a mistaken 404 if encoding or data was fixed later. */
+export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: Promise<{ partNo: string }>;
@@ -37,7 +41,8 @@ function productJsonLd(part: SqlitePartDetail, canonicalUrl: string) {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { partNo } = await params;
+  const { partNo: rawPartNo } = await params;
+  const partNo = normalizePartNoFromRouteParam(rawPartNo);
   const site = getSiteOrigin();
   const canonicalUrl = `${site}/parts/${encodeURIComponent(partNo)}`;
 
@@ -78,7 +83,8 @@ export async function generateMetadata({
  * This replaces react-helmet for correct first-byte meta tags.
  */
 export default async function PartDetailPage({ params }: PageProps) {
-  const { partNo } = await params;
+  const { partNo: rawPartNo } = await params;
+  const partNo = normalizePartNoFromRouteParam(rawPartNo);
   const site = getSiteOrigin();
   const canonicalUrl = `${site}/parts/${encodeURIComponent(partNo)}`;
 

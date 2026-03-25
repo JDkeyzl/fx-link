@@ -14,6 +14,7 @@ const pairs = [
   [path.join(webDir, "source", "logo"), path.join(webDir, "public", "logo")],
 ];
 const singleFiles = [
+  [path.join(webDir, "source", "logo.png"), path.join(webDir, "public", "logo.png")],
   [path.join(webDir, "source", "contact.png"), path.join(webDir, "public", "contact.png")],
   [path.join(webDir, "source", "whyus.jpg"), path.join(webDir, "public", "whyus.jpg")],
   [path.join(webDir, "source", "WhatsApp.png"), path.join(webDir, "public", "WhatsApp.png")],

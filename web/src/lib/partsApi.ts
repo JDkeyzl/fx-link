@@ -20,21 +20,39 @@ export function getSiteOrigin(): string {
 }
 
 /**
+ * Next.js may pass dynamic `[partNo]` once or more than once URI-decoded depending on
+ * encoding / proxies. Collapse over-encoded `%…` sequences so the key matches SQLite.
+ */
+export function normalizePartNoFromRouteParam(partNo: string): string {
+  let s = String(partNo ?? "").trim();
+  for (let i = 0; i < 6; i += 1) {
+    try {
+      const d = decodeURIComponent(s);
+      if (d === s) break;
+      s = d;
+    } catch {
+      break;
+    }
+  }
+  return s;
+}
+
+/**
  * Server-side fetch against Express SQLite API.
- * Use revalidate so detail pages stay fast under load.
  */
 export async function fetchPartByPartNo(
   partNo: string
 ): Promise<SqlitePartDetail | null> {
+  const key = normalizePartNoFromRouteParam(partNo);
   const base = getPartsApiBaseUrl();
-  const url = `${base}/api/parts/${encodeURIComponent(partNo)}`;
+  const url = `${base}/api/parts/${encodeURIComponent(key)}`;
   const res = await fetch(url, {
     headers: { Accept: "application/json" },
-    next: { revalidate: 300 },
+    cache: "no-store",
   });
   if (res.status === 404) return null;
   if (!res.ok) {
-    throw new Error(`Parts API error ${res.status} for ${partNo}`);
+    throw new Error(`Parts API error ${res.status} for ${key}`);
   }
   return (await res.json()) as SqlitePartDetail;
 }

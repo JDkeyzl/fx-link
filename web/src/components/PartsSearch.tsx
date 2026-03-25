@@ -141,7 +141,30 @@ export function PartsSearchResults({
     setPage(1);
   }, [results]);
 
-  if (!queried || loading) return null;
+  if (!queried && !loading) {
+    return null;
+  }
+
+  if (loading) {
+    return (
+      <div
+        className="card-portal w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] md:p-8"
+        aria-busy="true"
+        aria-live="polite"
+      >
+        <div className="mb-4 h-5 w-36 animate-pulse rounded bg-zinc-200" />
+        <div className="space-y-3">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div
+              key={i}
+              className="h-11 animate-pulse rounded-lg bg-zinc-100"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="card-portal w-full rounded-2xl border border-[#e31d22]/30 bg-red-50/90 px-4 py-3 text-sm text-[#c9181e]">

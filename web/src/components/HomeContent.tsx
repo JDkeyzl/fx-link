@@ -5,6 +5,10 @@ import Image from "next/image";
 import type { Part } from "@/types/part";
 import { PartsSearchForm, PartsSearchResults } from "@/components/PartsSearch";
 import { useI18n } from "@/context/LocaleContext";
+import {
+  loadPartsSearchSession,
+  savePartsSearchSession,
+} from "@/lib/partsSearchSession";
 
 const HERO_IMAGES = [
   "/hero/2025030410112358405.jpg",
@@ -24,7 +28,7 @@ const FEATURE_ICONS: Record<string, string> = {
 };
 
 const PARTNERS: { placeholder: string; label: string; logoFile?: string }[] = [
-  { placeholder: "[LOGO_SINOTRUK]", label: "SINOTRUK", logoFile: "SINOTRUK.jpeg" },
+  { placeholder: "[LOGO_SINOTRUK]", label: "SINOTRUK", logoFile: "sinotruk.png" },
   { placeholder: "[LOGO_SHACMAN]", label: "SHACMAN", logoFile: "shacman.png" },
   { placeholder: "[LOGO_FAW]", label: "FAW Jiefang", logoFile: "FAW jiefang.png" },
   { placeholder: "[LOGO_FOTON]", label: "FOTON Auman", logoFile: "foton.png" },
@@ -54,6 +58,7 @@ export function HomeContent() {
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<Part[]>([]);
   const [queried, setQueried] = useState(false);
+  const [sessionReady, setSessionReady] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
   const partnersScrollRef = useRef<HTMLDivElement | null>(null);
   const partnersDragRef = useRef<{
@@ -93,12 +98,29 @@ export function HomeContent() {
     return () => window.cancelAnimationFrame(raf);
   }, []);
 
+  useEffect(() => {
+    const saved = loadPartsSearchSession();
+    if (saved) {
+      setQuery(saved.query);
+      setResults(saved.results);
+      setError(saved.error);
+      setQueried(saved.queried);
+    }
+    setSessionReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!sessionReady) return;
+    savePartsSearchSession({ query, results, error, queried });
+  }, [sessionReady, query, results, error, queried]);
+
   async function handleSearch() {
     const q = query.trim();
     if (!q) return;
 
     setLoading(true);
     setError(null);
+    setQueried(true);
 
     try {
       const res = await fetch(
@@ -107,13 +129,11 @@ export function HomeContent() {
       if (!res.ok) throw new Error("Failed to search parts");
       const data = await res.json();
       setResults((data.items as Part[]) ?? []);
-      setQueried(true);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Unknown error"
       );
       setResults([]);
-      setQueried(true);
     } finally {
       setLoading(false);
     }
@@ -163,7 +183,7 @@ export function HomeContent() {
       </section>
 
       {/* Search results */}
-      {queried && (
+      {(loading || queried) && (
         <section className="px-4 sm:px-6 lg:px-8 pb-10 md:pb-14">
           <div className="max-w-5xl mx-auto">
             <PartsSearchResults
