@@ -215,7 +215,9 @@ function main() {
         price REAL
       );
     `);
-    db.exec("CREATE INDEX idx_parts_new_part_no ON parts_new(part_no);");
+    // In case of a previous failed run, leftover index might still exist.
+    db.exec("DROP INDEX IF EXISTS idx_parts_new_part_no;");
+    db.exec("CREATE INDEX IF NOT EXISTS idx_parts_new_part_no ON parts_new(part_no);");
 
     const insert = db.prepare(`
       INSERT INTO parts_new (part_no, brand, name_ch, name_en, name_fr, name_ar, price)

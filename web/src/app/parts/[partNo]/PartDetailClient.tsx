@@ -5,25 +5,32 @@ import { useI18n } from "@/context/LocaleContext";
 
 const DEFAULT_WA = "8618746232944";
 
-function buildWhatsAppHref(part: SqlitePartDetail): string {
+function buildWhatsAppHref(
+  part: SqlitePartDetail,
+  displayName: string
+): string {
   const num = process.env.NEXT_PUBLIC_WHATSAPP_E164 || DEFAULT_WA;
-  const text = `Hello Crealink, I would like a quote for part ${part.part_no} (${part.brand}). Name: ${part.name_en}`;
+  const text = `Hello Crealink, I would like a quote for part ${part.part_no} (${part.brand}). Name: ${displayName}`;
   return `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
 }
 
 export function PartDetailClient({ part }: { part: SqlitePartDetail }) {
   const { t, locale } = useI18n();
-  const wa = buildWhatsAppHref(part);
 
   const displayName = (() => {
-    if (locale === "zh") return part.name_ch;
-    if (locale === "fr") return part.name_fr;
-    if (locale === "ar") return part.name_ar;
+    if (locale === "zh") return part.name_ch || part.name_en;
+    if (locale === "fr") return part.name_fr || part.name_en;
+    if (locale === "ar") return part.name_ar || part.name_en;
     return part.name_en;
   })();
 
+  const wa = buildWhatsAppHref(part, displayName);
+
   return (
     <div className="space-y-10">
+      <p className="text-sm text-zinc-600 md:text-base">
+        {part.brand} · {displayName}
+      </p>
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
         <table className="w-full text-left text-sm md:text-base">
           <tbody>

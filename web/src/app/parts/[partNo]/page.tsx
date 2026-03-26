@@ -116,9 +116,6 @@ export default async function PartDetailPage({ params }: PageProps) {
       <h1 className="mb-2 text-2xl font-bold text-[#002d54] md:text-3xl">
         {part.part_no}
       </h1>
-      <p className="mb-8 text-sm text-zinc-600 md:text-base">
-        {part.brand} · {part.name_ch}
-      </p>
       <PartDetailClient part={part} />
     </div>
   );
