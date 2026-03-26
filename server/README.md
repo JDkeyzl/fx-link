@@ -2,7 +2,7 @@
 
 ## Features
 - SQLite table `parts(part_no TEXT PRIMARY KEY, brand TEXT NOT NULL, name_ch TEXT NOT NULL, name_en TEXT NOT NULL, name_fr TEXT NOT NULL, name_ar TEXT NOT NULL, price REAL)` + explicit index `idx_parts_part_no`
-- Stream import from Excel files in `web/data/format data`
+- Stream import from Excel files in `web/data/format_data`
 - API: `GET /api/parts/:partNo` → JSON part detail (recommended for SEO frontend)
 - API: `GET /parts/:brand/:part_no` → same JSON (legacy / human-readable URL)
 
@@ -19,7 +19,7 @@ RESET_DB=1 npm run ingest
 ```
 
 Environment variables:
-- `DATA_DIR` (default: `../web/data/format data`)
+- `DATA_DIR` (default: `../web/data/format_data`)
 - `DB_PATH` (default: `server/data/parts.db`)
 - `BATCH_SIZE` (default: 5000)
 - `RESET_DB=1` (delete existing db file before import)

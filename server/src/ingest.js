@@ -16,7 +16,7 @@ const DEFAULT_DATA_DIR = path.join(
   "..",
   "web",
   "data",
-  "format data"
+  "format_data"
 );
 
 const DATA_DIR = process.env.DATA_DIR || DEFAULT_DATA_DIR;
