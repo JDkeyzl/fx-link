@@ -33,7 +33,12 @@ function initSchema(db) {
     CREATE TABLE IF NOT EXISTS parts (
       part_no TEXT PRIMARY KEY,
       brand TEXT NOT NULL,
+      -- name_ch: original Chinese name (was previously stored in name_en)
+      name_ch TEXT NOT NULL,
+      -- name_en/name_fr/name_ar: translated names (fallback to name_ch)
       name_en TEXT NOT NULL,
+      name_fr TEXT NOT NULL,
+      name_ar TEXT NOT NULL,
       price REAL
     );
     -- Explicit lookup index (PK already indexes part_no; this keeps intent clear for ops/audits).

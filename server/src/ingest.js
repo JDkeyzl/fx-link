@@ -71,7 +71,11 @@ function ingestBatch(db, insertStmt, batch, brand) {
       insertStmt.run({
         part_no: r.part_no,
         brand: brand,
-        name_en: r.name_en,
+        name_ch: r.name_ch,
+        // Initial placeholders; run `migrate-parts-multilang.cjs` to generate real translations.
+        name_en: r.name_ch,
+        name_fr: r.name_ch,
+        name_ar: r.name_ch,
         price: r.price,
       });
     }
@@ -120,15 +124,15 @@ async function ingestXlsxFile(db, insertStmt, filePath, brand) {
           return;
         }
 
-        const name_en = normalizeCellValue(row.values[header.nameIdx]);
+        const name_ch = normalizeCellValue(row.values[header.nameIdx]);
         const part_no = normalizeCellValue(row.values[header.partNoIdx]);
         const priceRaw = row.values[header.priceIdx];
         const price = parsePriceToNumber(priceRaw);
 
-        if (!part_no || !name_en) return;
+        if (!part_no || !name_ch) return;
         if (!Number.isFinite(price)) return; // skip non-numeric price rows
 
-        batch.push({ part_no, name_en, price });
+        batch.push({ part_no, name_ch, price });
         if (batch.length >= BATCH_SIZE) flush();
       });
     });
@@ -178,14 +182,14 @@ async function ingestXlsFile(db, insertStmt, filePath, brand) {
       continue;
     }
 
-    const name_en = normalizeCellValue(rowArr[header.nameIdx - 1]);
+    const name_ch = normalizeCellValue(rowArr[header.nameIdx - 1]);
     const part_no = normalizeCellValue(rowArr[header.partNoIdx - 1]);
     const price = parsePriceToNumber(rowArr[header.priceIdx - 1]);
 
-    if (!part_no || !name_en) continue;
+    if (!part_no || !name_ch) continue;
     if (!Number.isFinite(price)) continue;
 
-    batch.push({ part_no, name_en, price });
+    batch.push({ part_no, name_ch, price });
     if (batch.length >= BATCH_SIZE) {
       const n = ingestBatch(db, insertStmt, batch, brand);
       total += n;
@@ -218,8 +222,8 @@ async function main() {
   initSchema(db);
 
   const insertStmt = db.prepare(`
-    INSERT INTO parts (part_no, brand, name_en, price)
-    VALUES (@part_no, @brand, @name_en, @price)
+    INSERT INTO parts (part_no, brand, name_ch, name_en, name_fr, name_ar, price)
+    VALUES (@part_no, @brand, @name_ch, @name_en, @name_fr, @name_ar, @price)
     ON CONFLICT(part_no) DO NOTHING
   `);
 

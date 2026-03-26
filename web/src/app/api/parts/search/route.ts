@@ -4,7 +4,10 @@ import type { Part } from "@/types/part";
 type SqlitePartRow = {
   part_no: string;
   brand: string;
+  name_ch: string;
   name_en: string;
+  name_fr: string;
+  name_ar: string;
   price: number;
 };
 
@@ -12,10 +15,10 @@ function rowToPart(data: SqlitePartRow): Part {
   return {
     id: data.part_no,
     partNumber: data.part_no,
-    name: data.name_en,
+    name: data.name_ch,
     nameEn: data.name_en,
-    nameFr: undefined,
-    nameAr: undefined,
+    nameFr: data.name_fr,
+    nameAr: data.name_ar,
     brand: data.brand,
     truckSeries: undefined,
     priceMinUsd: Number(data.price) ?? 0,
@@ -58,7 +61,7 @@ export async function GET(request: Request) {
       });
     }
 
-    // 2) Fuzzy: part_no + name_en, min 2 chars (backend enforces)
+    // 2) Fuzzy: part_no + multi-language names, min 2 chars (backend enforces)
     if (q.length < 2) {
       return NextResponse.json({ query: q, count: 0, items: [] });
     }

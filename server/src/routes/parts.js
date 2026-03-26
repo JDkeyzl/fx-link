@@ -7,20 +7,35 @@ const router = express.Router();
 const db = openDb();
 initSchema(db);
 const stmt = db.prepare(
-  `SELECT part_no, brand, name_en, price FROM parts WHERE part_no = ?`
+  `SELECT part_no, brand, name_ch, name_en, name_fr, name_ar, price
+   FROM parts WHERE part_no = ?`
 );
 
-/** Fuzzy search: part_no + name_en (case-insensitive), max `limit` rows. Uses instr() to avoid LIKE wildcard issues. */
+/**
+ * Fuzzy list search:
+ * - part_no exact/prefix/substr ranked first
+ * - name_ch / name_en / name_fr / name_ar substring matches
+ */
 const searchStmt = db.prepare(`
-  SELECT part_no, brand, name_en, price FROM parts
-  WHERE instr(lower(part_no), lower(@q)) > 0
-     OR instr(lower(name_en), lower(@q)) > 0
+  SELECT part_no, brand, name_ch, name_en, name_fr, name_ar, price FROM parts
+  WHERE
+    lower(part_no) = lower(@q)
+    OR lower(part_no) LIKE lower(@q) || '%'
+    OR instr(lower(part_no), lower(@q)) > 0
+    OR instr(lower(name_ch), lower(@q)) > 0
+    OR instr(lower(name_en), lower(@q)) > 0
+    OR instr(lower(name_fr), lower(@q)) > 0
+    OR instr(lower(name_ar), lower(@q)) > 0
   ORDER BY
     CASE
       WHEN lower(part_no) = lower(@q) THEN 0
-      WHEN substr(lower(part_no), 1, length(@q)) = lower(@q) THEN 1
+      WHEN lower(part_no) LIKE lower(@q) || '%' THEN 1
       WHEN instr(lower(part_no), lower(@q)) > 0 THEN 2
-      ELSE 3
+      WHEN instr(lower(name_ch), lower(@q)) > 0 THEN 3
+      WHEN instr(lower(name_en), lower(@q)) > 0 THEN 4
+      WHEN instr(lower(name_fr), lower(@q)) > 0 THEN 5
+      WHEN instr(lower(name_ar), lower(@q)) > 0 THEN 6
+      ELSE 7
     END,
     part_no
   LIMIT @limit
@@ -31,7 +46,10 @@ function jsonPart(row, res) {
   return res.json({
     part_no: row.part_no,
     brand: row.brand,
+    name_ch: row.name_ch,
     name_en: row.name_en,
+    name_fr: row.name_fr,
+    name_ar: row.name_ar,
     price: row.price,
   });
 }
@@ -62,7 +80,10 @@ router.get("/api/parts/search", (req, res) => {
       items: rows.map((r) => ({
         part_no: r.part_no,
         brand: r.brand,
+        name_ch: r.name_ch,
         name_en: r.name_en,
+        name_fr: r.name_fr,
+        name_ar: r.name_ar,
         price: r.price,
       })),
     });

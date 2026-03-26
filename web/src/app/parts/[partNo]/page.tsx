@@ -55,7 +55,9 @@ export async function generateMetadata({
       };
     }
     const title = `${part.part_no} – ${part.brand} | Crealink`;
-    const description = `${part.brand} truck spare part ${part.part_no}. ${part.name_en}. Reference price ¥${Number(part.price).toFixed(2)} CNY.`;
+    const description = `${part.brand} truck spare part ${part.part_no}. ${part.name_en}. Reference price ¥${Number(
+      part.price
+    ).toFixed(2)} CNY.`;
     return {
       title,
       description,
@@ -115,7 +117,7 @@ export default async function PartDetailPage({ params }: PageProps) {
         {part.part_no}
       </h1>
       <p className="mb-8 text-sm text-zinc-600 md:text-base">
-        {part.brand} · {part.name_en}
+        {part.brand} · {part.name_ch}
       </p>
       <PartDetailClient part={part} />
     </div>

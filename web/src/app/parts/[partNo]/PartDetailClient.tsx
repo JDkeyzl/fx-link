@@ -12,8 +12,15 @@ function buildWhatsAppHref(part: SqlitePartDetail): string {
 }
 
 export function PartDetailClient({ part }: { part: SqlitePartDetail }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const wa = buildWhatsAppHref(part);
+
+  const displayName = (() => {
+    if (locale === "zh") return part.name_ch;
+    if (locale === "fr") return part.name_fr;
+    if (locale === "ar") return part.name_ar;
+    return part.name_en;
+  })();
 
   return (
     <div className="space-y-10">
@@ -24,7 +31,7 @@ export function PartDetailClient({ part }: { part: SqlitePartDetail }) {
               <th className="w-[32%] px-4 py-3 font-semibold text-[#002d54]">
                 {t("partDetail.name")}
               </th>
-              <td className="px-4 py-3 text-zinc-800">{part.name_en}</td>
+              <td className="px-4 py-3 text-zinc-800">{displayName}</td>
             </tr>
             <tr className="border-b border-gray-100">
               <th className="px-4 py-3 font-semibold text-[#002d54]">

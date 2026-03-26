@@ -1,7 +1,10 @@
 export type SqlitePartDetail = {
   part_no: string;
   brand: string;
+  name_ch: string;
   name_en: string;
+  name_fr: string;
+  name_ar: string;
   price: number;
 };
 

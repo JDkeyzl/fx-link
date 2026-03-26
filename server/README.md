@@ -1,7 +1,7 @@
 # crealink-backend (Express + SQLite)
 
 ## Features
-- SQLite table `parts(part_no TEXT PRIMARY KEY, brand TEXT, name_en TEXT, price REAL)` + explicit index `idx_parts_part_no`
+- SQLite table `parts(part_no TEXT PRIMARY KEY, brand TEXT NOT NULL, name_ch TEXT NOT NULL, name_en TEXT NOT NULL, name_fr TEXT NOT NULL, name_ar TEXT NOT NULL, price REAL)` + explicit index `idx_parts_part_no`
 - Stream import from Excel files in `web/data/format data`
 - API: `GET /api/parts/:partNo` → JSON part detail (recommended for SEO frontend)
 - API: `GET /parts/:brand/:part_no` → same JSON (legacy / human-readable URL)
