@@ -222,68 +222,84 @@ function main() {
       VALUES (@part_no, @brand, @name_ch, @name_en, @name_fr, @name_ar, @price)
     `);
 
-    const selectBase =
-      sourceChineseCol === "name_ch"
-        ? "SELECT part_no, brand, name_ch AS name_ch_src, price FROM parts ORDER BY part_no"
-        : "SELECT part_no, brand, name_en AS name_ch_src, price FROM parts ORDER BY part_no";
+    // IMPORTANT:
+    // better-sqlite3 doesn't allow executing other statements while an
+    // `iterate()` cursor is still open on the same connection.
+    // Therefore we avoid iterate() and use pagination by `part_no`.
+    const sourceExpr = sourceChineseCol === "name_ch" ? "name_ch" : "name_en";
+    const selectStmt = db.prepare(`
+      SELECT
+        part_no,
+        brand,
+        ${sourceExpr} AS name_ch_src,
+        price
+      FROM parts
+      WHERE part_no > @last
+      ORDER BY part_no
+      LIMIT @limit
+    `);
 
     let count = 0;
     const translationCache = new Map(); // name_ch_src -> { en, fr, ar }
-    const iter = db.prepare(selectBase);
+    let lastPartNo = "";
 
-    // For memory safety: batch within transaction.
-    let batch = [];
-    const flush = () => {
-      for (const row of batch) {
-        insert.run(row);
-      }
-      batch = [];
-    };
-
-    for (const row of iter.iterate()) {
-      const partNo = row.part_no;
-      const brand = row.brand;
-      const name_ch = row.name_ch_src ? String(row.name_ch_src).trim() : "";
-      const price = row.price;
-
-      if (!partNo || !name_ch) continue;
-
-      const mapped = finalMap.get(String(partNo));
-      let name_en = mapped?.en_name || "";
-      let name_fr = mapped?.fr_name || "";
-      let name_ar = mapped?.alb_name || "";
-
-      if (!name_en || !name_fr || !name_ar) {
-        let cached = translationCache.get(name_ch);
-        if (!cached) {
-          cached = translator(name_ch);
-          translationCache.set(name_ch, cached);
-        }
-        name_en = name_en || cached.en;
-        name_fr = name_fr || cached.fr;
-        name_ar = name_ar || cached.ar;
-      }
-
-      // Final fallback guarantees NOT NULL
-      name_en = collapseSpaces(name_en) || name_ch;
-      name_fr = collapseSpaces(name_fr) || name_ch;
-      name_ar = collapseSpaces(name_ar) || name_ch;
-
-      batch.push({
-        part_no: String(partNo),
-        brand: String(brand || ""),
-        name_ch,
-        name_en,
-        name_fr,
-        name_ar,
-        price: Number.isFinite(price) ? price : null,
+    while (true) {
+      const rows = selectStmt.all({
+        last: lastPartNo,
+        limit: BATCH_SIZE,
       });
-      count += 1;
+      if (!rows || rows.length === 0) break;
+
+      for (const row of rows) {
+        const partNo = row.part_no;
+        const brand = row.brand;
+        const name_ch = row.name_ch_src ? String(row.name_ch_src).trim() : "";
+        const price = row.price;
+
+        if (!partNo || !name_ch) continue;
+
+        const mapped = finalMap.get(String(partNo));
+        let name_en = mapped?.en_name || "";
+        let name_fr = mapped?.fr_name || "";
+        let name_ar = mapped?.alb_name || "";
+
+        if (!name_en || !name_fr || !name_ar) {
+          let cached = translationCache.get(name_ch);
+          if (!cached) {
+            cached = translator(name_ch);
+            translationCache.set(name_ch, cached);
+          }
+          name_en = name_en || cached.en;
+          name_fr = name_fr || cached.fr;
+          name_ar = name_ar || cached.ar;
+        }
+
+        // Final fallback guarantees NOT NULL
+        name_en = collapseSpaces(name_en) || name_ch;
+        name_fr = collapseSpaces(name_fr) || name_ch;
+        name_ar = collapseSpaces(name_ar) || name_ch;
+
+        insert.run({
+          part_no: String(partNo),
+          brand: String(brand || ""),
+          name_ch,
+          name_en,
+          name_fr,
+          name_ar,
+          price: Number.isFinite(price) ? price : null,
+        });
+
+        count += 1;
+        lastPartNo = String(partNo);
+
+        if (LIMIT_PARTS && count >= LIMIT_PARTS) break;
+      }
 
       if (LIMIT_PARTS && count >= LIMIT_PARTS) break;
-      if (batch.length >= BATCH_SIZE) flush();
+
+      // Safety: in case of unexpected ordering / empty progress
+      if (!lastPartNo) break;
     }
-    flush();
 
     db.exec("DROP TABLE parts;");
     db.exec("ALTER TABLE parts_new RENAME TO parts;");
