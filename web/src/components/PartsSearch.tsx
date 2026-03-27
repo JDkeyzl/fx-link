@@ -22,10 +22,25 @@ function useIsDesktop() {
 }
 
 function getPartNameByLocale(part: Part, locale: string): string {
-  if (locale === "zh" && part.name) return part.name;
-  if (locale === "fr" && part.nameFr) return part.nameFr;
-  if (locale === "ar" && part.nameAr) return part.nameAr;
-  return part.nameEn;
+  // Be defensive with field shapes from different APIs:
+  // - frontend model: name/nameEn/nameFr/nameAr
+  // - backend raw shape: name_ch/name_en/name_fr/name_ar
+  const row = part as Part & {
+    name_ch?: string;
+    name_en?: string;
+    name_fr?: string;
+    name_ar?: string;
+  };
+
+  const nameCh = (part.name || row.name_ch || "").trim();
+  const nameEn = (part.nameEn || row.name_en || "").trim();
+  const nameFr = (part.nameFr || row.name_fr || "").trim();
+  const nameAr = (part.nameAr || row.name_ar || "").trim();
+
+  if (locale === "zh") return nameCh || nameEn || nameFr || nameAr || part.partNumber;
+  if (locale === "fr") return nameFr || nameEn || nameCh || nameAr || part.partNumber;
+  if (locale === "ar") return nameAr || nameEn || nameCh || nameFr || part.partNumber;
+  return nameEn || nameCh || nameFr || nameAr || part.partNumber;
 }
 
 export interface PartsSearchFormProps {
