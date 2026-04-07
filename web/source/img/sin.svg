@@ -1,0 +1,73 @@
+<svg viewBox="0 290 1600 255" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3d5a8c" stop-opacity="0.38"/>
+      <stop offset="50%" stop-color="#5a6fa8" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#7a8fc4" stop-opacity="0.26"/>
+    </linearGradient>
+  </defs>
+
+  <g fill="none" stroke="url(#grad)" stroke-width="1.65">
+
+    <!-- 波1 -->
+    <path>
+      <animate attributeName="d"
+        dur="12s"
+        repeatCount="indefinite"
+        values="
+        M0 400 Q 200 300, 400 400 T 800 400 T 1200 400 T 1600 400;
+        M0 400 Q 200 350, 400 400 T 800 400 T 1200 400 T 1600 400;
+        M0 400 Q 200 300, 400 400 T 800 400 T 1200 400 T 1600 400
+        "/>
+    </path>
+
+    <!-- 波1b 加密 -->
+    <path opacity="0.52" stroke-width="1.35">
+      <animate attributeName="d"
+        dur="11s"
+        repeatCount="indefinite"
+        values="
+        M0 375 Q 200 275, 400 375 T 800 375 T 1200 375 T 1600 375;
+        M0 375 Q 200 320, 400 375 T 800 375 T 1200 375 T 1600 375;
+        M0 375 Q 200 275, 400 375 T 800 375 T 1200 375 T 1600 375
+        "/>
+    </path>
+
+    <!-- 波2（错位） -->
+    <path opacity="0.8">
+      <animate attributeName="d"
+        dur="14s"
+        repeatCount="indefinite"
+        values="
+        M0 450 Q 200 350, 400 450 T 800 450 T 1200 450 T 1600 450;
+        M0 450 Q 200 400, 400 450 T 800 450 T 1200 450 T 1600 450;
+        M0 450 Q 200 350, 400 450 T 800 450 T 1200 450 T 1600 450
+        "/>
+    </path>
+
+    <!-- 波2b 加密 -->
+    <path opacity="0.48" stroke-width="1.35">
+      <animate attributeName="d"
+        dur="13s"
+        repeatCount="indefinite"
+        values="
+        M0 425 Q 200 325, 400 425 T 800 425 T 1200 425 T 1600 425;
+        M0 425 Q 200 370, 400 425 T 800 425 T 1200 425 T 1600 425;
+        M0 425 Q 200 325, 400 425 T 800 425 T 1200 425 T 1600 425
+        "/>
+    </path>
+
+    <!-- 波3（更淡） -->
+    <path opacity="0.6">
+      <animate attributeName="d"
+        dur="16s"
+        repeatCount="indefinite"
+        values="
+        M0 500 Q 200 400, 400 500 T 800 500 T 1200 500 T 1600 500;
+        M0 500 Q 200 450, 400 500 T 800 500 T 1200 500 T 1600 500;
+        M0 500 Q 200 400, 400 500 T 800 500 T 1200 500 T 1600 500
+        "/>
+    </path>
+
+  </g>
+</svg>

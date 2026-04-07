@@ -2,6 +2,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { LocaleProvider, useI18n } from "@/context/LocaleContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
@@ -21,14 +22,17 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
 
   return (
     <div
-      className={`min-h-screen bg-tech-grid text-zinc-900 ${directionClass}`}
+      className={`min-h-screen bg-[var(--color-page-bg)] text-zinc-900 ${directionClass}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
       {/* ========== DESKTOP LAYOUT (md and up) ========== */}
       <div className="hidden min-h-screen md:flex md:flex-col md:max-w-[1600px] md:mx-auto">
         {/* Top bar: 毛玻璃 Glassmorphism，重工业+AI 层级感 */}
         <header className="glass-header flex shrink-0 items-center justify-between px-4 py-2.5 lg:px-8">
-          <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            className="flex min-w-0 items-center gap-3 rounded-lg outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#002d54]/25 focus-visible:ring-offset-2"
+          >
             <img
               src="/logo.png"
               alt="CreaLink"
@@ -42,7 +46,7 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
                 {t("brand.tagline")}
               </div>
             </div>
-          </div>
+          </Link>
           <LanguageSwitcher compact />
         </header>
         {/* Main content: no horizontal padding so hero can be full-bleed */}
@@ -122,7 +126,10 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
       <div className="flex flex-col min-h-screen md:hidden">
         {/* Sticky top bar: 毛玻璃 Glassmorphism */}
         <header className="glass-header sticky top-0 z-20 flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            className="flex items-center gap-3 rounded-lg outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#002d54]/25 focus-visible:ring-offset-2"
+          >
             <img
               src="/logo.png"
               alt="CreaLink"
@@ -136,7 +143,7 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
                 {t("brand.tagline")}
               </div>
             </div>
-          </div>
+          </Link>
           <LanguageSwitcher />
         </header>
 

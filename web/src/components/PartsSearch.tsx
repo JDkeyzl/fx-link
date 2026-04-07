@@ -44,7 +44,7 @@ function getPartNameByLocale(part: Part, locale: string): string {
 }
 
 export interface PartsSearchFormProps {
-  variant?: "default" | "hero";
+  variant?: "default" | "hero" | "strip";
   query: string;
   onQueryChange: (value: string) => void;
   /** Invoked on search button click or Enter in the input (form submit). */
@@ -61,9 +61,43 @@ export function PartsSearchForm({
 }: PartsSearchFormProps) {
   const { t } = useI18n();
   const isHero = variant === "hero";
+  const isStrip = variant === "strip";
   const placeholder = isHero
     ? t("home.hero.searchPlaceholder")
     : t("search.placeholder");
+
+  if (isStrip) {
+    return (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSearch();
+        }}
+        className="search-input-glow w-full"
+      >
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => onQueryChange(e.target.value)}
+            placeholder={placeholder}
+            className="min-h-[44px] min-w-0 flex-1 rounded-xl border border-[#002d54]/18 bg-white px-4 py-2.5 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-500 outline-none transition focus:border-[#002d54] focus:ring-2 focus:ring-[#002d54]/18 focus:ring-offset-0 sm:min-w-[160px]"
+            aria-label={placeholder}
+          />
+          <button
+            type="submit"
+            disabled={!query.trim() || loading}
+            className="btn-primary-portal min-h-[44px] shrink-0 rounded-xl px-5 py-2.5 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-[#002d54]/35 focus:ring-offset-0 disabled:cursor-not-allowed"
+          >
+            {loading ? t("search.searching") : t("search.button")}
+          </button>
+        </div>
+        <p className="mt-2 text-[11px] leading-snug text-zinc-600 sm:text-xs">
+          {t("search.example")}
+        </p>
+      </form>
+    );
+  }
 
   if (isHero) {
     return (

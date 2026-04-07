@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f5f7;
+  --background: #f6f5f3;
   --foreground: #1a1a1a;
   --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
   /* Sinotruk / CreaLink portal */
   --color-deep-blue: #002d54;
   --color-sinotruk-red: #e31d22;
-  --color-page-bg: #f4f5f7;
+  --color-page-bg: #f6f5f3;
   /* 江南烟雨风：朦胧灰蓝，与 hero 雾感协调 */
   --header-bg: #dce2e9;
   --header-bg-glass: rgba(220, 226, 233, 0.88);
@@ -16,7 +16,6 @@
   --glass-bg: rgba(255, 255, 255, 0.55);
   --glass-border: rgba(255, 255, 255, 0.45);
   --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  --grid-line: rgba(0, 45, 84, 0.04);
   --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
   --shadow-button-hover: 0 6px 24px rgba(0, 45, 84, 0.2);
   --radius-card: 16px;
@@ -37,15 +36,6 @@ body {
   background: var(--color-page-bg);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
-}
-
-/* 重工业+AI科技：极淡几何网格背景，避免纯白 */
-.bg-tech-grid {
-  background-color: var(--color-page-bg);
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 28px 28px;
 }
 
 /* Header 毛玻璃：增强层级与科技感 */
@@ -117,4 +107,65 @@ body {
 }
 .partner-logo:hover {
   transform: scale(1.08);
+}
+
+/* sin.svg viewBox 1600×239（y:274–513，收紧顶、加足底防描边裁切） */
+.sin-wave-tiles {
+  --sin-tile-w: 520px;
+  --sin-tile-h: 78px;
+  background-image: url("/img/sin.svg");
+  background-repeat: repeat;
+  background-position: 0 0;
+  background-size: var(--sin-tile-w) var(--sin-tile-h);
+  will-change: background-position;
+}
+
+/* 浅色暖底上略降对比，避免「表格纸 / 后台网格」感 */
+.sin-wave-backdrop[data-variant="search"] .sin-wave-tiles--a {
+  opacity: 0.52;
+  animation: sin-wave-pan 36s linear infinite;
+}
+
+.sin-wave-backdrop[data-variant="search"] .sin-wave-tiles--b {
+  opacity: 0.34;
+  transform: scale(1.07);
+  transform-origin: 28% 36%;
+  animation: sin-wave-pan-reverse 50s linear infinite;
+}
+
+.sin-wave-backdrop[data-variant="company"] .sin-wave-tiles--a {
+  opacity: 0.5;
+  animation: sin-wave-pan-reverse 52s linear infinite;
+}
+
+.sin-wave-backdrop[data-variant="company"] .sin-wave-tiles--b {
+  opacity: 0.32;
+  transform: scale(1.1);
+  transform-origin: 70% 55%;
+  animation: sin-wave-pan 68s linear infinite;
+}
+
+@keyframes sin-wave-pan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 520px 0;
+  }
+}
+
+@keyframes sin-wave-pan-reverse {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -520px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sin-wave-tiles--a,
+  .sin-wave-tiles--b {
+    animation: none;
+  }
 }

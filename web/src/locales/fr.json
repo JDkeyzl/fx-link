@@ -18,6 +18,11 @@
       "globalShipping": "Livraison mondiale",
       "authentic": "Pièces d'origine",
       "realTimeQuote": "Devis en temps réel"
+    },
+    "searchStrip": {
+      "title": "Recherche de pièces poids lourds",
+      "description": "Saisissez un numéro de pièce ou un mot-clé (marque, modèle ou nom) pour afficher des prix de référence en CNY. Les résultats s'ouvrent sur une page dédiée, pratique pour marquer ou partager le lien. Pour un devis ferme et des délais, contactez-nous après votre recherche.",
+      "trustLine": "EXW Chine · Prix indicatifs en CNY (à titre indicatif uniquement)"
     }
   },
   "search": {
@@ -26,7 +31,18 @@
     "button": "Rechercher",
     "searching": "Recherche...",
     "example": "Exemple : pièces SINOTRUK / HOWO / SHACMAN / FAW.",
-    "noResults": "Aucune pièce trouvée pour « {{query }} ». Essayez un autre numéro ou mot-clé, ou envoyez-nous votre demande de devis."
+    "noResults": "Aucune pièce trouvée pour « {{query }} ». Essayez un autre numéro ou mot-clé, ou envoyez-nous votre demande de devis.",
+    "pageTitle": "Résultats de recherche",
+    "pageSubtitle": "Prix indicatifs en CNY. Affinez votre recherche ci-dessous.",
+    "backHome": "Retour à l'accueil"
+  },
+  "company": {
+    "sectionTitle": "Présentation de l'entreprise",
+    "tablistAriaLabel": "Sections d'information sur l'entreprise",
+    "profileTitle": "Profil de l'entreprise",
+    "developmentTitle": "Développement de l'entreprise",
+    "cultureTitle": "Culture d'entreprise",
+    "networkTitle": "Réseau commercial et après-vente"
   },
   "parts": {
     "image": "Image",

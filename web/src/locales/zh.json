@@ -18,6 +18,11 @@
       "globalShipping": "全球发货",
       "authentic": "正品保障",
       "realTimeQuote": "实时报价"
+    },
+    "searchStrip": {
+      "title": "重卡配件查询",
+      "description": "输入零件号，或品牌、车型、中英文名称等关键词，即可查看人民币参考价区间。搜索后将在独立结果页展示，便于收藏或转发链接。如需正式报价与交期，可在查询后继续联系我们的业务团队。",
+      "trustLine": "中国出厂（EXW）· 人民币参考价（仅供参考）"
     }
   },
   "search": {
@@ -26,7 +31,18 @@
     "button": "搜索",
     "searching": "搜索中...",
     "example": "示例：SINOTRUK / HOWO / 陕汽 / 一汽 卡车配件。",
-    "noResults": "未找到与「{{query}}」匹配的零件。请换一个零件号或关键词，或直接向我们发送询价。"
+    "noResults": "未找到与「{{query}}」匹配的零件。请换一个零件号或关键词，或直接向我们发送询价。",
+    "pageTitle": "搜索结果",
+    "pageSubtitle": "以下为人民币参考价（仅供参考）。可在下方修改关键词后再次搜索。",
+    "backHome": "返回首页"
+  },
+  "company": {
+    "sectionTitle": "公司介绍",
+    "tablistAriaLabel": "企业信息栏目",
+    "profileTitle": "公司简介",
+    "developmentTitle": "企业发展概况",
+    "cultureTitle": "企业文化",
+    "networkTitle": "销售及售后服务网络"
   },
   "parts": {
     "image": "图片",

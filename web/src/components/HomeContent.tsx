@@ -2,13 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import type { Part } from "@/types/part";
-import { PartsSearchForm, PartsSearchResults } from "@/components/PartsSearch";
+import { useRouter } from "next/navigation";
+import { PartsSearchForm } from "@/components/PartsSearch";
+import { CompanyIntro } from "@/components/CompanyIntro";
+import { SinWaveBackdrop } from "@/components/SinWaveBackdrop";
 import { useI18n } from "@/context/LocaleContext";
-import {
-  loadPartsSearchSession,
-  savePartsSearchSession,
-} from "@/lib/partsSearchSession";
+import { loadPartsSearchSession } from "@/lib/partsSearchSession";
 
 const HERO_IMAGES = [
   "/hero/2025030410112358405.jpg",
@@ -53,12 +52,8 @@ const PARTNERS: { placeholder: string; label: string; logoFile?: string }[] = [
 
 export function HomeContent() {
   const { t } = useI18n();
+  const router = useRouter();
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [results, setResults] = useState<Part[]>([]);
-  const [queried, setQueried] = useState(false);
-  const [sessionReady, setSessionReady] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
   const partnersScrollRef = useRef<HTMLDivElement | null>(null);
   const partnersDragRef = useRef<{
@@ -75,7 +70,6 @@ export function HomeContent() {
     return () => clearInterval(timer);
   }, []);
 
-  // Auto-scroll partners bar (pause briefly after user interaction)
   useEffect(() => {
     let raf = 0;
     const speedPxPerFrame = 0.35;
@@ -100,53 +94,20 @@ export function HomeContent() {
 
   useEffect(() => {
     const saved = loadPartsSearchSession();
-    if (saved) {
-      setQuery(saved.query);
-      setResults(saved.results);
-      setError(saved.error);
-      setQueried(saved.queried);
-    }
-    setSessionReady(true);
+    if (saved?.query) setQuery(saved.query);
   }, []);
 
-  useEffect(() => {
-    if (!sessionReady) return;
-    savePartsSearchSession({ query, results, error, queried });
-  }, [sessionReady, query, results, error, queried]);
-
-  async function handleSearch() {
+  function handleSearch() {
     const q = query.trim();
     if (!q) return;
-
-    setLoading(true);
-    setError(null);
-    setQueried(true);
-
-    try {
-      const res = await fetch(
-        `/api/parts/search?q=${encodeURIComponent(q)}`
-      );
-      if (!res.ok) throw new Error("Failed to search parts");
-      const data = await res.json();
-      setResults((data.items as Part[]) ?? []);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Unknown error"
-      );
-      setResults([]);
-    } finally {
-      setLoading(false);
-    }
+    router.push(`/search?q=${encodeURIComponent(q)}`);
   }
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section: full-bleed to page edges, no side gap */}
       <section
-        id="search"
-        className="relative scroll-mt-20 md:scroll-mt-0 min-h-[320px] sm:min-h-[360px] md:min-h-[420px] flex flex-col items-center justify-center py-12 overflow-hidden w-full"
+        className="relative flex min-h-[320px] w-full flex-col items-center justify-center overflow-hidden py-16 sm:min-h-[360px] md:min-h-[420px] md:py-20"
       >
-        {/* Hero image carousel: edge to edge */}
         {HERO_IMAGES.map((src, i) => (
           <div
             key={src}
@@ -164,43 +125,61 @@ export function HomeContent() {
             />
           </div>
         ))}
-        {/* Overlay: 江南烟雨朦胧感，与 header 灰蓝协调 */}
         <div
           className="absolute inset-0"
           style={{ backgroundColor: "var(--hero-overlay)" }}
           aria-hidden
         />
-        {/* Centered search box: inner padding only so it doesn't touch edges */}
-        <div className="relative z-10 w-full max-w-2xl mx-auto px-4 sm:px-6">
-          <PartsSearchForm
-            variant="hero"
-            query={query}
-            onQueryChange={setQuery}
-            onSearch={() => void handleSearch()}
-            loading={loading}
-          />
+        <div className="relative z-10 mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <h1 className="text-2xl font-semibold leading-tight text-white drop-shadow-md sm:text-3xl md:text-4xl">
+            {t("home.hero.title")}
+          </h1>
+          <p className="mt-4 text-sm leading-relaxed text-white/92 drop-shadow-sm sm:text-base md:text-lg">
+            {t("home.hero.subtitle")}
+          </p>
         </div>
       </section>
 
-      {/* Search results */}
-      {(loading || queried) && (
-        <section className="px-4 sm:px-6 lg:px-8 pb-10 md:pb-14">
-          <div className="max-w-5xl mx-auto">
-            <PartsSearchResults
-              results={results}
-              query={query}
-              error={error}
-              loading={loading}
-              queried={queried}
-            />
+      <section
+        id="search"
+        className="relative isolate scroll-mt-20 overflow-hidden border-t border-[#e8e4df] py-0"
+      >
+        <SinWaveBackdrop variant="search" />
+        <div
+          className="pointer-events-none absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(253,251,248,0.94)_0%,rgba(248,250,252,0.9)_38%,rgba(236,243,250,0.92)_100%)]"
+          aria-hidden
+        />
+        <div className="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 md:py-12">
+          <div className="grid grid-cols-1 items-start gap-8 md:gap-10 lg:grid-cols-12 lg:gap-12">
+            <div className="order-2 lg:order-1 lg:col-span-8">
+              <h2 className="text-lg font-semibold text-[#002d54] md:text-xl">
+                {t("home.searchStrip.title")}
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-800 md:text-base">
+                {t("home.searchStrip.description")}
+              </p>
+              <p className="mt-4 text-xs font-medium tracking-wide text-zinc-600 md:text-sm">
+                {t("home.searchStrip.trustLine")}
+              </p>
+            </div>
+            <div className="order-1 lg:order-2 lg:col-span-4">
+              <PartsSearchForm
+                variant="strip"
+                query={query}
+                onQueryChange={setQuery}
+                onSearch={handleSearch}
+                loading={false}
+              />
+            </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
-      {/* About: 为什么选择我们 + 背景图 whyus.jpg + 浅色蒙版保证文字与卡片可读 */}
+      <CompanyIntro />
+
       <section
         id="about"
-        className="relative scroll-mt-20 border-t border-gray-200 overflow-hidden px-4 sm:px-6 lg:px-8 py-12 md:py-16"
+        className="relative scroll-mt-20 overflow-hidden border-t border-gray-200 px-4 py-12 sm:px-6 lg:px-8 md:py-16"
       >
         <Image
           src="/whyus.jpg"
@@ -213,14 +192,14 @@ export function HomeContent() {
           className="absolute inset-0 bg-[#f8f9fa]/52"
           aria-hidden
         />
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <h2 className="text-xl font-semibold text-[#002d54] md:text-2xl text-center">
+        <div className="relative z-10 mx-auto max-w-5xl">
+          <h2 className="text-center text-xl font-semibold text-[#002d54] md:text-2xl">
             {t("about.title")}
           </h2>
-          <p className="mt-3 text-sm md:text-lg text-zinc-800 text-center max-w-3xl mx-auto">
+          <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-zinc-800 md:text-lg">
             {t("about.subtitle")}
           </p>
-          <div className="mt-10 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:mt-12 sm:grid-cols-3 sm:gap-8">
             {[
               { key: "globalShipping", titleKey: "about.feature.globalShippingTitle", descKey: "about.feature.globalShippingDesc" },
               { key: "authentic", titleKey: "about.feature.authenticTitle", descKey: "about.feature.authenticDesc" },
@@ -228,9 +207,9 @@ export function HomeContent() {
             ].map(({ key, titleKey, descKey }) => (
               <div
                 key={key}
-                className="card-portal bg-white border border-gray-200 overflow-hidden flex flex-col rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(0,0,0,0.12)]"
+                className="card-portal flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(0,0,0,0.12)]"
               >
-                <div className="relative w-full aspect-[4/3] min-h-[140px] sm:min-h-[180px]">
+                <div className="relative aspect-[4/3] w-full min-h-[140px] sm:min-h-[180px]">
                   <Image
                     src={FEATURE_ICONS[key]}
                     alt=""
@@ -239,11 +218,11 @@ export function HomeContent() {
                     sizes="(max-width: 640px) 100vw, 33vw"
                   />
                 </div>
-                <div className="p-4 sm:p-5 flex flex-col flex-1 border-t border-gray-200">
-                  <h3 className="text-[#002d54] font-semibold text-base sm:text-lg">
+                <div className="flex flex-1 flex-col border-t border-gray-200 p-4 sm:p-5">
+                  <h3 className="text-base font-semibold text-[#002d54] sm:text-lg">
                     {t(titleKey)}
                   </h3>
-                  <p className="mt-2 text-sm text-zinc-600 leading-relaxed flex-1">
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-600">
                     {t(descKey)}
                   </p>
                 </div>
@@ -253,10 +232,9 @@ export function HomeContent() {
         </div>
       </section>
 
-      {/* Contact: 背景图 + 左侧蒙版 + 文字在蒙版上 */}
       <section
         id="contact"
-        className="relative scroll-mt-20 min-h-[320px] sm:min-h-[380px] flex flex-col justify-center overflow-hidden border-t border-gray-200"
+        className="relative flex min-h-[320px] scroll-mt-20 flex-col justify-center overflow-hidden border-t border-gray-200 sm:min-h-[380px]"
       >
         <Image
           src="/contact.png"
@@ -265,7 +243,6 @@ export function HomeContent() {
           className="object-cover object-center"
           sizes="100vw"
         />
-        {/* 左侧蒙版：左深右浅，与图片间渐变过渡 */}
         <div
           className="absolute inset-0 w-full"
           style={{
@@ -273,34 +250,34 @@ export function HomeContent() {
           }}
           aria-hidden
         />
-        <div className="relative z-10 w-full max-w-xl pl-4 pr-4 sm:pl-8 sm:pr-8 lg:pl-14 lg:pr-14 py-12 md:py-16 text-left">
-          <h2 className="text-xl font-semibold text-white md:text-2xl drop-shadow-sm">
+        <div className="relative z-10 w-full max-w-xl py-12 pl-4 pr-4 text-left sm:pl-8 sm:pr-8 md:py-16 lg:pl-14 lg:pr-14">
+          <h2 className="text-xl font-semibold text-white drop-shadow-sm md:text-2xl">
             {t("contact.title")}
           </h2>
-          <p className="mt-3 text-sm text-gray-200 md:text-base leading-relaxed drop-shadow-sm">
+          <p className="mt-3 text-sm leading-relaxed text-gray-200 drop-shadow-sm md:text-base">
             {t("contact.intro")}
           </p>
           <div className="mt-8 space-y-3 sm:space-y-4">
-            <p className="text-gray-100 text-sm md:text-base">
+            <p className="text-sm text-gray-100 md:text-base">
               <span className="font-medium text-white/95">{t("contact.hotlineStationLabel")}</span>
               <span className="ml-2">
-                <a href="tel:+8653168829096" className="text-gray-300 hover:text-white transition-colors">
+                <a href="tel:+8653168829096" className="text-gray-300 transition-colors hover:text-white">
                   {t("contact.hotlineStation")}
                 </a>
               </span>
             </p>
-            <p className="text-gray-100 text-sm md:text-base">
+            <p className="text-sm text-gray-100 md:text-base">
               <span className="font-medium text-white/95">{t("contact.serviceHotlineLabel")}</span>
               <span className="ml-2">
-                <a href="tel:+8618615287132" className="text-gray-300 hover:text-white transition-colors">
+                <a href="tel:+8618615287132" className="text-gray-300 transition-colors hover:text-white">
                   {t("contact.serviceHotline1")}
                 </a>
               </span>
             </p>
             <div className="flex items-start gap-4 pt-2">
-              <div className="text-gray-100 text-sm md:text-base">
+              <div className="text-sm text-gray-100 md:text-base">
                 <p className="font-medium text-white/95">{t("contact.whatsAppLabel")}</p>
-                <p className="mt-1 text-gray-300 text-xs md:text-sm max-w-xs">
+                <p className="mt-1 max-w-xs text-xs text-gray-300 md:text-sm">
                   {t("contact.whatsAppNote")}
                 </p>
               </div>
@@ -308,29 +285,29 @@ export function HomeContent() {
                 href="/WhatsApp.png"
                 target="_blank"
                 rel="noreferrer"
-                className="shrink-0 block"
+                className="block shrink-0"
               >
                 <Image
                   src="/WhatsApp.png"
                   alt="WhatsApp QR"
                   width={80}
                   height={80}
-                  className="rounded-md border border-white/40 shadow-sm object-contain bg-white/10 hover:border-white/70 transition-colors"
+                  className="rounded-md border border-white/40 bg-white/10 object-contain shadow-sm transition-colors hover:border-white/70"
                 />
               </a>
             </div>
-            <div className="text-gray-100 text-sm md:text-base">
+            <div className="text-sm text-gray-100 md:text-base">
               <span className="font-medium text-white/95">{t("contact.emailLabel")}</span>
               <div className="ml-2 mt-1 space-y-1">
-                <a href="mailto:admin@sinotruckpart.com" className="block text-gray-300 hover:text-white transition-colors">
+                <a href="mailto:admin@sinotruckpart.com" className="block text-gray-300 transition-colors hover:text-white">
                   {t("contact.email1")}
                 </a>
-                <a href="mailto:rose@sinotruckpart.com" className="block text-gray-300 hover:text-white transition-colors">
+                <a href="mailto:rose@sinotruckpart.com" className="block text-gray-300 transition-colors hover:text-white">
                   {t("contact.email2")}
                 </a>
               </div>
             </div>
-            <p className="text-gray-100 text-sm md:text-base">
+            <p className="text-sm text-gray-100 md:text-base">
               <span className="font-medium text-white/95">{t("contact.addressLabel")}</span>
               <span className="ml-2 text-gray-300">
                 {t("contact.address")}
@@ -340,12 +317,11 @@ export function HomeContent() {
         </div>
       </section>
 
-      {/* Trusted Partners & Brands: infinite marquee */}
       <section
         id="partners"
-        className="scroll-mt-20 border-t border-gray-200 bg-white pt-8 pb-6 md:pt-10 md:pb-8 overflow-hidden"
+        className="scroll-mt-20 overflow-hidden border-t border-gray-200 bg-white pt-8 pb-6 md:pt-10 md:pb-8"
       >
-        <h2 className="text-center text-lg font-semibold text-[#002d54] md:text-xl mb-8 px-4">
+        <h2 className="mb-8 px-4 text-center text-lg font-semibold text-[#002d54] md:text-xl">
           {t("partners.title")}
         </h2>
         <div
@@ -359,7 +335,6 @@ export function HomeContent() {
             partnersDragRef.current.startX = e.clientX;
             partnersDragRef.current.startScrollLeft = el.scrollLeft;
             partnersDragRef.current.pausedUntilTs = Date.now() + 1200;
-            // capture pointer so dragging continues outside element
             (e.currentTarget as HTMLDivElement).setPointerCapture?.(e.pointerId);
           }}
           onPointerMove={(e) => {
@@ -383,28 +358,28 @@ export function HomeContent() {
               <a
                 key={`${partner.label}-${i}`}
                 href="#partners"
-                className="partner-logo flex flex-col items-center justify-center shrink-0 px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002d54]/30 focus-visible:ring-offset-2 rounded-lg"
+                className="partner-logo flex shrink-0 flex-col items-center justify-center rounded-lg px-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#002d54]/30 focus-visible:ring-offset-2"
                 aria-label={partner.label}
                 draggable={false}
                 onDragStart={(e) => e.preventDefault()}
               >
-                <div className="flex items-center justify-center overflow-hidden h-14 md:h-16 rounded-md">
+                <div className="flex h-14 items-center justify-center overflow-hidden rounded-md md:h-16">
                   {partner.logoFile ? (
                     <Image
                       src={`/logo/${encodeURIComponent(partner.logoFile)}`}
                       alt=""
                       width={96}
                       height={64}
-                      className="max-h-14 md:max-h-16 w-auto object-contain select-none"
+                      className="max-h-14 w-auto object-contain select-none md:max-h-16"
                       draggable={false}
                     />
                   ) : (
-                    <span className="text-[10px] md:text-xs text-gray-500 font-medium text-center leading-tight">
+                    <span className="text-center text-[10px] font-medium leading-tight text-gray-500 md:text-xs">
                       {partner.placeholder}
                     </span>
                   )}
                 </div>
-                <span className="mt-2 text-[11px] md:text-xs font-medium text-gray-600 tracking-wide">
+                <span className="mt-2 text-[11px] font-medium tracking-wide text-gray-600 md:text-xs">
                   {partner.label}
                 </span>
               </a>

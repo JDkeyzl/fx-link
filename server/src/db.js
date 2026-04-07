@@ -43,6 +43,60 @@ function initSchema(db) {
     );
     -- Explicit lookup index (PK already indexes part_no; this keeps intent clear for ops/audits).
     CREATE INDEX IF NOT EXISTS idx_parts_part_no ON parts(part_no);
+
+    -- Manual/automatic correction overrides used by hidden translation console.
+    CREATE TABLE IF NOT EXISTS part_translation_overrides (
+      part_no TEXT PRIMARY KEY,
+      name_ch TEXT,
+      name_en TEXT,
+      name_fr TEXT,
+      name_ar TEXT,
+      source TEXT NOT NULL DEFAULT 'manual',
+      updated_by TEXT,
+      updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS translation_batch_rules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      rule_name TEXT NOT NULL,
+      locale_field TEXT NOT NULL,
+      find_text TEXT NOT NULL,
+      replace_text TEXT NOT NULL,
+      is_regex INTEGER NOT NULL DEFAULT 0,
+      is_active INTEGER NOT NULL DEFAULT 1,
+      created_by TEXT,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS translation_correction_logs (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      action_type TEXT NOT NULL,
+      payload_json TEXT NOT NULL,
+      created_by TEXT,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    );
+
+    -- High-confidence translation anchors saved from single manual edits.
+    -- This table is append-only for audit/reuse in future MT pipeline.
+    CREATE TABLE IF NOT EXISTS translation_anchor_memory (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      part_no TEXT NOT NULL,
+      name_ch TEXT NOT NULL,
+      name_en TEXT NOT NULL,
+      name_fr TEXT NOT NULL,
+      name_ar TEXT NOT NULL,
+      updated_by TEXT,
+      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_translation_batch_rules_active
+      ON translation_batch_rules(is_active, locale_field);
+    CREATE INDEX IF NOT EXISTS idx_translation_logs_created_at
+      ON translation_correction_logs(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_translation_anchor_memory_part_no
+      ON translation_anchor_memory(part_no);
+    CREATE INDEX IF NOT EXISTS idx_translation_anchor_memory_created_at
+      ON translation_anchor_memory(created_at DESC);
   `);
 }
 

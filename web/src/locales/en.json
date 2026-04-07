@@ -18,6 +18,11 @@
       "globalShipping": "Global shipping",
       "authentic": "Genuine parts",
       "realTimeQuote": "Real-time quote"
+    },
+    "searchStrip": {
+      "title": "Look up heavy truck parts",
+      "description": "Enter a part number or a keyword (brand, model, or name) to see reference prices in CNY. Results open on a dedicated page so you can bookmark or share the link. For formal quotes and lead times, contact us after your search.",
+      "trustLine": "EXW China · Reference prices in CNY (indicative only)"
     }
   },
   "search": {
@@ -26,7 +31,18 @@
     "button": "Search",
     "searching": "Searching...",
     "example": "Example: SINOTRUK / HOWO / SHACMAN / FAW truck parts.",
-    "noResults": "No parts found for \"{{query}}\". Please try another number or keyword, or send us your RFQ."
+    "noResults": "No parts found for \"{{query}}\". Please try another number or keyword, or send us your RFQ.",
+    "pageTitle": "Search results",
+    "pageSubtitle": "Reference prices in CNY (indicative). Refine your query below.",
+    "backHome": "Back to home"
+  },
+  "company": {
+    "sectionTitle": "Company",
+    "tablistAriaLabel": "Company information sections",
+    "profileTitle": "Company profile",
+    "developmentTitle": "Company development",
+    "cultureTitle": "Corporate culture",
+    "networkTitle": "Sales and after-sales network"
   },
   "parts": {
     "image": "Image",

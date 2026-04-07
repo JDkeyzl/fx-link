@@ -29,6 +29,26 @@ Environment variables:
 PORT=3001 npm start
 ```
 
+### Hidden translation correction admin APIs
+
+Set admin key (required):
+
+```bash
+export ADMIN_TRANSLATION_KEY="change-this-secret"
+```
+
+Admin endpoints (header `x-admin-key: $ADMIN_TRANSLATION_KEY`):
+- `GET /api/admin/translation/issues/grouped`
+- `GET /api/admin/translation/issues/items`
+- `POST /api/admin/translation/single`
+- `POST /api/admin/translation/batch-preview`
+- `POST /api/admin/translation/batch-apply`
+- `POST /api/admin/translation/rollback`
+
+Notes:
+- Runtime overrides are stored in `part_translation_overrides` and take precedence over `parts`.
+- All correction operations are audit-logged in `translation_correction_logs`.
+
 ## Example
 ```bash
 curl http://localhost:3001/api/parts/WG9000360521
