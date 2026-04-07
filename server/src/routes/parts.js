@@ -60,6 +60,120 @@ const searchStmt = db.prepare(`
   LIMIT @limit
 `);
 
+/**
+ * Same brand + first 8 chars of part_no (case-insensitive); excludes current SKU.
+ * `cand_limit` pulls extra rows so we can dedupe by name_en and still aim for 10 unique titles.
+ */
+const relatedPartsStmt = db.prepare(`
+  ${resolvedBase}
+  WHERE lower(p.brand) = lower(@brand)
+    AND p.part_no != @exclude_part_no
+    AND length(@key_part_no) >= 1
+    AND lower(substr(p.part_no, 1, 8)) = lower(substr(@key_part_no, 1, 8))
+  ORDER BY p.part_no
+  LIMIT @cand_limit
+`);
+
+const RELATED_PREFIX_CANDIDATE_CAP = 80;
+const RELATED_NAME_FILL_SCAN_CAP = 1200;
+
+/** Normalize English display line for deduplication (related list). */
+function nameEnDedupeKey(row) {
+  const n = String(row.name_en ?? "").trim().toLowerCase();
+  return n || `\0${row.part_no}`;
+}
+
+/** English stopwords for related-part name_en token fallback (conservative). */
+const EN_RELATED_STOP = new Set([
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "for",
+  "of",
+  "to",
+  "in",
+  "on",
+  "at",
+  "with",
+  "by",
+  "from",
+  "as",
+  "is",
+  "are",
+  "was",
+  "were",
+  "be",
+  "been",
+  "being",
+  "have",
+  "has",
+  "had",
+  "do",
+  "does",
+  "did",
+  "will",
+  "would",
+  "could",
+  "should",
+  "may",
+  "might",
+  "must",
+  "can",
+  "this",
+  "that",
+  "these",
+  "those",
+  "it",
+  "its",
+  "we",
+  "our",
+  "your",
+  "their",
+  "no",
+  "not",
+]);
+
+function tokenizeNameEnForRelated(nameEn) {
+  const raw = String(nameEn ?? "").toLowerCase();
+  const parts = raw
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter((t) => t.length >= 2 && !EN_RELATED_STOP.has(t));
+  const out = [];
+  const seen = new Set();
+  for (const t of parts) {
+    if (seen.has(t)) continue;
+    seen.add(t);
+    out.push(t);
+    if (out.length >= 8) break;
+  }
+  return out;
+}
+
+function scoreNameEnTokens(row, tokens) {
+  const n = String(row.name_en ?? "").toLowerCase();
+  let s = 0;
+  for (const t of tokens) {
+    if (n.includes(t)) s += 1;
+  }
+  return s;
+}
+
+function mapRelatedPartRow(r) {
+  return {
+    part_no: r.part_no,
+    brand: r.brand,
+    name_ch: r.name_ch,
+    name_en: r.name_en,
+    name_fr: r.name_fr,
+    name_ar: r.name_ar,
+    price: r.price,
+  };
+}
+
 const listCandidatesStmt = db.prepare(`
   ${resolvedBase}
   WHERE
@@ -364,6 +478,141 @@ router.get("/api/parts/search", (req, res) => {
     });
   } catch (err) {
     console.error("GET /api/parts/search error:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+/**
+ * Related catalogue links:
+ * 1) Same `brand` + first 8 chars of `part_no` (up to limit).
+ * 2) If fewer than limit, fill with same-brand rows whose English name (`name_en`)
+ *    shares tokenizer keywords (length ≥ 2, stopword-stripped), scored by overlap.
+ * Query: part_no, brand (required). limit capped at 10. Current SKU excluded.
+ */
+router.get("/api/parts/related", (req, res) => {
+  const partNo =
+    typeof req.query.part_no === "string" ? req.query.part_no.trim() : "";
+  const brand = typeof req.query.brand === "string" ? req.query.brand.trim() : "";
+  if (!partNo || !brand) {
+    return res.status(400).json({
+      error: "Bad Request",
+      message: "part_no and brand are required",
+      items: [],
+      prefix_count: 0,
+      name_fill_count: 0,
+    });
+  }
+  let limit = Number.parseInt(String(req.query.limit ?? "10"), 10);
+  if (!Number.isFinite(limit) || limit < 1) limit = 10;
+  if (limit > 10) limit = 10;
+  try {
+    const current = stmt.get(partNo);
+    if (!current) {
+      return res.status(404).json({
+        error: "Part not found",
+        part_no: partNo,
+        items: [],
+        prefix_count: 0,
+        name_fill_count: 0,
+      });
+    }
+    if (String(current.brand || "").trim().toLowerCase() !== brand.toLowerCase()) {
+      return res.status(400).json({
+        error: "brand does not match part",
+        items: [],
+        prefix_count: 0,
+        name_fill_count: 0,
+      });
+    }
+
+    const prefixCandidateRows = relatedPartsStmt.all({
+      brand,
+      exclude_part_no: partNo,
+      key_part_no: partNo,
+      cand_limit: RELATED_PREFIX_CANDIDATE_CAP,
+    });
+    const excludeList = [partNo, ...prefixCandidateRows.map((r) => r.part_no)];
+
+    const items = [];
+    const seenNames = new Set();
+    seenNames.add(nameEnDedupeKey(current));
+    const seenParts = new Set([partNo]);
+
+    function tryAddRow(r) {
+      if (items.length >= limit) return false;
+      if (seenParts.has(r.part_no)) return false;
+      const nk = nameEnDedupeKey(r);
+      if (seenNames.has(nk)) return false;
+      seenNames.add(nk);
+      seenParts.add(r.part_no);
+      items.push(mapRelatedPartRow(r));
+      return true;
+    }
+
+    for (const r of prefixCandidateRows) {
+      if (items.length >= limit) break;
+      tryAddRow(r);
+    }
+
+    if (items.length < limit) {
+      const tokens = tokenizeNameEnForRelated(current.name_en);
+      if (tokens.length > 0) {
+        const notInPh = excludeList.map(() => "?").join(", ");
+        const tokenOr = tokens
+          .map(
+            () => "instr(lower(COALESCE(o.name_en, p.name_en)), ?) > 0"
+          )
+          .join(" OR ");
+        const fillerSql = `
+${resolvedBase}
+WHERE lower(p.brand) = lower(?)
+  AND p.part_no NOT IN (${notInPh})
+  AND (${tokenOr})
+ORDER BY p.part_no
+LIMIT ?
+`;
+        const fillerStmt = db.prepare(fillerSql);
+        const bind = [
+          brand,
+          ...excludeList,
+          ...tokens.map((t) => String(t).toLowerCase()),
+          RELATED_NAME_FILL_SCAN_CAP,
+        ];
+        const fillerRows = fillerStmt.all(...bind);
+        const scored = fillerRows.map((r) => ({
+          r,
+          s: scoreNameEnTokens(r, tokens),
+        }));
+        scored.sort((a, b) => {
+          if (b.s !== a.s) return b.s - a.s;
+          return String(a.r.part_no).localeCompare(String(b.r.part_no));
+        });
+        for (const x of scored) {
+          if (items.length >= limit) break;
+          if (x.s < 1) continue;
+          tryAddRow(x.r);
+        }
+      }
+    }
+
+    const seedPfx = partNo.slice(0, 8).toLowerCase();
+    const prefixFamilyCount = items.filter(
+      (it) => String(it.part_no).slice(0, 8).toLowerCase() === seedPfx
+    ).length;
+    const nameFillReported = items.length - prefixFamilyCount;
+
+    res.setHeader("Cache-Control", "public, max-age=120");
+    return res.json({
+      part_no: partNo,
+      brand,
+      prefix: partNo.substring(0, 8),
+      prefix_count: prefixFamilyCount,
+      name_fill_count: nameFillReported,
+      count: items.length,
+      items,
+    });
+  } catch (err) {
+    console.error("GET /api/parts/related error:", err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });

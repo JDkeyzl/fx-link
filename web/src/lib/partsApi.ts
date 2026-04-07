@@ -59,3 +59,41 @@ export async function fetchPartByPartNo(
   }
   return (await res.json()) as SqlitePartDetail;
 }
+
+const RELATED_LIMIT_CAP = 10;
+
+export type RelatedPartsPayload = {
+  items: SqlitePartDetail[];
+  /** Rows added via English name keyword overlap (not part-no prefix). */
+  nameFillCount: number;
+};
+
+/**
+ * Related parts: same brand + part_no prefix (8 chars), then name_en token overlap to reach 10.
+ */
+export async function fetchRelatedParts(
+  part: SqlitePartDetail
+): Promise<RelatedPartsPayload> {
+  const base = getPartsApiBaseUrl();
+  const params = new URLSearchParams({
+    part_no: part.part_no,
+    brand: part.brand,
+    limit: String(RELATED_LIMIT_CAP),
+  });
+  const url = `${base}/api/parts/related?${params}`;
+  const res = await fetch(url, {
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    return { items: [], nameFillCount: 0 };
+  }
+  const data = (await res.json()) as {
+    items?: SqlitePartDetail[];
+    name_fill_count?: number;
+  };
+  return {
+    items: (data.items ?? []).slice(0, RELATED_LIMIT_CAP),
+    nameFillCount: Number(data.name_fill_count ?? 0),
+  };
+}

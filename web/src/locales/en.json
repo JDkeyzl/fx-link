@@ -62,7 +62,16 @@
     "priceLabel": "Reference price (CNY)",
     "inquirySection": "Contact us",
     "inquiryIntro": "Request a formal quote, lead time, or MOQ for this part. Our team replies on WhatsApp during business hours.",
-    "inquiryWhatsApp": "Inquiry via WhatsApp"
+    "inquiryWhatsApp": "Inquiry via WhatsApp",
+    "structuredTitle": "Product overview",
+    "relatedTitle": "Related parts",
+    "structuredP1": "This listing covers {{brand}} part {{partNo}} ({{name}}) from our reference catalogue.",
+    "structuredP2": "Heavy truck and off-road applications differ by chassis, axle and engine family. Verify the part number against your vehicle records and technical documentation before ordering.",
+    "structuredP3": "The price shown is a CNY reference (EXW China). It excludes packing, freight, duties and banking fees. Contact us for a firm offer and delivery schedule.",
+    "seo": {
+      "metaDescription": "{{brand}} heavy-duty truck spare part {{partNo}} — {{name}}. Reference price ¥{{price}} CNY (EXW China, indicative). Contact Crealink for MOQ, lead time and formal quotation.",
+      "schemaDescription": "Aftermarket heavy-duty truck spare part, brand {{brand}}, part number {{partNo}}. Name: {{name}}. Reference price ¥{{price}} CNY, EXW China (indicative, not a binding offer). Crealink supplies SINOTRUK, SHACMAN, FAW and related China truck parts for export — request a quotation to confirm compatibility, packing, shipping and commercial terms."
+    }
   },
   "quality": {
     "original": "Original",

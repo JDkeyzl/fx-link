@@ -62,7 +62,16 @@
     "priceLabel": "Prix indicatif (CNY)",
     "inquirySection": "Contact",
     "inquiryIntro": "Demandez un devis formel, un délai ou une MOQ pour cette pièce. Notre équipe répond sur WhatsApp pendant les heures ouvrées.",
-    "inquiryWhatsApp": "Demander un devis via WhatsApp"
+    "inquiryWhatsApp": "Demander un devis via WhatsApp",
+    "structuredTitle": "Présentation",
+    "relatedTitle": "Pièces apparentées",
+    "structuredP1": "Cette fiche concerne la pièce {{partNo}} ({{name}}), marque {{brand}}, issue de notre catalogue de référence.",
+    "structuredP2": "Les applications poids lourds varient selon châssis, essieu et famille moteur. Vérifiez le numéro de pièce avec les données véhicule et la documentation technique avant commande.",
+    "structuredP3": "Le prix affiché est un indicateur en CNY (EXW Chine), hors emballage, fret, droits et frais bancaires. Contactez-nous pour une offre ferme et un calendrier de livraison.",
+    "seo": {
+      "metaDescription": "Pièce poids lourds {{brand}} {{partNo}} — {{name}}. Prix indicatif ¥{{price}} CNY (EXW Chine). MOQ, délais et devis formel : contactez Crealink.",
+      "schemaDescription": "Pièce de rechange aftermarket poids lourds, marque {{brand}}, réf. {{partNo}}. Désignation : {{name}}. Prix indicatif ¥{{price}} CNY, EXW Chine (sans valeur contractuelle). Crealink exporte des pièces SINOTRUK, SHACMAN, FAW et marques chinois apparentées — demandez un devis pour compatibilité, emballage, transport et conditions commerciales."
+    }
   },
   "quality": {
     "original": "Origine",

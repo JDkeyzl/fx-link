@@ -59,9 +59,9 @@ body {
   letter-spacing: 0.02em;
 }
 
-/* Search input focus glow (deep blue) */
+/* Wrapper class for search forms; avoid extra focus ring here — focus styles live on inputs/buttons. */
 .search-input-glow:focus-within {
-  box-shadow: 0 0 0 3px rgba(0, 45, 84, 0.15), 0 0 20px rgba(0, 45, 84, 0.08);
+  /* intentionally empty: stacking box-shadow + Tailwind focus:ring looked like a double border */
 }
 
 /* Primary button: subtle gradient + hover shadow */

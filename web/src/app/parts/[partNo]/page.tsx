@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import {
+  localeFromAcceptLanguage,
+  partDisplayName,
+  tLocale,
+} from "@/lib/i18n";
+import {
   fetchPartByPartNo,
+  fetchRelatedParts,
   getSiteOrigin,
   normalizePartNoFromRouteParam,
   type SqlitePartDetail,
@@ -16,12 +23,24 @@ type PageProps = {
   params: Promise<{ partNo: string }>;
 };
 
-function productJsonLd(part: SqlitePartDetail, canonicalUrl: string) {
+function productJsonLd(
+  part: SqlitePartDetail,
+  canonicalUrl: string,
+  seoLocale: ReturnType<typeof localeFromAcceptLanguage>
+) {
+  const price = Number(part.price).toFixed(2);
+  const name = partDisplayName(part, seoLocale);
+  const description = tLocale(seoLocale, "partDetail.seo.schemaDescription", {
+    brand: part.brand,
+    partNo: part.part_no,
+    name,
+    price,
+  });
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${part.brand} ${part.part_no}`,
-    description: part.name_en,
+    description,
     sku: part.part_no,
     brand: {
       "@type": "Brand",
@@ -54,10 +73,17 @@ export async function generateMetadata({
         robots: { index: false, follow: true },
       };
     }
+    const h = await headers();
+    const seoLocale = localeFromAcceptLanguage(h.get("accept-language"));
+    const price = Number(part.price).toFixed(2);
+    const name = partDisplayName(part, seoLocale);
     const title = `${part.part_no} – ${part.brand} | Crealink`;
-    const description = `${part.brand} truck spare part ${part.part_no}. ${part.name_en}. Reference price ¥${Number(
-      part.price
-    ).toFixed(2)} CNY.`;
+    const description = tLocale(seoLocale, "partDetail.seo.metaDescription", {
+      brand: part.brand,
+      partNo: part.part_no,
+      name,
+      price,
+    });
     return {
       title,
       description,
@@ -98,10 +124,23 @@ export default async function PartDetailPage({ params }: PageProps) {
   }
   if (!part) notFound();
 
-  const jsonLd = productJsonLd(part, canonicalUrl);
+  const h = await headers();
+  const seoLocale = localeFromAcceptLanguage(h.get("accept-language"));
+  const jsonLd = productJsonLd(part, canonicalUrl, seoLocale);
+
+  let related: SqlitePartDetail[] = [];
+  let relatedNameFillCount = 0;
+  try {
+    const rel = await fetchRelatedParts(part);
+    related = rel.items;
+    relatedNameFillCount = rel.nameFillCount;
+  } catch {
+    related = [];
+    relatedNameFillCount = 0;
+  }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
+    <div className="mx-auto max-w-6xl px-4 py-8 md:py-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd }}
@@ -116,7 +155,11 @@ export default async function PartDetailPage({ params }: PageProps) {
       <h1 className="mb-2 text-2xl font-bold text-[#002d54] md:text-3xl">
         {part.part_no}
       </h1>
-      <PartDetailClient part={part} />
+      <PartDetailClient
+        part={part}
+        related={related}
+        relatedNameFillCount={relatedNameFillCount}
+      />
     </div>
   );
 }
