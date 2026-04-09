@@ -17,6 +17,17 @@ import {
 
 type SectionId = (typeof COMPANY_SECTIONS)[number]["id"];
 
+/** Local assets under public/img (copied from source/img via copy-assets). */
+const SECTION_MEDIA: Record<
+  SectionId,
+  { src: string; width: number; height: number }
+> = {
+  profile: { src: "/img/company.jpg", width: 1707, height: 1280 },
+  development: { src: "/img/develop.png", width: 1820, height: 880 },
+  culture: { src: "/img/rewards.jpg", width: 1707, height: 1280 },
+  network: { src: "/img/worldmap.png", width: 1246, height: 840 },
+};
+
 export function CompanyIntro() {
   const { t, locale } = useI18n();
   const baseId = useId();
@@ -69,7 +80,7 @@ export function CompanyIntro() {
 
   const active = COMPANY_SECTIONS.find((s) => s.id === tabId)!;
   const text = companyBodyForLocale(active.body, locale);
-  const isNetwork = tabId === "network";
+  const media = SECTION_MEDIA[tabId];
 
   useLayoutEffect(() => {
     const el = panelMeasureRef.current;
@@ -82,7 +93,7 @@ export function CompanyIntro() {
       if (localeChanged) return h;
       return Math.max(prev, h);
     });
-  }, [tabId, locale, text, isNetwork]);
+  }, [tabId, locale, text]);
 
   return (
     <section
@@ -139,33 +150,24 @@ export function CompanyIntro() {
             }
           >
             <div ref={panelMeasureRef}>
-              {isNetwork ? (
-                <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
-                  <p
-                    className="min-w-0 flex-1 text-start text-sm leading-relaxed text-zinc-800 md:text-base"
-                    dir={locale === "ar" ? "ltr" : undefined}
-                  >
-                    {text}
-                  </p>
-                  <div className="relative mx-auto w-full max-w-[min(100%,420px)] shrink-0 lg:mx-0 lg:max-w-[280px] xl:max-w-[320px]">
-                    <Image
-                      src="/img/worldmap.png"
-                      alt=""
-                      width={640}
-                      height={360}
-                      className="h-auto w-full object-contain opacity-[0.88]"
-                      sizes="(max-width: 1024px) 100vw, 320px"
-                    />
-                  </div>
-                </div>
-              ) : (
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-stretch lg:gap-8">
                 <p
-                  className="text-start text-sm leading-relaxed text-zinc-800 md:text-base"
+                  className="min-w-0 flex-1 whitespace-pre-line text-start text-sm leading-relaxed text-zinc-800 md:text-base"
                   dir={locale === "ar" ? "ltr" : undefined}
                 >
                   {text}
                 </p>
-              )}
+                <div className="relative flex min-h-0 w-full min-w-0 shrink-0 items-center justify-center lg:max-w-[min(560px,48%)] lg:flex-[0_1_48%] lg:min-w-[220px]">
+                  <Image
+                    src={media.src}
+                    alt=""
+                    width={media.width}
+                    height={media.height}
+                    className="h-auto max-h-[min(36rem,70vh)] w-full object-contain object-center opacity-[0.88] lg:max-h-full lg:min-h-0"
+                    sizes="(max-width: 1024px) 96vw, 48vw"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

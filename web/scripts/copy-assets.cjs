@@ -20,6 +20,9 @@ const singleFiles = [
   [path.join(webDir, "source", "WhatsApp.png"), path.join(webDir, "public", "WhatsApp.png")],
   [path.join(webDir, "source", "img", "sin.svg"), path.join(webDir, "public", "img", "sin.svg")],
   [path.join(webDir, "source", "img", "worldmap.png"), path.join(webDir, "public", "img", "worldmap.png")],
+  [path.join(webDir, "source", "img", "company.jpg"), path.join(webDir, "public", "img", "company.jpg")],
+  [path.join(webDir, "source", "img", "develop.png"), path.join(webDir, "public", "img", "develop.png")],
+  [path.join(webDir, "source", "img", "rewards.jpg"), path.join(webDir, "public", "img", "rewards.jpg")],
 ];
 
 for (const [srcDir, destDir] of pairs) {

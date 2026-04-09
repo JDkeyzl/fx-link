@@ -49,12 +49,6 @@ export function PartDetailClient({
       className="rounded-2xl border border-zinc-200/80 bg-zinc-50/80 px-4 py-5 md:px-6 md:py-6"
       aria-labelledby="part-overview-heading"
     >
-      <h2
-        id="part-overview-heading"
-        className="text-base font-semibold text-[#002d54] md:text-lg"
-      >
-        {t("partDetail.structuredTitle")}
-      </h2>
       <div
         className="mt-3 space-y-3 text-sm leading-relaxed text-zinc-700 md:text-base"
         dir={locale === "ar" ? "rtl" : "ltr"}
@@ -147,7 +141,7 @@ export function PartDetailClient({
       <h2 className="shrink-0 text-sm font-semibold text-[#002d54] md:text-base">
         {t("partDetail.relatedTitle")}
       </h2>
-      <div className="mt-3 h-80 overflow-y-auto overscroll-y-contain md:h-96 md:mt-3.5">
+      <div className="mt-3 md:mt-3.5">
         <ul className="space-y-0.5">
           {related.map((r, idx) => {
             const name = displayNameForPart(r, locale);
