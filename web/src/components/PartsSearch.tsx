@@ -45,6 +45,8 @@ function getPartNameByLocale(part: Part, locale: string): string {
 
 export interface PartsSearchFormProps {
   variant?: "default" | "hero" | "strip";
+  /** Strip only: omit the example line under the field (e.g. toolbar next to breadcrumb). */
+  compact?: boolean;
   query: string;
   onQueryChange: (value: string) => void;
   /** Invoked on search button click or Enter in the input (form submit). */
@@ -54,6 +56,7 @@ export interface PartsSearchFormProps {
 
 export function PartsSearchForm({
   variant = "default",
+  compact = false,
   query,
   onQueryChange,
   onSearch,
@@ -92,9 +95,11 @@ export function PartsSearchForm({
             {loading ? t("search.searching") : t("search.button")}
           </button>
         </div>
-        <p className="mt-2 text-[11px] leading-snug text-zinc-600 sm:text-xs">
-          {t("search.example")}
-        </p>
+        {!compact ? (
+          <p className="mt-2 text-[11px] leading-snug text-zinc-600 sm:text-xs">
+            {t("search.example")}
+          </p>
+        ) : null}
       </form>
     );
   }

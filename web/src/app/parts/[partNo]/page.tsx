@@ -16,6 +16,7 @@ import {
   type SqlitePartDetail,
 } from "@/lib/partsApi";
 import { PartDetail } from "./PartDetail";
+import { PartDetailSearchBar } from "./PartDetailSearchBar";
 
 /** Avoid caching a mistaken 404 if encoding or data was fixed later. */
 export const dynamic = "force-dynamic";
@@ -164,13 +165,21 @@ export default async function PartDetailPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd }}
       />
-      <nav className="mb-6 text-sm text-zinc-500">
-        <Link href="/" className="text-[#002d54] hover:underline">
-          Home
-        </Link>
-        <span className="mx-2">/</span>
-        <span className="text-zinc-700">{part.part_no}</span>
-      </nav>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <nav
+          className="min-w-0 shrink text-sm text-zinc-500"
+          aria-label="Breadcrumb"
+        >
+          <Link href="/" className="text-[#002d54] hover:underline">
+            Home
+          </Link>
+          <span className="mx-2">/</span>
+          <span className="text-zinc-700">{part.part_no}</span>
+        </nav>
+        <div className="w-full shrink-0 sm:w-auto">
+          <PartDetailSearchBar />
+        </div>
+      </div>
       <h1 className="mb-2 text-2xl font-bold text-[#002d54] md:text-3xl">
         {part.part_no}
       </h1>
