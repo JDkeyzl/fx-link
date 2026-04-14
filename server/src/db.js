@@ -98,6 +98,12 @@ function initSchema(db) {
     CREATE INDEX IF NOT EXISTS idx_translation_anchor_memory_created_at
       ON translation_anchor_memory(created_at DESC);
   `);
+
+  const partCols = db.prepare(`PRAGMA table_info(parts)`).all();
+  const hasImagePath = partCols.some((c) => c.name === "image_path");
+  if (!hasImagePath) {
+    db.exec(`ALTER TABLE parts ADD COLUMN image_path TEXT`);
+  }
 }
 
 module.exports = {

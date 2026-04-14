@@ -12,15 +12,16 @@
     "copy-assets": "node scripts/copy-assets.cjs"
   },
   "dependencies": {
-    "next": "16.1.6",
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "typescript": "^5",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
     "@types/node": "^20",
     "@types/react": "^19",
-    "@types/react-dom": "^19"
+    "@types/react-dom": "^19",
+    "echarts": "^6.0.0",
+    "next": "^16.2.3",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   },
   "devDependencies": {
     "eslint": "^9",

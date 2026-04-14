@@ -7,6 +7,7 @@ import {
   partDisplayName,
   tLocale,
 } from "@/lib/i18n";
+import { partDetailImageAbsoluteUrl } from "@/lib/partDetailImage";
 import {
   fetchPartByPartNo,
   fetchRelatedParts,
@@ -14,7 +15,7 @@ import {
   normalizePartNoFromRouteParam,
   type SqlitePartDetail,
 } from "@/lib/partsApi";
-import { PartDetailClient } from "./PartDetailClient";
+import { PartDetail } from "./PartDetail";
 
 /** Avoid caching a mistaken 404 if encoding or data was fixed later. */
 export const dynamic = "force-dynamic";
@@ -26,6 +27,7 @@ type PageProps = {
 function productJsonLd(
   part: SqlitePartDetail,
   canonicalUrl: string,
+  productImageUrl: string,
   seoLocale: ReturnType<typeof localeFromAcceptLanguage>
 ) {
   const price = Number(part.price).toFixed(2);
@@ -39,9 +41,12 @@ function productJsonLd(
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: `${part.brand} ${part.part_no}`,
+    name: `${part.brand} ${part.part_no} – ${name}`,
     description,
+    url: canonicalUrl,
+    image: [productImageUrl],
     sku: part.part_no,
+    mpn: part.part_no,
     brand: {
       "@type": "Brand",
       name: part.brand,
@@ -84,6 +89,7 @@ export async function generateMetadata({
       name,
       price,
     });
+    const ogImage = partDetailImageAbsoluteUrl(part, site);
     return {
       title,
       description,
@@ -94,11 +100,18 @@ export async function generateMetadata({
         url: canonicalUrl,
         siteName: "Crealink",
         type: "website",
+        images: [
+          {
+            url: ogImage,
+            alt: `${part.brand} ${part.part_no}`,
+          },
+        ],
       },
       twitter: {
-        card: "summary",
+        card: "summary_large_image",
         title,
         description,
+        images: [ogImage],
       },
     };
   } catch {
@@ -126,7 +139,13 @@ export default async function PartDetailPage({ params }: PageProps) {
 
   const h = await headers();
   const seoLocale = localeFromAcceptLanguage(h.get("accept-language"));
-  const jsonLd = productJsonLd(part, canonicalUrl, seoLocale);
+  const productImageUrl = partDetailImageAbsoluteUrl(part, site);
+  const jsonLd = productJsonLd(
+    part,
+    canonicalUrl,
+    productImageUrl,
+    seoLocale
+  );
 
   let related: SqlitePartDetail[] = [];
   let relatedNameFillCount = 0;
@@ -155,7 +174,7 @@ export default async function PartDetailPage({ params }: PageProps) {
       <h1 className="mb-2 text-2xl font-bold text-[#002d54] md:text-3xl">
         {part.part_no}
       </h1>
-      <PartDetailClient
+      <PartDetail
         part={part}
         related={related}
         relatedNameFillCount={relatedNameFillCount}

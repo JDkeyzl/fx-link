@@ -1,15 +1,32 @@
 const express = require("express");
-const path = require("path");
+const cors = require("cors");
 const partsRouter = require("./routes/parts");
+const adminUploadRouter = require("./routes/adminUpload");
 
 const PORT = Number(process.env.PORT || 3001);
 
 const app = express();
 app.disable("x-powered-by");
 
+app.use(
+  cors({
+    origin: true,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "x-admin-upload-key",
+      "Accept",
+      "Accept-Language",
+    ],
+    optionsSuccessStatus: 204,
+    maxAge: 86400,
+  })
+);
+
 // Basic JSON response. For SEO/SSR metadata, frontend should call this API and render its own HTML.
 app.use(express.json({ limit: "1mb" }));
 
+app.use("/", adminUploadRouter);
 app.use("/", partsRouter);
 
 // Simple root response for health-checks.

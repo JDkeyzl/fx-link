@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import type { SqlitePartDetail } from "@/lib/partsApi";
+import { partDetailImageSrc } from "@/lib/partDetailImage";
 import { useI18n } from "@/context/LocaleContext";
 
 const DEFAULT_WA = "8618746232944";
@@ -22,10 +24,14 @@ function buildWhatsAppHref(
   return `https://wa.me/${num}?text=${encodeURIComponent(text)}`;
 }
 
-export function PartDetailClient({
+function partImageAlt(part: SqlitePartDetail, displayName: string): string {
+  return `${displayName} – ${part.part_no} – ${part.brand}`;
+}
+
+export function PartDetail({
   part,
   related = [],
-  relatedNameFillCount = 0,
+  relatedNameFillCount: _relatedNameFillCount = 0,
 }: {
   part: SqlitePartDetail;
   related?: SqlitePartDetail[];
@@ -37,11 +43,46 @@ export function PartDetailClient({
   const displayName = displayNameForPart(part, locale);
   const wa = buildWhatsAppHref(part, displayName);
   const hasRelated = related.length > 0;
+  const imageSrc = partDetailImageSrc(part);
+  const isRemoteImage =
+    imageSrc.startsWith("http://") || imageSrc.startsWith("https://");
+  const imageAlt = partImageAlt(part, displayName);
 
   const subtitle = (
     <p className="text-sm text-zinc-600 md:text-base">
       {part.brand} · {displayName}
     </p>
+  );
+
+  const imageBlock = (
+    <figure className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
+      <div
+        className="relative flex w-full flex-1 items-center justify-center bg-zinc-50/80 aspect-[4/3] max-h-[min(420px,55vh)] md:aspect-auto md:max-h-none md:min-h-0"
+      >
+        {isRemoteImage ? (
+          // Remote DB URLs: avoid Next remotePatterns churn for arbitrary hosts.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={imageSrc}
+            alt={imageAlt}
+            className="max-h-full max-w-full object-contain"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        ) : (
+          <Image
+            src={imageSrc}
+            alt={imageAlt}
+            width={800}
+            height={600}
+            className="max-h-full max-w-full object-contain"
+            priority
+            sizes="(min-width: 1024px) 380px, 100vw"
+          />
+        )}
+      </div>
+    </figure>
   );
 
   const structuredSection = (
@@ -67,14 +108,16 @@ export function PartDetailClient({
   );
 
   const specTable = (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-      <table className="w-full text-left text-sm md:text-base">
+    <div className="h-full min-h-0 min-w-0 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+      <table className="w-full table-fixed text-left text-sm md:text-base">
         <tbody>
           <tr className="border-b border-gray-100 bg-[#f8f9fa]">
             <th className="w-[32%] px-4 py-3 font-semibold text-[#002d54]">
               {t("partDetail.name")}
             </th>
-            <td className="px-4 py-3 text-zinc-800">{displayName}</td>
+            <td className="break-words px-4 py-3 text-zinc-800">
+              {displayName}
+            </td>
           </tr>
           <tr className="border-b border-gray-100">
             <th className="px-4 py-3 font-semibold text-[#002d54]">
@@ -88,13 +131,15 @@ export function PartDetailClient({
             <th className="px-4 py-3 font-semibold text-[#002d54]">
               {t("partDetail.brand")}
             </th>
-            <td className="px-4 py-3 text-zinc-800">{part.brand}</td>
+            <td className="break-words px-4 py-3 text-zinc-800">
+              {part.brand}
+            </td>
           </tr>
           <tr className="border-b border-gray-100">
             <th className="px-4 py-3 font-semibold text-[#002d54]">
               {t("partDetail.category")}
             </th>
-            <td className="px-4 py-3 text-zinc-800">
+            <td className="break-words px-4 py-3 text-zinc-800">
               {t("partDetail.categoryDefault")}
             </td>
           </tr>
@@ -171,28 +216,35 @@ export function PartDetailClient({
     </aside>
   ) : null;
 
-  if (!hasRelated) {
-    return (
-      <div className="space-y-10">
+  const mainColumn = (
+    <div className="min-w-0 space-y-10">
+      <div className="grid gap-8 md:grid-cols-[minmax(0,380px)_1fr] md:items-stretch md:gap-10">
+        <div className="mx-auto flex h-full min-h-0 w-full max-w-md flex-col md:mx-0 md:max-w-none">
+          {imageBlock}
+        </div>
+        <div className="flex min-h-0 min-w-0 flex-col md:h-full">
+          {specTable}
+        </div>
+      </div>
+      <div className="flex min-h-0 min-w-0 flex-col space-y-4">
         {subtitle}
         {structuredSection}
-        {specTable}
-        {contactSection}
       </div>
-    );
+      {contactSection}
+    </div>
+  );
+
+  if (!hasRelated) {
+    return <div className="space-y-10">{mainColumn}</div>;
   }
 
   return (
-    <>
-      <div className="mb-6 md:mb-8">{subtitle}</div>
-      <div className="lg:grid lg:grid-cols-[1fr_minmax(260px,320px)] lg:items-start lg:gap-10">
-        <div className="min-w-0 space-y-10">
-          {structuredSection}
-          {specTable}
-          {contactSection}
-        </div>
-        {relatedAside}
-      </div>
-    </>
+    <div className="lg:grid lg:grid-cols-[1fr_minmax(260px,320px)] lg:items-start lg:gap-10">
+      {mainColumn}
+      {relatedAside}
+    </div>
   );
 }
+
+/** @deprecated Use `PartDetail`; kept for incremental refactors. */
+export const PartDetailClient = PartDetail;

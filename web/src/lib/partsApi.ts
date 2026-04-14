@@ -6,6 +6,7 @@ export type SqlitePartDetail = {
   name_fr: string;
   name_ar: string;
   price: number;
+  image_path?: string | null;
 };
 
 export function getPartsApiBaseUrl(): string {

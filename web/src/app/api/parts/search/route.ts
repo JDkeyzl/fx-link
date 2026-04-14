@@ -9,6 +9,7 @@ type SqlitePartRow = {
   name_fr: string;
   name_ar: string;
   price: number;
+  image_path?: string | null;
 };
 
 function rowToPart(data: SqlitePartRow): Part {
@@ -25,13 +26,24 @@ function rowToPart(data: SqlitePartRow): Part {
     priceMaxUsd: Number(data.price) ?? 0,
     quality: "Unknown",
     originCountry: undefined,
-    imageUrl: undefined,
+    imageUrl: data.image_path || undefined,
+    imagePath: data.image_path ?? null,
   };
 }
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = (searchParams.get("q") ?? "").trim();
+  const limitRaw = searchParams.get("limit");
+  const offsetRaw = searchParams.get("offset");
+  const limit =
+    limitRaw != null && limitRaw !== ""
+      ? Math.min(100, Math.max(1, Number.parseInt(limitRaw, 10) || 30))
+      : 30;
+  const offset =
+    offsetRaw != null && offsetRaw !== ""
+      ? Math.max(0, Number.parseInt(offsetRaw, 10) || 0)
+      : 0;
 
   const baseUrl =
     process.env.PARTS_API_BASE_URL ||
@@ -42,7 +54,14 @@ export async function GET(request: Request) {
 
   try {
     if (!q) {
-      return NextResponse.json({ query: q, count: 0, items: [] });
+      return NextResponse.json({
+        query: q,
+        count: 0,
+        total: 0,
+        offset: 0,
+        limit,
+        items: [],
+      });
     }
 
     // 1) Exact part_no (fast path, single row)
@@ -57,39 +76,70 @@ export async function GET(request: Request) {
       return NextResponse.json({
         query: q,
         count: 1,
+        total: 1,
+        offset: 0,
+        limit: 1,
         items: [rowToPart(data)],
       });
     }
 
     // 2) Fuzzy: part_no + multi-language names, min 2 chars (backend enforces)
     if (q.length < 2) {
-      return NextResponse.json({ query: q, count: 0, items: [] });
+      return NextResponse.json({
+        query: q,
+        count: 0,
+        total: 0,
+        offset: 0,
+        limit,
+        items: [],
+      });
     }
 
-    const fuzzyUrl = `${base}/api/parts/search?q=${encodeURIComponent(q)}&limit=30`;
+    const fuzzyUrl = `${base}/api/parts/search?q=${encodeURIComponent(q)}&limit=${limit}&offset=${offset}`;
     const fuzzyResp = await fetch(fuzzyUrl, {
       method: "GET",
       headers: { Accept: "application/json" },
     });
 
     if (!fuzzyResp.ok) {
-      return NextResponse.json({ query: q, count: 0, items: [] });
+      return NextResponse.json({
+        query: q,
+        count: 0,
+        total: 0,
+        offset,
+        limit,
+        items: [],
+      });
     }
 
     const fuzzy = (await fuzzyResp.json()) as {
       items: SqlitePartRow[];
       count?: number;
+      total?: number;
+      offset?: number;
+      limit?: number;
     };
     const items = (fuzzy.items ?? []).map(rowToPart);
     return NextResponse.json({
       query: q,
       count: items.length,
+      total: fuzzy.total ?? items.length,
+      offset: fuzzy.offset ?? offset,
+      limit: fuzzy.limit ?? limit,
       items,
     });
   } catch (err) {
     console.error("Parts search error:", err);
     return NextResponse.json(
-      { error: "Failed to load parts data", query: q, count: 0, items: [] },
+      {
+        error: "Failed to load parts data",
+        query: q,
+        count: 0,
+        total: 0,
+        offset: 0,
+        limit: 30,
+        items: [],
+      },
       { status: 500 }
     );
   }

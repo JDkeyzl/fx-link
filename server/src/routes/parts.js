@@ -23,6 +23,7 @@ const resolvedBase = `
     COALESCE(o.name_fr, p.name_fr) AS name_fr,
     COALESCE(o.name_ar, p.name_ar) AS name_ar,
     p.price,
+    p.image_path,
     o.updated_at AS override_updated_at
   FROM parts p
   LEFT JOIN part_translation_overrides o ON o.part_no = p.part_no
@@ -57,7 +58,21 @@ const searchStmt = db.prepare(`
       ELSE 7
     END,
     p.part_no
-  LIMIT @limit
+  LIMIT @limit OFFSET @offset
+`);
+
+const searchCountStmt = db.prepare(`
+  SELECT COUNT(*) AS total
+  FROM parts p
+  LEFT JOIN part_translation_overrides o ON o.part_no = p.part_no
+  WHERE
+    lower(p.part_no) = lower(@q)
+    OR lower(p.part_no) LIKE lower(@q) || '%'
+    OR instr(lower(p.part_no), lower(@q)) > 0
+    OR instr(lower(COALESCE(o.name_ch, p.name_ch)), lower(@q)) > 0
+    OR instr(lower(COALESCE(o.name_en, p.name_en)), lower(@q)) > 0
+    OR instr(lower(COALESCE(o.name_fr, p.name_fr)), lower(@q)) > 0
+    OR instr(lower(COALESCE(o.name_ar, p.name_ar)), lower(@q)) > 0
 `);
 
 /**
@@ -171,6 +186,7 @@ function mapRelatedPartRow(r) {
     name_fr: r.name_fr,
     name_ar: r.name_ar,
     price: r.price,
+    image_path: r.image_path ?? null,
   };
 }
 
@@ -440,6 +456,7 @@ function jsonPart(row, res) {
     name_fr: row.name_fr,
     name_ar: row.name_ar,
     price: row.price,
+    image_path: row.image_path ?? null,
   });
 }
 
@@ -448,7 +465,10 @@ router.get("/api/parts/search", (req, res) => {
   const raw = typeof req.query.q === "string" ? req.query.q.trim() : "";
   let limit = Number.parseInt(String(req.query.limit ?? "30"), 10);
   if (!Number.isFinite(limit) || limit < 1) limit = 30;
-  if (limit > 50) limit = 50;
+  if (limit > 100) limit = 100;
+  let offset = Number.parseInt(String(req.query.offset ?? "0"), 10);
+  if (!Number.isFinite(offset) || offset < 0) offset = 0;
+  if (offset > 1_000_000) offset = 1_000_000;
 
   if (raw.length < 2) {
     return res.status(400).json({
@@ -457,14 +477,22 @@ router.get("/api/parts/search", (req, res) => {
       query: raw,
       items: [],
       count: 0,
+      total: 0,
+      offset: 0,
+      limit,
     });
   }
 
   try {
-    const rows = searchStmt.all({ q: raw, limit });
+    const countRow = searchCountStmt.get({ q: raw });
+    const total = Number(countRow?.total ?? 0) || 0;
+    const rows = searchStmt.all({ q: raw, limit, offset });
     res.setHeader("Cache-Control", "public, max-age=60");
     return res.json({
       query: raw,
+      total,
+      offset,
+      limit,
       count: rows.length,
       items: rows.map((r) => ({
         part_no: r.part_no,
@@ -474,6 +502,7 @@ router.get("/api/parts/search", (req, res) => {
         name_fr: r.name_fr,
         name_ar: r.name_ar,
         price: r.price,
+        image_path: r.image_path ?? null,
       })),
     });
   } catch (err) {

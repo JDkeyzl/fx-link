@@ -15,5 +15,7 @@ export interface Part {
   quality: QualityLevel;
   originCountry?: string;
   imageUrl?: string;
+  /** Local path under site public, e.g. /images/parts/WG123.jpg */
+  imagePath?: string | null;
 }
 
