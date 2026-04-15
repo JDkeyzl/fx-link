@@ -13,15 +13,17 @@ function getBackendBase(): string {
  * frontend is localhost:3000 and API is 127.0.0.1:3001).
  */
 export async function POST(req: Request) {
-  const formData = await req.formData();
+  const contentType = req.headers.get("content-type") || "";
+  const body = await req.arrayBuffer();
   const adminKey = req.headers.get("x-admin-upload-key");
   const headers = new Headers();
   if (adminKey) headers.set("x-admin-upload-key", adminKey);
+  if (contentType) headers.set("content-type", contentType);
 
   const upstream = await fetch(`${getBackendBase()}/api/admin/upload`, {
     method: "POST",
     headers,
-    body: formData,
+    body,
   });
 
   const text = await upstream.text();

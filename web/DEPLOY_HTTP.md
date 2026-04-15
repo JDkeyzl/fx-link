@@ -182,3 +182,15 @@ cd ../server && SITE_URL=https://crealink.shop npm run generate-part-sitemaps
 ```
 
 然后重新 `npm run build`（或把生成的 `public/sitemaps/*.xml` 放到构建环境）。
+
+
+
+
+服务端
+cd /home/admin/fx-link/server
+npm ci
+# 若没有 package-lock 或 ci 报错，改用：
+# npm install
+
+pm2 restart crealink-backend
+pm2 status
