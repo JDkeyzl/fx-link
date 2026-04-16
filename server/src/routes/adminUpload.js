@@ -57,9 +57,92 @@ const upload = multer({
 });
 
 const getPartStmt = db.prepare(`SELECT part_no FROM parts WHERE part_no = ?`);
-const updateImageStmt = db.prepare(
-  `UPDATE parts SET image_path = ? WHERE part_no = ?`
+const insertPartStmt = db.prepare(
+  `INSERT INTO parts (
+     part_no,
+     brand,
+     name_ch,
+     name_en,
+     name_fr,
+     name_ar,
+     price
+   ) VALUES (
+     @part_no,
+     @brand,
+     @name_ch,
+     @name_en,
+     @name_fr,
+     @name_ar,
+     @price
+   )`
 );
+const updateImageStmt = db.prepare(
+  `UPDATE parts
+   SET image_path = ?,
+       image_uploaded = 1,
+       image_uploaded_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
+       image_upload_failed = 0,
+       image_upload_failed_at = NULL,
+       image_upload_error = NULL
+   WHERE part_no = ?`
+);
+const markUploadFailedStmt = db.prepare(
+  `UPDATE parts
+   SET image_upload_failed = 1,
+       image_upload_failed_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
+       image_upload_error = @error
+   WHERE part_no = @part_no`
+);
+const listUploadedStmt = db.prepare(`
+  SELECT
+    p.part_no,
+    p.brand,
+    COALESCE(o.name_ch, p.name_ch) AS name_ch,
+    p.image_path,
+    p.image_uploaded_at,
+    p.image_upload_failed_at,
+    p.image_upload_error,
+    CASE
+      WHEN p.image_upload_failed = 1 THEN 'failed'
+      ELSE 'success'
+    END AS record_status,
+    COALESCE(p.image_upload_failed_at, p.image_uploaded_at) AS record_at
+  FROM parts p
+  LEFT JOIN part_translation_overrides o ON o.part_no = p.part_no
+  WHERE
+    (
+      (@status = 'all' AND (p.image_uploaded = 1 OR p.image_upload_failed = 1))
+      OR (@status = 'success' AND p.image_uploaded = 1)
+      OR (@status = 'failed' AND p.image_upload_failed = 1)
+    )
+    AND (
+      @q = ''
+      OR instr(lower(p.part_no), lower(@q)) > 0
+      OR instr(lower(p.brand), lower(@q)) > 0
+      OR instr(lower(COALESCE(o.name_ch, p.name_ch)), lower(@q)) > 0
+      OR instr(lower(COALESCE(p.image_upload_error, '')), lower(@q)) > 0
+    )
+  ORDER BY record_at DESC, p.part_no
+  LIMIT @limit OFFSET @offset
+`);
+const countUploadedStmt = db.prepare(`
+  SELECT COUNT(*) AS total
+  FROM parts p
+  LEFT JOIN part_translation_overrides o ON o.part_no = p.part_no
+  WHERE
+    (
+      (@status = 'all' AND (p.image_uploaded = 1 OR p.image_upload_failed = 1))
+      OR (@status = 'success' AND p.image_uploaded = 1)
+      OR (@status = 'failed' AND p.image_upload_failed = 1)
+    )
+    AND (
+      @q = ''
+      OR instr(lower(p.part_no), lower(@q)) > 0
+      OR instr(lower(p.brand), lower(@q)) > 0
+      OR instr(lower(COALESCE(o.name_ch, p.name_ch)), lower(@q)) > 0
+      OR instr(lower(COALESCE(p.image_upload_error, '')), lower(@q)) > 0
+    )
+`);
 
 function requireUploadKey(req, res) {
   const expected = process.env.ADMIN_UPLOAD_KEY || "";
@@ -96,6 +179,111 @@ function resolvePartNoList(files, body) {
   }
   return out;
 }
+
+router.get("/api/admin/uploads", (req, res) => {
+  const err = requireUploadKey(req, res);
+  if (err) return;
+  const q = typeof req.query.q === "string" ? req.query.q.trim() : "";
+  let limit = Number.parseInt(String(req.query.limit ?? "50"), 10);
+  if (!Number.isFinite(limit) || limit < 1) limit = 50;
+  if (limit > 200) limit = 200;
+  let offset = Number.parseInt(String(req.query.offset ?? "0"), 10);
+  if (!Number.isFinite(offset) || offset < 0) offset = 0;
+  const statusRaw = String(req.query.status || "all").toLowerCase();
+  const status =
+    statusRaw === "success" || statusRaw === "failed" ? statusRaw : "all";
+  try {
+    const total = Number(countUploadedStmt.get({ q, status })?.total ?? 0);
+    const items = listUploadedStmt.all({ q, limit, offset, status });
+    return res.json({
+      status,
+      total,
+      count: items.length,
+      limit,
+      offset,
+      items,
+    });
+  } catch (e) {
+    console.error("GET /api/admin/uploads:", e);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/api/admin/parts", express.json({ limit: "256kb" }), (req, res) => {
+  const err = requireUploadKey(req, res);
+  if (err) return;
+  try {
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const partNo = String(body.part_no || "")
+      .trim();
+    const brand = String(body.brand || "")
+      .trim();
+    const nameCh = String(body.name_ch || "")
+      .trim();
+    const nameEnRaw = String(body.name_en || "")
+      .trim();
+    const nameFrRaw = String(body.name_fr || "")
+      .trim();
+    const nameArRaw = String(body.name_ar || "")
+      .trim();
+    const priceRaw = body.price;
+
+    if (!partNo || !brand || !nameCh) {
+      return res.status(400).json({
+        error: "Bad Request",
+        message: "part_no, brand, name_ch are required",
+      });
+    }
+    const exists = getPartStmt.get(partNo);
+    if (exists) {
+      return res.status(409).json({
+        error: "Conflict",
+        message: "part_no already exists",
+        part_no: partNo,
+      });
+    }
+
+    let price = null;
+    if (priceRaw !== null && priceRaw !== undefined && String(priceRaw).trim() !== "") {
+      const parsed = Number(priceRaw);
+      if (!Number.isFinite(parsed)) {
+        return res.status(400).json({
+          error: "Bad Request",
+          message: "price must be a valid number",
+        });
+      }
+      price = parsed;
+    }
+
+    insertPartStmt.run({
+      part_no: partNo,
+      brand,
+      name_ch: nameCh,
+      name_en: nameEnRaw || nameCh,
+      name_fr: nameFrRaw || nameCh,
+      name_ar: nameArRaw || nameCh,
+      price,
+    });
+    return res.status(201).json({
+      ok: true,
+      item: {
+        part_no: partNo,
+        brand,
+        name_ch: nameCh,
+        name_en: nameEnRaw || nameCh,
+        name_fr: nameFrRaw || nameCh,
+        name_ar: nameArRaw || nameCh,
+        price,
+      },
+    });
+  } catch (e) {
+    console.error("POST /api/admin/parts:", e);
+    return res.status(500).json({
+      error: "Internal Server Error",
+      message: e instanceof Error ? e.message : String(e),
+    });
+  }
+});
 
 /**
  * POST /api/admin/upload
@@ -150,10 +338,12 @@ router.post(
           if (fs.existsSync(destAbs)) fs.unlinkSync(destAbs);
           fs.renameSync(file.path, destAbs);
         } catch (e) {
+          const errorText = e instanceof Error ? e.message : String(e);
+          markUploadFailedStmt.run({ part_no: partNo, error: errorText });
           results.push({
             part_no: partNo,
             ok: false,
-            error: e instanceof Error ? e.message : String(e),
+            error: errorText,
           });
           continue;
         }

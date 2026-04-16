@@ -101,9 +101,35 @@ function initSchema(db) {
 
   const partCols = db.prepare(`PRAGMA table_info(parts)`).all();
   const hasImagePath = partCols.some((c) => c.name === "image_path");
+  const hasImageUploaded = partCols.some((c) => c.name === "image_uploaded");
+  const hasImageUploadedAt = partCols.some((c) => c.name === "image_uploaded_at");
+  const hasImageUploadFailed = partCols.some((c) => c.name === "image_upload_failed");
+  const hasImageUploadFailedAt = partCols.some((c) => c.name === "image_upload_failed_at");
+  const hasImageUploadError = partCols.some((c) => c.name === "image_upload_error");
   if (!hasImagePath) {
     db.exec(`ALTER TABLE parts ADD COLUMN image_path TEXT`);
   }
+  if (!hasImageUploaded) {
+    db.exec(`ALTER TABLE parts ADD COLUMN image_uploaded INTEGER NOT NULL DEFAULT 0`);
+  }
+  if (!hasImageUploadedAt) {
+    db.exec(`ALTER TABLE parts ADD COLUMN image_uploaded_at TEXT`);
+  }
+  if (!hasImageUploadFailed) {
+    db.exec(`ALTER TABLE parts ADD COLUMN image_upload_failed INTEGER NOT NULL DEFAULT 0`);
+  }
+  if (!hasImageUploadFailedAt) {
+    db.exec(`ALTER TABLE parts ADD COLUMN image_upload_failed_at TEXT`);
+  }
+  if (!hasImageUploadError) {
+    db.exec(`ALTER TABLE parts ADD COLUMN image_upload_error TEXT`);
+  }
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_parts_image_uploaded_at ON parts(image_uploaded, image_uploaded_at DESC)`
+  );
+  db.exec(
+    `CREATE INDEX IF NOT EXISTS idx_parts_image_upload_failed_at ON parts(image_upload_failed, image_upload_failed_at DESC)`
+  );
 }
 
 module.exports = {
