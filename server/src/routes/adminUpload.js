@@ -101,6 +101,11 @@ const updatePartStmt = db.prepare(
        image_path = @image_path
    WHERE part_no = @current_part_no`
 );
+const updatePartImagePathOnlyStmt = db.prepare(
+  `UPDATE parts
+   SET image_path = @image_path
+   WHERE part_no = @part_no`
+);
 const updateImageStmt = db.prepare(
   `UPDATE parts
    SET image_path = ?,
@@ -454,6 +459,79 @@ router.patch("/api/admin/parts/:partNo", express.json({ limit: "256kb" }), (req,
     });
   } catch (e) {
     console.error("PATCH /api/admin/parts/:partNo:", e);
+    return res.status(500).json({
+      error: "Internal Server Error",
+      message: e instanceof Error ? e.message : String(e),
+    });
+  }
+});
+
+router.post("/api/admin/parts/reuse-image", express.json({ limit: "256kb" }), (req, res) => {
+  const err = requireUploadKey(req, res);
+  if (err) return;
+  try {
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const sourcePartNo = String(body.source_part_no || "").trim();
+    const targetPartNos = Array.isArray(body.target_part_nos)
+      ? body.target_part_nos.map((x) => String(x || "").trim()).filter(Boolean)
+      : [];
+
+    if (!sourcePartNo) {
+      return res.status(400).json({
+        error: "Bad Request",
+        message: "source_part_no is required",
+      });
+    }
+    if (targetPartNos.length === 0) {
+      return res.status(400).json({
+        error: "Bad Request",
+        message: "target_part_nos must contain at least one part number",
+      });
+    }
+
+    const sourcePart = getPartFullStmt.get(sourcePartNo);
+    if (!sourcePart) {
+      return res.status(404).json({
+        error: "Not Found",
+        message: "source part not found",
+        source_part_no: sourcePartNo,
+      });
+    }
+
+    const sourceImagePath =
+      String(sourcePart.image_path || "").trim() || publicPathForPart(sourcePartNo);
+    const normalizedTargets = Array.from(new Set(targetPartNos));
+    const success = [];
+    const failed = [];
+
+    const tx = db.transaction((partNos) => {
+      for (const partNo of partNos) {
+        const row = getPartStmt.get(partNo);
+        if (!row) {
+          failed.push({ part_no: partNo, error: "Part not found" });
+          continue;
+        }
+        updatePartImagePathOnlyStmt.run({
+          image_path: sourceImagePath,
+          part_no: partNo,
+        });
+        success.push(partNo);
+      }
+    });
+    tx(normalizedTargets);
+
+    return res.json({
+      ok: true,
+      source_part_no: sourcePartNo,
+      image_path: sourceImagePath,
+      total: normalizedTargets.length,
+      success_count: success.length,
+      failed_count: failed.length,
+      success_part_nos: success,
+      failed,
+    });
+  } catch (e) {
+    console.error("POST /api/admin/parts/reuse-image:", e);
     return res.status(500).json({
       error: "Internal Server Error",
       message: e instanceof Error ? e.message : String(e),

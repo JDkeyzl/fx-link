@@ -32,6 +32,22 @@ function partImageAlt(part: SqlitePartDetail, displayName: string): string {
   return `${displayName} – ${part.part_no} – ${part.brand}`;
 }
 
+function normalizePartKey(value: string): string {
+  return String(value || "")
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+}
+
+function inferredImageOwnerFromPath(imagePath?: string | null): string | null {
+  const raw = String(imagePath || "").trim();
+  if (!raw || !raw.startsWith("/images/parts/")) return null;
+  const segment = raw.split("/").pop() || "";
+  const stem = segment.replace(/\.[^.]+$/, "");
+  if (!stem) return null;
+  return normalizePartKey(stem);
+}
+
 export function PartDetail({
   part,
   related = [],
@@ -50,6 +66,11 @@ export function PartDetail({
   const imageSrc = partDetailImageSrc(part);
   const usePlainImg = partDetailImageBypassNextOptimizer(imageSrc);
   const imageAlt = partImageAlt(part, displayName);
+  const imageOwnerKey = inferredImageOwnerFromPath(part.image_path);
+  const currentPartKey = normalizePartKey(part.part_no);
+  const isReusedImage = Boolean(
+    imageOwnerKey && currentPartKey && imageOwnerKey !== currentPartKey
+  );
 
   const subtitle = (
     <p className="text-sm text-zinc-600 md:text-base">
@@ -85,6 +106,11 @@ export function PartDetail({
           />
         )}
       </div>
+      {isReusedImage ? (
+        <figcaption className="border-t border-zinc-200 bg-amber-50/80 px-3 py-2 text-xs text-amber-800">
+          {t("partDetail.sharedImageNote")}
+        </figcaption>
+      ) : null}
     </figure>
   );
 

@@ -323,6 +323,7 @@ export function AdminPortalClient() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [copyingPartNos, setCopyingPartNos] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [uploadToast, setUploadToast] = useState<UploadToast | null>(null);
   const [targetPartNo, setTargetPartNo] = useState<string | null>(null);
@@ -343,6 +344,9 @@ export function AdminPortalClient() {
   const [usdCnyRateInput, setUsdCnyRateInput] = useState("7.2");
   const [usdCnyRateSavedAt, setUsdCnyRateSavedAt] = useState<string | null>(null);
   const [savingRate, setSavingRate] = useState(false);
+  const [reuseSourcePartNo, setReuseSourcePartNo] = useState("");
+  const [reuseTargetsInput, setReuseTargetsInput] = useState("");
+  const [applyingReuse, setApplyingReuse] = useState(false);
   const [editingPartNo, setEditingPartNo] = useState<string | null>(null);
   const [savingEditPart, setSavingEditPart] = useState(false);
   const [editImageFile, setEditImageFile] = useState<File | null>(null);
@@ -651,6 +655,73 @@ export function AdminPortalClient() {
     [query]
   );
 
+  const copyAllPartNos = useCallback(async () => {
+    const q = query.trim();
+    if (q.length < 2) {
+      showUploadToast("error", "请至少输入 2 个字符后再复制。");
+      return;
+    }
+    const tot = Number(total ?? 0) || 0;
+    if (tot <= 0) {
+      showUploadToast("error", "当前没有可复制的结果。");
+      return;
+    }
+    try {
+      setCopyingPartNos(true);
+      const headers: HeadersInit = { Accept: "application/json" };
+      if (adminKey.trim()) headers["x-admin-upload-key"] = adminKey.trim();
+
+      // Backend max is 100; keep requests small to avoid timeouts.
+      const limitPerFetch = 100;
+      let offset = 0;
+      const allPartNos: string[] = [];
+
+      while (offset < tot) {
+        const limit = Math.min(limitPerFetch, tot - offset);
+        const res = await fetch(
+          `/api/parts/search?q=${encodeURIComponent(q)}&limit=${limit}&offset=${offset}`,
+          { headers }
+        );
+        if (!res.ok) throw new Error(`搜索失败（${res.status}）`);
+        const data = (await res.json()) as {
+          items?: Part[];
+          total?: number;
+        };
+        const list = data.items ?? [];
+        const pagePartNos = list
+          .map((p) => p.partNumber || p.id)
+          .filter(Boolean) as string[];
+        allPartNos.push(...pagePartNos);
+
+        // Safety: if backend returns fewer rows than expected, stop.
+        if (list.length === 0) break;
+        offset += list.length;
+      }
+
+      // De-dup while preserving order.
+      const seen = new Set<string>();
+      const uniquePartNos: string[] = [];
+      for (const no of allPartNos) {
+        const k = String(no).trim();
+        if (!k) continue;
+        if (seen.has(k)) continue;
+        seen.add(k);
+        uniquePartNos.push(k);
+      }
+
+      const text = uniquePartNos.join("\n");
+      await navigator.clipboard.writeText(text);
+      showUploadToast("success", `已复制 ${uniquePartNos.length} 个配件号`);
+      setStatus(`已复制 ${uniquePartNos.length} 个配件号。`);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "复制失败";
+      showUploadToast("error", `复制失败：${msg}`);
+      setStatus(`复制失败：${msg}`);
+    } finally {
+      setCopyingPartNos(false);
+    }
+  }, [adminKey, query, showUploadToast, setStatus, total]);
+
   const submitCreatePart = useCallback(async () => {
     const payload = {
       part_no: createForm.part_no.trim(),
@@ -791,6 +862,92 @@ export function AdminPortalClient() {
       setSavingRate(false);
     }
   }, [adminKey, showUploadToast, usdCnyRateInput]);
+
+  const applySharedImage = useCallback(async () => {
+    const source = reuseSourcePartNo.trim();
+    const targets = Array.from(
+      new Set(
+        reuseTargetsInput
+          .split(/[\s,，;\n]+/)
+          .map((x) => x.trim())
+          .filter(Boolean)
+      )
+    );
+    if (!source) {
+      showUploadToast("error", "请先填写图片来源零件号");
+      return;
+    }
+    if (targets.length === 0) {
+      showUploadToast("error", "请至少填写一个目标零件号");
+      return;
+    }
+    try {
+      setApplyingReuse(true);
+      const headers: HeadersInit = {
+        Accept: "application/json",
+        "content-type": "application/json",
+      };
+      if (adminKey.trim()) headers["x-admin-upload-key"] = adminKey.trim();
+      const res = await fetch("/api/admin/parts/reuse-image", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          source_part_no: source,
+          target_part_nos: targets,
+        }),
+      });
+      const text = await res.text();
+      let json: unknown;
+      try {
+        json = JSON.parse(text);
+      } catch {
+        json = { raw: text };
+      }
+      if (!res.ok) {
+        const message =
+          typeof json === "object" && json && "message" in json
+            ? String((json as { message?: string }).message)
+            : text;
+        showUploadToast("error", `复用失败：${message}`);
+        setStatus(`复用失败（${res.status}）：${message}`);
+        return;
+      }
+
+      const payload = json as {
+        success_count?: number;
+        failed_count?: number;
+        failed?: Array<{ part_no?: string; error?: string }>;
+      };
+      const okCount = Number(payload.success_count ?? 0) || 0;
+      const failedCount = Number(payload.failed_count ?? 0) || 0;
+      if (failedCount > 0) {
+        const first = payload.failed?.[0];
+        showUploadToast(
+          "error",
+          `已复用 ${okCount} 条，失败 ${failedCount} 条${first?.part_no ? `（示例：${first.part_no}）` : ""}`
+        );
+      } else {
+        showUploadToast("success", `已复用图片到 ${okCount} 个配件`);
+      }
+      setStatus(`复用完成：成功 ${okCount} 条，失败 ${failedCount} 条。`);
+      await runSearch(1);
+      await loadUploadedList(1, uploadedFilter);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "批量复用失败";
+      showUploadToast("error", msg);
+      setStatus(msg);
+    } finally {
+      setApplyingReuse(false);
+    }
+  }, [
+    adminKey,
+    loadUploadedList,
+    reuseSourcePartNo,
+    reuseTargetsInput,
+    runSearch,
+    showUploadToast,
+    uploadedFilter,
+  ]);
 
   const openEditPart = useCallback((p: Part) => {
     const no = (p.partNumber || p.id || "").trim();
@@ -1787,6 +1944,47 @@ export function AdminPortalClient() {
         </button>
       </section>
 
+      <section className="mb-10 rounded-2xl border border-indigo-200/80 bg-indigo-50/30 p-4 shadow-sm md:p-6">
+        <h2 className="text-sm font-semibold text-[#002d54] md:text-base">
+          批量复用同一张图片
+        </h2>
+        <p className="mt-1 text-xs text-zinc-600 md:text-sm">
+          将一批零件号的 <span className="font-mono">image_path</span> 统一指向同一来源配件图片。
+          前台详情页仅在检测到复用图时显示“示意图”提示。
+        </p>
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <label className="flex flex-col gap-1 text-xs text-zinc-600">
+            图片来源零件号
+            <input
+              value={reuseSourcePartNo}
+              onChange={(e) => setReuseSourcePartNo(e.target.value)}
+              placeholder="例如：WG9725230051"
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-mono text-zinc-900"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs text-zinc-600 md:col-span-2">
+            目标零件号（可粘贴多行，支持空格/逗号分隔）
+            <textarea
+              value={reuseTargetsInput}
+              onChange={(e) => setReuseTargetsInput(e.target.value)}
+              placeholder={"WG9725160510\nWG9725230051\nWG9725471016"}
+              rows={4}
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-mono text-zinc-900"
+            />
+          </label>
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void applySharedImage()}
+            disabled={applyingReuse}
+            className="rounded-xl bg-[#002d54] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#003d6e] disabled:opacity-60"
+          >
+            {applyingReuse ? "处理中…" : "应用复用"}
+          </button>
+        </div>
+      </section>
+
       <section className="mb-10 rounded-2xl border border-amber-200/80 bg-amber-50/40 p-4 shadow-sm md:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -2032,6 +2230,14 @@ export function AdminPortalClient() {
           <span className="text-xs text-zinc-500">
             每页 {PAGE_SIZE} 条（全库模糊匹配总数见上方状态）
           </span>
+          <button
+            type="button"
+            disabled={loading || copyingPartNos || query.trim().length < 2 || total <= 0}
+            onClick={() => void copyAllPartNos()}
+            className="ml-auto rounded-lg border border-[#002d54]/30 bg-white px-3 py-1.5 text-sm font-medium text-[#002d54] transition hover:bg-[#002d54]/5 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {copyingPartNos ? "复制中…" : "复制全部配件号"}
+          </button>
         </div>
 
         {status ? (

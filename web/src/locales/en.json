@@ -64,6 +64,7 @@
     "inquiryIntro": "Request a formal quote, lead time, or MOQ for this part. Our team replies on WhatsApp during business hours.",
     "inquiryWhatsApp": "Inquiry via WhatsApp",
     "relatedTitle": "Related parts",
+    "sharedImageNote": "This image is shared as a reference only. Please confirm with the actual part.",
     "structuredP1": "This listing covers {{brand}} part {{partNo}} ({{name}}) from our reference catalogue.",
     "structuredP2": "Heavy truck and off-road applications differ by chassis, axle and engine family. Verify the part number against your vehicle records and technical documentation before ordering.",
     "structuredP3": "The price shown is a reference price (EXW China). It excludes packing, freight, duties and banking fees. Contact us for a firm offer and delivery schedule.",
