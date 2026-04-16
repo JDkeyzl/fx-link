@@ -57,6 +57,19 @@ const upload = multer({
 });
 
 const getPartStmt = db.prepare(`SELECT part_no FROM parts WHERE part_no = ?`);
+const getPartFullStmt = db.prepare(
+  `SELECT
+     part_no,
+     brand,
+     name_ch,
+     name_en,
+     name_fr,
+     name_ar,
+     price,
+     image_path
+   FROM parts
+   WHERE part_no = ?`
+);
 const insertPartStmt = db.prepare(
   `INSERT INTO parts (
      part_no,
@@ -75,6 +88,18 @@ const insertPartStmt = db.prepare(
      @name_ar,
      @price
    )`
+);
+const updatePartStmt = db.prepare(
+  `UPDATE parts
+   SET part_no = @next_part_no,
+       brand = @brand,
+       name_ch = @name_ch,
+       name_en = @name_en,
+       name_fr = @name_fr,
+       name_ar = @name_ar,
+       price = @price,
+       image_path = @image_path
+   WHERE part_no = @current_part_no`
 );
 const updateImageStmt = db.prepare(
   `UPDATE parts
@@ -331,6 +356,104 @@ router.post("/api/admin/parts", express.json({ limit: "256kb" }), (req, res) => 
     });
   } catch (e) {
     console.error("POST /api/admin/parts:", e);
+    return res.status(500).json({
+      error: "Internal Server Error",
+      message: e instanceof Error ? e.message : String(e),
+    });
+  }
+});
+
+router.patch("/api/admin/parts/:partNo", express.json({ limit: "256kb" }), (req, res) => {
+  const err = requireUploadKey(req, res);
+  if (err) return;
+  try {
+    const currentPartNo = String(req.params.partNo || "").trim();
+    if (!currentPartNo) {
+      return res.status(400).json({
+        error: "Bad Request",
+        message: "partNo param is required",
+      });
+    }
+    const existing = getPartFullStmt.get(currentPartNo);
+    if (!existing) {
+      return res.status(404).json({
+        error: "Not Found",
+        message: "part not found",
+        part_no: currentPartNo,
+      });
+    }
+
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const nextPartNo = String(body.part_no || "").trim();
+    const brand = String(body.brand || "").trim();
+    const nameCh = String(body.name_ch || "").trim();
+    const nameEnRaw = String(body.name_en || "").trim();
+    const nameFrRaw = String(body.name_fr || "").trim();
+    const nameArRaw = String(body.name_ar || "").trim();
+    const hasImagePathField = Object.prototype.hasOwnProperty.call(body, "image_path");
+    const imagePathRaw = hasImagePathField
+      ? String(body.image_path ?? "").trim()
+      : null;
+    const priceRaw = body.price;
+
+    if (!nextPartNo || !brand || !nameCh) {
+      return res.status(400).json({
+        error: "Bad Request",
+        message: "part_no, brand, name_ch are required",
+      });
+    }
+
+    if (nextPartNo !== currentPartNo) {
+      const conflict = getPartStmt.get(nextPartNo);
+      if (conflict) {
+        return res.status(409).json({
+          error: "Conflict",
+          message: "part_no already exists",
+          part_no: nextPartNo,
+        });
+      }
+    }
+
+    let price = null;
+    if (priceRaw !== null && priceRaw !== undefined && String(priceRaw).trim() !== "") {
+      const parsed = Number(priceRaw);
+      if (!Number.isFinite(parsed)) {
+        return res.status(400).json({
+          error: "Bad Request",
+          message: "price must be a valid number",
+        });
+      }
+      price = parsed;
+    }
+
+    const imagePath = hasImagePathField ? imagePathRaw || null : existing.image_path ?? null;
+    updatePartStmt.run({
+      current_part_no: currentPartNo,
+      next_part_no: nextPartNo,
+      brand,
+      name_ch: nameCh,
+      name_en: nameEnRaw || nameCh,
+      name_fr: nameFrRaw || nameCh,
+      name_ar: nameArRaw || nameCh,
+      price,
+      image_path: imagePath,
+    });
+
+    return res.json({
+      ok: true,
+      item: {
+        part_no: nextPartNo,
+        brand,
+        name_ch: nameCh,
+        name_en: nameEnRaw || nameCh,
+        name_fr: nameFrRaw || nameCh,
+        name_ar: nameArRaw || nameCh,
+        price,
+        image_path: imagePath,
+      },
+    });
+  } catch (e) {
+    console.error("PATCH /api/admin/parts/:partNo:", e);
     return res.status(500).json({
       error: "Internal Server Error",
       message: e instanceof Error ? e.message : String(e),

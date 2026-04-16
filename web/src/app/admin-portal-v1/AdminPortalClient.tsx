@@ -82,6 +82,17 @@ type UploadToast = {
   message: string;
 };
 
+type EditPartForm = {
+  part_no: string;
+  brand: string;
+  name_ch: string;
+  name_en: string;
+  name_fr: string;
+  name_ar: string;
+  price: string;
+  image_path: string;
+};
+
 function loadQueue(): PendingItem[] {
   try {
     const raw = localStorage.getItem(PENDING_STORAGE_KEY);
@@ -332,6 +343,19 @@ export function AdminPortalClient() {
   const [usdCnyRateInput, setUsdCnyRateInput] = useState("7.2");
   const [usdCnyRateSavedAt, setUsdCnyRateSavedAt] = useState<string | null>(null);
   const [savingRate, setSavingRate] = useState(false);
+  const [editingPartNo, setEditingPartNo] = useState<string | null>(null);
+  const [savingEditPart, setSavingEditPart] = useState(false);
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editPartForm, setEditPartForm] = useState<EditPartForm>({
+    part_no: "",
+    brand: "",
+    name_ch: "",
+    name_en: "",
+    name_fr: "",
+    name_ar: "",
+    price: "",
+    image_path: "",
+  });
   const [creatingPart, setCreatingPart] = useState(false);
   const [createForm, setCreateForm] = useState({
     part_no: "",
@@ -353,6 +377,7 @@ export function AdminPortalClient() {
   const batchFileRef = useRef<HTMLInputElement>(null);
   const queueBatchFileRef = useRef<HTMLInputElement>(null);
   const createImageInputRef = useRef<HTMLInputElement>(null);
+  const editImageInputRef = useRef<HTMLInputElement>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -472,7 +497,7 @@ export function AdminPortalClient() {
             : text
         }`;
         setStatus(
-          `Upload failed (${res.status}): ${typeof json === "object" && json && "message" in json ? String((json as { message?: string }).message) : text}`
+          `上传失败（${res.status}）：${typeof json === "object" && json && "message" in json ? String((json as { message?: string }).message) : text}`
         );
         setRecentFailedItems(loadRecentFailuresFromStorage());
         showUploadToast("error", msg);
@@ -522,7 +547,7 @@ export function AdminPortalClient() {
           `/api/admin/uploads?limit=${PAGE_SIZE}&offset=${offset}&status=${status}`,
           { headers }
         );
-        if (!res.ok) throw new Error("Failed to load uploaded list");
+        if (!res.ok) throw new Error("加载上传记录失败");
         const data = (await res.json()) as {
           items?: UploadedItem[];
           total?: number;
@@ -531,7 +556,7 @@ export function AdminPortalClient() {
         setUploadedTotal(Number(data.total ?? 0) || 0);
         setUploadedPage(targetPage);
       } catch (e) {
-        setStatus(e instanceof Error ? e.message : "Failed to load uploaded list");
+        setStatus(e instanceof Error ? e.message : "加载上传记录失败");
       } finally {
         setUploadedLoading(false);
       }
@@ -587,7 +612,7 @@ export function AdminPortalClient() {
     async (targetPage = 1) => {
       const q = query.trim();
       if (q.length < 2) {
-        setStatus("Enter at least 2 characters to search.");
+        setStatus("请至少输入 2 个字符后再搜索。");
         setItems([]);
         setTotal(0);
         setPage(1);
@@ -601,7 +626,7 @@ export function AdminPortalClient() {
           `/api/parts/search?q=${encodeURIComponent(q)}&limit=${PAGE_SIZE}&offset=${offset}`,
           { headers: { Accept: "application/json" } }
         );
-        if (!res.ok) throw new Error("Search failed");
+        if (!res.ok) throw new Error("搜索失败");
         const data = (await res.json()) as {
           items?: Part[];
           total?: number;
@@ -616,7 +641,7 @@ export function AdminPortalClient() {
           `第 ${targetPage} / ${totalPages} 页 · 共 ${tot} 条匹配 · 本页 ${list.length} 条`
         );
       } catch (e) {
-        setStatus(e instanceof Error ? e.message : "Search failed");
+        setStatus(e instanceof Error ? e.message : "搜索失败");
         setItems([]);
         setTotal(0);
       } finally {
@@ -766,6 +791,113 @@ export function AdminPortalClient() {
       setSavingRate(false);
     }
   }, [adminKey, showUploadToast, usdCnyRateInput]);
+
+  const openEditPart = useCallback((p: Part) => {
+    const no = (p.partNumber || p.id || "").trim();
+    setEditingPartNo(no);
+    setEditPartForm({
+      part_no: no,
+      brand: String(p.brand || "").trim(),
+      name_ch: String(p.name || "").trim(),
+      name_en: String(p.nameEn || "").trim(),
+      name_fr: String(p.nameFr || "").trim(),
+      name_ar: String(p.nameAr || "").trim(),
+      price:
+        Number.isFinite(Number(p.priceMinUsd)) && Number(p.priceMinUsd) !== 0
+          ? String(p.priceMinUsd)
+          : "",
+      image_path: String(p.imagePath || p.imageUrl || "").trim(),
+    });
+    setEditImageFile(null);
+    if (editImageInputRef.current) editImageInputRef.current.value = "";
+  }, []);
+
+  const closeEditPart = useCallback(() => {
+    if (savingEditPart) return;
+    setEditingPartNo(null);
+  }, [savingEditPart]);
+
+  const submitEditPart = useCallback(async () => {
+    if (!editingPartNo) return;
+    const payload = {
+      part_no: editPartForm.part_no.trim(),
+      brand: editPartForm.brand.trim(),
+      name_ch: editPartForm.name_ch.trim(),
+      name_en: editPartForm.name_en.trim(),
+      name_fr: editPartForm.name_fr.trim(),
+      name_ar: editPartForm.name_ar.trim(),
+      price: editPartForm.price.trim(),
+      image_path: editPartForm.image_path.trim(),
+    };
+    if (!payload.part_no || !payload.brand || !payload.name_ch) {
+      showUploadToast("error", "part_no、brand、name_ch 为必填项");
+      return;
+    }
+    try {
+      setSavingEditPart(true);
+      const headers: HeadersInit = {
+        Accept: "application/json",
+        "content-type": "application/json",
+      };
+      if (adminKey.trim()) headers["x-admin-upload-key"] = adminKey.trim();
+      const res = await fetch(
+        `/api/admin/parts/${encodeURIComponent(editingPartNo)}`,
+        {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify(payload),
+        }
+      );
+      const text = await res.text();
+      let json: unknown;
+      try {
+        json = JSON.parse(text);
+      } catch {
+        json = { raw: text };
+      }
+      if (!res.ok) {
+        const message =
+          typeof json === "object" && json && "message" in json
+            ? String((json as { message?: string }).message)
+            : text;
+        showUploadToast("error", `编辑失败：${message}`);
+        setStatus(`编辑失败（${res.status}）：${message}`);
+        return;
+      }
+      if (editImageFile) {
+        const out = await uploadImages([editImageFile], [payload.part_no]);
+        if (out.ok) {
+          markUploadResultsInQueue(out.results);
+        } else {
+          showUploadToast(
+            "error",
+            `数据已保存，但图片上传失败：${payload.part_no}`
+          );
+        }
+      }
+      showUploadToast("success", `已更新配件：${payload.part_no}`);
+      setEditingPartNo(null);
+      setEditImageFile(null);
+      if (editImageInputRef.current) editImageInputRef.current.value = "";
+      setQuery(payload.part_no);
+      await runSearch(1);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "编辑失败";
+      showUploadToast("error", msg);
+      setStatus(msg);
+    } finally {
+      setSavingEditPart(false);
+    }
+  }, [
+    adminKey,
+    editImageFile,
+    editPartForm,
+    editingPartNo,
+    markUploadResultsInQueue,
+    runSearch,
+    showUploadToast,
+    uploadImages,
+  ]);
 
   const handleAddPending = useCallback((p: Part) => {
     const no = p.partNumber || p.id;
@@ -988,6 +1120,158 @@ export function AdminPortalClient() {
           </div>
         </div>
       ) : null}
+      {editingPartNo ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/55 p-4">
+          <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3">
+              <div>
+                <p className="text-sm font-semibold text-[#002d54]">编辑配件</p>
+                <p className="text-xs text-zinc-500">{editingPartNo}</p>
+              </div>
+              <button
+                type="button"
+                onClick={closeEditPart}
+                className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50"
+              >
+                关闭
+              </button>
+            </div>
+            <div className="grid gap-3 p-4 md:grid-cols-2">
+              <label className="flex flex-col gap-1 text-xs text-zinc-600">
+                零件号 (part_no) *
+                <input
+                  value={editPartForm.part_no}
+                  onChange={(e) =>
+                    setEditPartForm((prev) => ({ ...prev, part_no: e.target.value }))
+                  }
+                  className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-mono text-zinc-900"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-zinc-600">
+                品牌 *
+                <input
+                  value={editPartForm.brand}
+                  onChange={(e) =>
+                    setEditPartForm((prev) => ({ ...prev, brand: e.target.value }))
+                  }
+                  className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-zinc-600 md:col-span-2">
+                中文名 (name_ch) *
+                <input
+                  value={editPartForm.name_ch}
+                  onChange={(e) =>
+                    setEditPartForm((prev) => ({ ...prev, name_ch: e.target.value }))
+                  }
+                  className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-zinc-600">
+                英文名
+                <input
+                  value={editPartForm.name_en}
+                  onChange={(e) =>
+                    setEditPartForm((prev) => ({ ...prev, name_en: e.target.value }))
+                  }
+                  className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-zinc-600">
+                法文名
+                <input
+                  value={editPartForm.name_fr}
+                  onChange={(e) =>
+                    setEditPartForm((prev) => ({ ...prev, name_fr: e.target.value }))
+                  }
+                  className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-zinc-600">
+                阿拉伯文名
+                <input
+                  value={editPartForm.name_ar}
+                  onChange={(e) =>
+                    setEditPartForm((prev) => ({ ...prev, name_ar: e.target.value }))
+                  }
+                  className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-zinc-600">
+                价格
+                <input
+                  value={editPartForm.price}
+                  onChange={(e) =>
+                    setEditPartForm((prev) => ({ ...prev, price: e.target.value }))
+                  }
+                  className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900"
+                />
+              </label>
+              <div className="md:col-span-2">
+                <p className="mb-1 text-xs text-zinc-600">配件图片（JPEG）</p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="relative h-16 w-16 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
+                    {editPartForm.image_path ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={editPartForm.image_path}
+                        alt={editPartForm.part_no}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : (
+                      <span className="flex h-full items-center justify-center text-[10px] text-zinc-400">
+                        无图
+                      </span>
+                    )}
+                  </div>
+                  <input
+                    ref={editImageInputRef}
+                    type="file"
+                    accept="image/jpeg,.jpg,.jpeg"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0] ?? null;
+                      setEditImageFile(f);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => editImageInputRef.current?.click()}
+                    className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs text-zinc-700 hover:bg-zinc-50"
+                  >
+                    {editPartForm.image_path ? "替换图片" : "上传图片"}
+                  </button>
+                  <span className="text-xs text-zinc-500">
+                    {editImageFile
+                      ? `已选择：${editImageFile.name}`
+                      : editPartForm.image_path
+                        ? "当前已有图片，上传将覆盖"
+                        : "当前无图片，上传将新增"}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-2 border-t border-zinc-200 px-4 py-3">
+              <button
+                type="button"
+                onClick={closeEditPart}
+                disabled={savingEditPart}
+                className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50 disabled:opacity-60"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={() => void submitEditPart()}
+                disabled={savingEditPart}
+                className="rounded-lg bg-[#002d54] px-4 py-2 text-sm font-medium text-white hover:bg-[#003d6e] disabled:opacity-60"
+              >
+                {savingEditPart ? "保存中…" : "保存修改"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
       {previewOpen ? (
         <div className="fixed inset-0 z-[75] flex items-center justify-center bg-black/55 p-4">
           <div className="w-full max-w-4xl rounded-2xl bg-white shadow-2xl">
@@ -1025,26 +1309,25 @@ export function AdminPortalClient() {
       ) : null}
       <header className="mb-8">
         <h1 className="text-2xl font-semibold text-[#002d54] md:text-3xl">
-          Part image admin
+          配件图片管理
         </h1>
         <p className="mt-2 text-sm text-zinc-600 md:text-base">
-          Upload JPEG images named as the OEM part number (e.g.{" "}
-          <span className="font-mono">1000645680.jpg</span>). Files are stored
-          under{" "}
+          上传以零件号命名的 JPEG 图片（例如{" "}
+          <span className="font-mono">1000645680.jpg</span>），文件会保存到{" "}
           <span className="font-mono text-zinc-800">/public/images/parts/</span>{" "}
-          and the database <span className="font-mono">image_path</span> is
-          updated.
+          ，并同步更新数据库中的{" "}
+          <span className="font-mono">image_path</span>。
         </p>
       </header>
 
       <section className="mb-10 rounded-2xl border border-zinc-200 bg-zinc-50/80 p-4 md:p-6">
         <h2 className="text-sm font-semibold text-[#002d54] md:text-base">
-          Access key (optional)
+          访问密钥（可选）
         </h2>
         <p className="mt-1 text-xs text-zinc-600 md:text-sm">
-          If the server sets{" "}
-          <span className="font-mono">ADMIN_UPLOAD_KEY</span>, paste the same
-          value here. It is kept in session storage only on this browser.
+          如果服务端设置了{" "}
+          <span className="font-mono">ADMIN_UPLOAD_KEY</span>，请在此填写相同值。
+          该值仅保存在当前浏览器会话中。
         </p>
         <input
           type="password"
@@ -1107,7 +1390,7 @@ export function AdminPortalClient() {
               onChange={(e) =>
                 setCreateForm((prev) => ({ ...prev, part_no: e.target.value }))
               }
-              placeholder="OEM No. (part_no) *"
+              placeholder="零件号 (part_no) *"
               className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-mono"
             />
             <input
@@ -1115,7 +1398,7 @@ export function AdminPortalClient() {
               onChange={(e) =>
                 setCreateForm((prev) => ({ ...prev, brand: e.target.value }))
               }
-              placeholder="Brand *"
+              placeholder="品牌 *"
               className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
             />
             <input
@@ -1131,7 +1414,7 @@ export function AdminPortalClient() {
               onChange={(e) =>
                 setCreateForm((prev) => ({ ...prev, name_en: e.target.value }))
               }
-              placeholder="English name (optional)"
+              placeholder="英文名（可选）"
               className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
             />
             <input
@@ -1139,7 +1422,7 @@ export function AdminPortalClient() {
               onChange={(e) =>
                 setCreateForm((prev) => ({ ...prev, name_fr: e.target.value }))
               }
-              placeholder="French name (optional)"
+              placeholder="法文名（可选）"
               className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
             />
             <input
@@ -1147,7 +1430,7 @@ export function AdminPortalClient() {
               onChange={(e) =>
                 setCreateForm((prev) => ({ ...prev, name_ar: e.target.value }))
               }
-              placeholder="Arabic name (optional)"
+              placeholder="阿拉伯文名（可选）"
               className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
             />
             <input
@@ -1155,7 +1438,7 @@ export function AdminPortalClient() {
               onChange={(e) =>
                 setCreateForm((prev) => ({ ...prev, price: e.target.value }))
               }
-              placeholder="Price (optional)"
+              placeholder="价格（可选）"
               className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
             />
             <div className="md:col-span-2">
@@ -1338,7 +1621,7 @@ export function AdminPortalClient() {
               <table className="w-full min-w-[640px] text-left text-xs">
                 <thead>
                   <tr className="border-b border-rose-200 text-rose-700">
-                    <th className="px-2 py-1.5 font-medium">OEM No.</th>
+                    <th className="px-2 py-1.5 font-medium">零件号</th>
                     <th className="px-2 py-1.5 font-medium">错误信息</th>
                     <th className="px-2 py-1.5 font-medium">操作</th>
                   </tr>
@@ -1391,8 +1674,8 @@ export function AdminPortalClient() {
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50/90 text-xs uppercase tracking-wide text-zinc-600">
                 <th className="px-3 py-2 font-medium">记录时间</th>
-                <th className="px-3 py-2 font-medium">OEM No.</th>
-                <th className="px-3 py-2 font-medium">Brand</th>
+                <th className="px-3 py-2 font-medium">零件号</th>
+                <th className="px-3 py-2 font-medium">品牌</th>
                 <th className="px-3 py-2 font-medium">零件名（中文）</th>
                 <th className="px-3 py-2 font-medium">状态</th>
                 <th className="px-3 py-2 font-medium">错误信息</th>
@@ -1480,12 +1763,12 @@ export function AdminPortalClient() {
 
       <section className="mb-10 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm md:p-6">
         <h2 className="text-sm font-semibold text-[#002d54] md:text-base">
-          Batch upload
+          批量上传
         </h2>
         <p className="mt-1 text-xs text-zinc-600 md:text-sm">
-          Select multiple JPEG files. Part numbers are taken from each filename
-          (without extension). You can also use{" "}
-          <span className="font-mono">part_nos</span> from the API directly.
+          可一次选择多张 JPEG 图片。系统会使用每个文件名（不含扩展名）作为零件号。
+          也可通过接口直接传入{" "}
+          <span className="font-mono">part_nos</span>。
         </p>
         <input
           ref={batchFileRef}
@@ -1500,7 +1783,7 @@ export function AdminPortalClient() {
           onClick={() => batchFileRef.current?.click()}
           className="mt-4 rounded-xl bg-[#002d54] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#003d6e]"
         >
-          Choose images (JPEG)
+          选择图片（JPEG）
         </button>
       </section>
 
@@ -1583,8 +1866,8 @@ export function AdminPortalClient() {
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50/90 text-xs uppercase tracking-wide text-zinc-600">
                 <th className="px-3 py-2 font-medium">Thumb</th>
-                <th className="px-3 py-2 font-medium">OEM No.</th>
-                <th className="px-3 py-2 font-medium">Brand</th>
+                <th className="px-3 py-2 font-medium">零件号</th>
+                <th className="px-3 py-2 font-medium">品牌</th>
                 <th className="px-3 py-2 font-medium">零件名（中文）</th>
                 <th className="px-3 py-2 font-medium">来源</th>
                 <th className="px-3 py-2 font-medium">最近失败</th>
@@ -1703,12 +1986,12 @@ export function AdminPortalClient() {
 
       <section className="mb-10 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm md:p-6">
         <h2 className="text-sm font-semibold text-[#002d54] md:text-base">
-          Search parts
+          搜索配件
         </h2>
         <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
           <div className="min-w-0 flex-1">
             <label className="text-xs font-medium text-zinc-700" htmlFor="q">
-              Query (min 2 chars)
+              关键词（至少 2 个字符）
             </label>
             <input
               id="q"
@@ -1716,7 +1999,7 @@ export function AdminPortalClient() {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && void runSearch(1)}
               className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm font-mono"
-              placeholder="WG9719230015 or keyword"
+              placeholder="例如：WG9719230015 或 关键词"
             />
           </div>
           <button
@@ -1725,7 +2008,7 @@ export function AdminPortalClient() {
             disabled={loading}
             className="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:opacity-60"
           >
-            {loading ? "Searching…" : "Search"}
+            {loading ? "搜索中…" : "搜索"}
           </button>
         </div>
 
@@ -1761,13 +2044,14 @@ export function AdminPortalClient() {
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50/90 text-xs uppercase tracking-wide text-zinc-600">
-                <th className="px-3 py-2 font-medium">Thumb</th>
-                <th className="px-3 py-2 font-medium">OEM No.</th>
-                <th className="px-3 py-2 font-medium">Brand</th>
+                <th className="px-3 py-2 font-medium">缩略图</th>
+                <th className="px-3 py-2 font-medium">零件号</th>
+                <th className="px-3 py-2 font-medium">品牌</th>
                 <th className="px-3 py-2 font-medium">零件名（中文）</th>
-                <th className="px-3 py-2 font-medium">Image path</th>
+                <th className="px-3 py-2 font-medium">图片路径</th>
                 <th className="px-3 py-2 font-medium">上传</th>
                 <th className="px-3 py-2 font-medium">待处理</th>
+                <th className="px-3 py-2 font-medium">操作</th>
               </tr>
             </thead>
             <tbody>
@@ -1817,7 +2101,7 @@ export function AdminPortalClient() {
                         }}
                         className="rounded-lg border border-[#002d54]/30 bg-white px-2.5 py-1.5 text-xs font-medium text-[#002d54] transition hover:bg-[#002d54]/5"
                       >
-                        Upload / replace
+                        上传 / 覆盖
                       </button>
                     </td>
                     <td className="px-3 py-2">
@@ -1835,16 +2119,25 @@ export function AdminPortalClient() {
                         </button>
                       )}
                     </td>
+                    <td className="px-3 py-2">
+                      <button
+                        type="button"
+                        onClick={() => openEditPart(p)}
+                        className="rounded-lg border border-zinc-300 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-700 transition hover:bg-zinc-50"
+                      >
+                        编辑
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
               {items.length === 0 && !loading ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={8}
                     className="px-3 py-8 text-center text-sm text-zinc-500"
                   >
-                    No rows yet. Run a search.
+                    暂无数据，请先执行搜索。
                   </td>
                 </tr>
               ) : null}
@@ -1863,10 +2156,10 @@ export function AdminPortalClient() {
 
       <section className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm md:p-6">
         <h2 className="text-sm font-semibold text-[#002d54] md:text-base">
-          Brand placeholder previews
+          品牌占位图预览
         </h2>
         <p className="mt-1 text-xs text-zinc-600 md:text-sm">
-          Default brand marks used elsewhere on the site (not per-part images).
+          站点其他位置使用的默认品牌占位图（非配件实拍图）。
         </p>
         <div className="mt-4 grid gap-6 sm:grid-cols-2">
           {PLACEHOLDERS.map(({ brand, src }) => (
