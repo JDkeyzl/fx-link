@@ -21,8 +21,8 @@
     },
     "searchStrip": {
       "title": "重卡配件查询",
-      "description": "输入零件号，或品牌、车型、中英文名称等关键词，即可查看人民币参考价区间。搜索后将在独立结果页展示，便于收藏或转发链接。如需正式报价与交期，可在查询后继续联系我们的业务团队。",
-      "trustLine": "中国出厂（EXW）· 人民币参考价（仅供参考）"
+      "description": "输入零件号，或品牌、车型、中英文名称等关键词，即可查看参考价区间。搜索后将在独立结果页展示，便于收藏或转发链接。如需正式报价与交期，可在查询后继续联系我们的业务团队。",
+      "trustLine": "中国出厂（EXW）· 参考价（仅供参考）"
     }
   },
   "search": {
@@ -33,7 +33,7 @@
     "example": "示例：SINOTRUK / HOWO / 陕汽 / 一汽 卡车配件。",
     "noResults": "未找到与「{{query}}」匹配的零件。请换一个零件号或关键词，或直接向我们发送询价。",
     "pageTitle": "搜索结果",
-    "pageSubtitle": "以下为人民币参考价（仅供参考）。可在下方修改关键词后再次搜索。",
+    "pageSubtitle": "以下为参考价（仅供参考）。可在下方修改关键词后再次搜索。",
     "backHome": "返回首页"
   },
   "company": {
@@ -50,8 +50,8 @@
     "nameEn": "名称（英文）",
     "brandSeries": "品牌 / 系列",
     "quality": "质量等级",
-    "priceRange": "价格（人民币）",
-    "referenceNote": "参考价，人民币 EXW 中国（仅供参考）"
+    "priceRange": "价格",
+    "referenceNote": "参考价，EXW 中国（仅供参考）"
   },
   "partDetail": {
     "name": "名称",
@@ -59,17 +59,17 @@
     "brand": "品牌",
     "category": "品类",
     "categoryDefault": "重卡零配件",
-    "priceLabel": "参考价（人民币）",
+    "priceLabel": "参考价",
     "inquirySection": "联系我们",
     "inquiryIntro": "如需正式报价、货期或起订量，请通过 WhatsApp 联系我们，工作时间将尽快回复。",
     "inquiryWhatsApp": "通过 WhatsApp 询价",
     "relatedTitle": "相关产品",
     "structuredP1": "本条目对应品牌「{{brand}}」零件号 {{partNo}}，配件名称：{{name}}。",
     "structuredP2": "重卡与工程车辆因底盘、车桥与发动机系列不同，适用性可能存在差异。订购前请结合实车资料与技术文件核对零件号。",
-    "structuredP3": "所示价格为人民币参考价（中国出厂 EXW），不含包装、国际运费、税费及银行费用。正式成交价与交货期请与业务团队确认。",
+    "structuredP3": "所示价格为参考价（中国出厂 EXW），不含包装、国际运费、税费及银行费用。正式成交价与交货期请与业务团队确认。",
     "seo": {
-      "metaDescription": "{{brand}} 重卡零配件 {{partNo}}，品名：{{name}}。人民币参考价 ¥{{price}}（中国出厂 EXW，仅供参考）。MOQ、交期与正式报价请联系 Crealink。",
-      "schemaDescription": "{{brand}} 重卡后市场零配件，零件号 {{partNo}}，名称：{{name}}。人民币参考价 ¥{{price}}，中国出厂 EXW（仅供参考，不构成要约）。Crealink 面向出口提供重汽、陕汽、一汽等相关卡车配件，询价以确认适配性、包装方案、物流与商务条款。"
+      "metaDescription": "{{brand}} 重卡零配件 {{partNo}}，品名：{{name}}。参考价 ¥{{price}}（中国出厂 EXW，仅供参考）。MOQ、交期与正式报价请联系 Crealink。",
+      "schemaDescription": "{{brand}} 重卡后市场零配件，零件号 {{partNo}}，名称：{{name}}。参考价 ¥{{price}}，中国出厂 EXW（仅供参考，不构成要约）。Crealink 面向出口提供重汽、陕汽、一汽等相关卡车配件，询价以确认适配性、包装方案、物流与商务条款。"
     }
   },
   "quality": {

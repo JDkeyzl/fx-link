@@ -21,8 +21,8 @@
     },
     "searchStrip": {
       "title": "Look up heavy truck parts",
-      "description": "Enter a part number or a keyword (brand, model, or name) to see reference prices in CNY. Results open on a dedicated page so you can bookmark or share the link. For formal quotes and lead times, contact us after your search.",
-      "trustLine": "EXW China · Reference prices in CNY (indicative only)"
+      "description": "Enter a part number or a keyword (brand, model, or name) to see reference prices. Results open on a dedicated page so you can bookmark or share the link. For formal quotes and lead times, contact us after your search.",
+      "trustLine": "EXW China · Reference prices (indicative only)"
     }
   },
   "search": {
@@ -33,7 +33,7 @@
     "example": "Example: SINOTRUK / HOWO / SHACMAN / FAW truck parts.",
     "noResults": "No parts found for \"{{query}}\". Please try another number or keyword, or send us your RFQ.",
     "pageTitle": "Search results",
-    "pageSubtitle": "Reference prices in CNY (indicative). Refine your query below.",
+    "pageSubtitle": "Reference prices (indicative). Refine your query below.",
     "backHome": "Back to home"
   },
   "company": {
@@ -50,8 +50,8 @@
     "nameEn": "Name (EN)",
     "brandSeries": "Brand / Series",
     "quality": "Quality",
-    "priceRange": "Price (CNY)",
-    "referenceNote": "Reference prices in CNY (RMB), EXW China (for indication only)"
+    "priceRange": "Price",
+    "referenceNote": "Reference prices, EXW China (for indication only)"
   },
   "partDetail": {
     "name": "Name",
@@ -59,17 +59,17 @@
     "brand": "Brand",
     "category": "Category",
     "categoryDefault": "Heavy truck spare parts",
-    "priceLabel": "Reference price (CNY)",
+    "priceLabel": "Reference price",
     "inquirySection": "Contact us",
     "inquiryIntro": "Request a formal quote, lead time, or MOQ for this part. Our team replies on WhatsApp during business hours.",
     "inquiryWhatsApp": "Inquiry via WhatsApp",
     "relatedTitle": "Related parts",
     "structuredP1": "This listing covers {{brand}} part {{partNo}} ({{name}}) from our reference catalogue.",
     "structuredP2": "Heavy truck and off-road applications differ by chassis, axle and engine family. Verify the part number against your vehicle records and technical documentation before ordering.",
-    "structuredP3": "The price shown is a CNY reference (EXW China). It excludes packing, freight, duties and banking fees. Contact us for a firm offer and delivery schedule.",
+    "structuredP3": "The price shown is a reference price (EXW China). It excludes packing, freight, duties and banking fees. Contact us for a firm offer and delivery schedule.",
     "seo": {
-      "metaDescription": "{{brand}} heavy-duty truck spare part {{partNo}} — {{name}}. Reference price ¥{{price}} CNY (EXW China, indicative). Contact Crealink for MOQ, lead time and formal quotation.",
-      "schemaDescription": "Aftermarket heavy-duty truck spare part, brand {{brand}}, part number {{partNo}}. Name: {{name}}. Reference price ¥{{price}} CNY, EXW China (indicative, not a binding offer). Crealink supplies SINOTRUK, SHACMAN, FAW and related China truck parts for export — request a quotation to confirm compatibility, packing, shipping and commercial terms."
+      "metaDescription": "{{brand}} heavy-duty truck spare part {{partNo}} — {{name}}. Reference price {{price}} (EXW China, indicative). Contact Crealink for MOQ, lead time and formal quotation.",
+      "schemaDescription": "Aftermarket heavy-duty truck spare part, brand {{brand}}, part number {{partNo}}. Name: {{name}}. Reference price {{price}}, EXW China (indicative, not a binding offer). Crealink supplies SINOTRUK, SHACMAN, FAW and related China truck parts for export — request a quotation to confirm compatibility, packing, shipping and commercial terms."
     }
   },
   "quality": {

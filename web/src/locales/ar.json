@@ -22,8 +22,8 @@
     },
     "searchStrip": {
       "title": "Look up heavy truck parts",
-      "description": "Enter a part number or a keyword (brand, model, or name) to see reference prices in CNY. Results open on a dedicated page so you can bookmark or share the link. For formal quotes and lead times, contact us after your search.",
-      "trustLine": "EXW China · Reference prices in CNY (indicative only)"
+      "description": "Enter a part number or a keyword (brand, model, or name) to see reference prices. Results open on a dedicated page so you can bookmark or share the link. For formal quotes and lead times, contact us after your search.",
+      "trustLine": "EXW China · Reference prices (indicative only)"
     }
   },
   "search": {
@@ -34,7 +34,7 @@
     "example": "[مراجعة: مثال: SINOTRUK / HOWO / SHACMAN / FAW.]",
     "noResults": "[مراجعة: لم يتم العثور على قطع لـ \"{{query}}\". جرب رقمًا أو كلمة أخرى، أو أرسل لنا طلب عرض الأسعار.]",
     "pageTitle": "Search results",
-    "pageSubtitle": "Reference prices in CNY (indicative). Refine your query below.",
+    "pageSubtitle": "Reference prices (indicative). Refine your query below.",
     "backHome": "Back to home"
   },
   "company": {
@@ -51,8 +51,8 @@
     "nameEn": "[مراجعة: الاسم (EN)]",
     "brandSeries": "[مراجعة: العلامة / السلسلة]",
     "quality": "[مراجعة: الجودة]",
-    "priceRange": "[مراجعة: السعر (CNY)]",
-    "referenceNote": "[مراجعة: أسعار مرجعية باليوان (RMB)، EXW الصين (للإرشاد فقط)]"
+    "priceRange": "[مراجعة: السعر]",
+    "referenceNote": "[مراجعة: أسعار مرجعية، EXW الصين (للإرشاد فقط)]"
   },
   "partDetail": {
     "name": "[مراجعة: الاسم]",
@@ -60,7 +60,7 @@
     "brand": "[مراجعة: العلامة]",
     "category": "[مراجعة: الفئة]",
     "categoryDefault": "[مراجعة: قطع غيار الشاحنات الثقيلة]",
-    "priceLabel": "[مراجعة: السعر المرجعي (CNY)]",
+    "priceLabel": "[مراجعة: السعر المرجعي]",
     "inquirySection": "[مراجعة: اتصل بنا]",
     "inquiryIntro": "[مراجعة: اطلب عرض سعر رسميًا أو مدى التوفر أو الحد الأدنى لهذه القطعة. يرد فريقنا عبر واتساب خلال ساعات العمل.]",
     "inquiryWhatsApp": "[مراجعة: استفسار عبر واتساب]",
@@ -69,8 +69,8 @@
     "structuredP2": "تختلف تطبيقات الشاحنات الثقيلة بحسب الهيكل والمحرك. يُرجى مطابقة رقم القطعة مع بيانات مركبتك والوثائق الفنية قبل الطلب.",
     "structuredP3": "السعر المعروض مرجعي باليوان الصيني (EXW الصين) ولا يشمل التعبئة أو الشحن أو الرسوم الجمركية. تواصل معنا لعرض سعر ملزم وجدول التوريد.",
     "seo": {
-      "metaDescription": "قطعة غيار شاحنات ثقيلة {{brand}} {{partNo}} — {{name}}. سعر مرجعي ¥{{price}} CNY (EXW الصين). للحد الأدنى والتسليم وعرض السعر: تواصل مع Crealink.",
-      "schemaDescription": "قطعة غيار بديلة للشاحنات الثقيلة، علامة {{brand}}، رقم {{partNo}}. الاسم: {{name}}. سعر مرجعي ¥{{price}} CNY، EXW الصين (إرشادي وليس عرضًا ملزمًا). توفّر Crealink قطع SINOTRUK وSHACMAN وFAW والعلامات الصينية ذات الصلة للتصدير — اطلب عرض سعر لتوافق التركيبة والتعبئة والشحن والشروط التجارية."
+      "metaDescription": "قطعة غيار شاحنات ثقيلة {{brand}} {{partNo}} — {{name}}. سعر مرجعي {{price}} (EXW الصين). للحد الأدنى والتسليم وعرض السعر: تواصل مع Crealink.",
+      "schemaDescription": "قطعة غيار بديلة للشاحنات الثقيلة، علامة {{brand}}، رقم {{partNo}}. الاسم: {{name}}. سعر مرجعي {{price}}، EXW الصين (إرشادي وليس عرضًا ملزمًا). توفّر Crealink قطع SINOTRUK وSHACMAN وFAW والعلامات الصينية ذات الصلة للتصدير — اطلب عرض سعر لتوافق التركيبة والتعبئة والشحن والشروط التجارية."
     }
   },
   "quality": {
