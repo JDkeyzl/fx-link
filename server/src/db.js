@@ -97,6 +97,13 @@ function initSchema(db) {
       ON translation_anchor_memory(part_no);
     CREATE INDEX IF NOT EXISTS idx_translation_anchor_memory_created_at
       ON translation_anchor_memory(created_at DESC);
+
+    -- Lightweight key-value runtime settings.
+    CREATE TABLE IF NOT EXISTS app_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+    );
   `);
 
   const partCols = db.prepare(`PRAGMA table_info(parts)`).all();
@@ -130,6 +137,13 @@ function initSchema(db) {
   db.exec(
     `CREATE INDEX IF NOT EXISTS idx_parts_image_upload_failed_at ON parts(image_upload_failed, image_upload_failed_at DESC)`
   );
+
+  const defaultUsdCnyRate = Number.parseFloat(String(process.env.DEFAULT_USD_CNY_RATE || "7.2"));
+  const safeDefaultRate =
+    Number.isFinite(defaultUsdCnyRate) && defaultUsdCnyRate > 0 ? defaultUsdCnyRate : 7.2;
+  db.prepare(
+    `INSERT OR IGNORE INTO app_settings (key, value) VALUES ('usd_cny_rate', ?)`
+  ).run(String(safeDefaultRate));
 }
 
 module.exports = {

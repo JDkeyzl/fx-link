@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { Part } from "@/types/part";
 import { useI18n } from "@/context/LocaleContext";
+import { formatPartPrice } from "@/lib/currency";
 
 const PAGE_SIZE = 12;
 const DESKTOP_BREAKPOINT = 768;
@@ -187,7 +188,7 @@ export function PartsSearchResults({
   loading,
   queried,
 }: PartsSearchResultsProps) {
-  const { t, locale } = useI18n();
+  const { t, locale, usdCnyRate } = useI18n();
   const isDesktop = useIsDesktop();
   const [page, setPage] = useState(1);
 
@@ -289,9 +290,9 @@ export function PartsSearchResults({
                   {getPartNameByLocale(part, locale)}
                 </td>
                 <td className="px-2 py-3 sm:px-3 md:px-4 md:py-3 text-zinc-900 align-top whitespace-nowrap font-medium">
-                  ¥ {part.priceMinUsd.toFixed(2)}
+                  {formatPartPrice(part.priceMinUsd, locale, usdCnyRate)}
                   {part.priceMinUsd !== part.priceMaxUsd
-                    ? ` – ${part.priceMaxUsd.toFixed(2)}`
+                    ? ` – ${formatPartPrice(part.priceMaxUsd, locale, usdCnyRate)}`
                     : ""}
                 </td>
               </tr>

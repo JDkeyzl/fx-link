@@ -326,7 +326,12 @@ export function AdminPortalClient() {
   const [uploadedFilter, setUploadedFilter] = useState<"all" | "success" | "failed">("all");
   const [uploadUiHydrated, setUploadUiHydrated] = useState(false);
   const [recentFailedItems, setRecentFailedItems] = useState<UploadResultItem[]>([]);
-  const [activeTab, setActiveTab] = useState<"upload" | "create">("upload");
+  const [activeTab, setActiveTab] = useState<"upload" | "create" | "settings">(
+    "upload"
+  );
+  const [usdCnyRateInput, setUsdCnyRateInput] = useState("7.2");
+  const [usdCnyRateSavedAt, setUsdCnyRateSavedAt] = useState<string | null>(null);
+  const [savingRate, setSavingRate] = useState(false);
   const [creatingPart, setCreatingPart] = useState(false);
   const [createForm, setCreateForm] = useState({
     part_no: "",
@@ -383,6 +388,30 @@ export function AdminPortalClient() {
       /* ignore */
     }
   }, []);
+
+  const loadCurrencySetting = useCallback(async () => {
+    try {
+      const headers: HeadersInit = { Accept: "application/json" };
+      if (adminKey.trim()) headers["x-admin-upload-key"] = adminKey.trim();
+      const res = await fetch("/api/admin/settings/currency", { headers });
+      if (!res.ok) return;
+      const data = (await res.json()) as {
+        usd_cny_rate?: number;
+        updated_at?: string | null;
+      };
+      const rate = Number(data.usd_cny_rate);
+      if (Number.isFinite(rate) && rate > 0) {
+        setUsdCnyRateInput(String(rate));
+      }
+      setUsdCnyRateSavedAt(data.updated_at ?? null);
+    } catch {
+      /* ignore */
+    }
+  }, [adminKey]);
+
+  useEffect(() => {
+    void loadCurrencySetting();
+  }, [loadCurrencySetting]);
 
   const markUploadResultsInQueue = useCallback(
     (results: { part_no: string; ok: boolean }[] | undefined) => {
@@ -685,6 +714,58 @@ export function AdminPortalClient() {
     uploadImages,
     markUploadResultsInQueue,
   ]);
+
+  const saveCurrencySetting = useCallback(async () => {
+    const rate = Number.parseFloat(usdCnyRateInput);
+    if (!Number.isFinite(rate) || rate <= 0) {
+      setStatus("汇率保存失败：请输入大于 0 的数字。");
+      showUploadToast("error", "请输入有效汇率（> 0）");
+      return;
+    }
+    try {
+      setSavingRate(true);
+      const headers: HeadersInit = {
+        Accept: "application/json",
+        "content-type": "application/json",
+      };
+      if (adminKey.trim()) headers["x-admin-upload-key"] = adminKey.trim();
+      const res = await fetch("/api/admin/settings/currency", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ usd_cny_rate: rate }),
+      });
+      const text = await res.text();
+      let json: unknown;
+      try {
+        json = JSON.parse(text);
+      } catch {
+        json = { raw: text };
+      }
+      if (!res.ok) {
+        const message =
+          typeof json === "object" && json && "message" in json
+            ? String((json as { message?: string }).message)
+            : text;
+        setStatus(`汇率保存失败（${res.status}）：${message}`);
+        showUploadToast("error", `汇率保存失败：${message}`);
+        return;
+      }
+      const data = json as { usd_cny_rate?: number; updated_at?: string | null };
+      const saved = Number(data.usd_cny_rate);
+      if (Number.isFinite(saved) && saved > 0) {
+        setUsdCnyRateInput(String(saved));
+      }
+      setUsdCnyRateSavedAt(data.updated_at ?? null);
+      setStatus("汇率已保存。非中文页面将自动按该汇率显示美元价格。");
+      showUploadToast("success", "汇率已保存");
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "汇率保存失败";
+      setStatus(msg);
+      showUploadToast("error", msg);
+    } finally {
+      setSavingRate(false);
+    }
+  }, [adminKey, showUploadToast, usdCnyRateInput]);
 
   const handleAddPending = useCallback((p: Part) => {
     const no = p.partNumber || p.id;
@@ -998,6 +1079,17 @@ export function AdminPortalClient() {
         >
           新增配件
         </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("settings")}
+          className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+            activeTab === "settings"
+              ? "bg-[#002d54] text-white"
+              : "bg-zinc-200/80 text-zinc-700 hover:bg-zinc-200"
+          }`}
+        >
+          汇率配置
+        </button>
       </section>
 
       {activeTab === "create" ? (
@@ -1119,6 +1211,46 @@ export function AdminPortalClient() {
                   ? "新增并上传图片"
                   : "新增并进入上传流程"}
             </button>
+          </div>
+        </section>
+      ) : null}
+
+      {activeTab === "settings" ? (
+        <section className="mb-10 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm md:p-6">
+          <h2 className="text-sm font-semibold text-[#002d54] md:text-base">
+            汇率配置
+          </h2>
+          <p className="mt-1 text-xs text-zinc-600 md:text-sm">
+            设置 1 USD = ? CNY。非中文语言下，配件价格将按该汇率自动换算并保留 2 位小数。
+          </p>
+          <div className="mt-4 grid gap-3 md:max-w-md">
+            <label className="text-xs text-zinc-600">USD 汇率（1 USD = ? CNY）</label>
+            <input
+              value={usdCnyRateInput}
+              onChange={(e) => setUsdCnyRateInput(e.target.value)}
+              placeholder="例如：7.20"
+              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm"
+            />
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => void saveCurrencySetting()}
+                disabled={savingRate}
+                className="rounded-xl bg-[#002d54] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#003d6e] disabled:opacity-60"
+              >
+                {savingRate ? "保存中…" : "保存汇率"}
+              </button>
+              <button
+                type="button"
+                onClick={() => void loadCurrencySetting()}
+                className="rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+              >
+                刷新
+              </button>
+            </div>
+            <p className="text-xs text-zinc-500">
+              最后更新时间：{formatUploadedAt(usdCnyRateSavedAt)}
+            </p>
           </div>
         </section>
       ) : null}

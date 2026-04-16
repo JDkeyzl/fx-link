@@ -8,6 +8,7 @@ import {
   partDetailImageSrc,
 } from "@/lib/partDetailImage";
 import { useI18n } from "@/context/LocaleContext";
+import { formatPartPrice, shouldUseUsd } from "@/lib/currency";
 
 const DEFAULT_WA = "8618746232944";
 
@@ -41,7 +42,7 @@ export function PartDetail({
   /** API: rows from English name token fallback (not part-no prefix). */
   relatedNameFillCount?: number;
 }) {
-  const { t, locale } = useI18n();
+  const { t, locale, usdCnyRate } = useI18n();
 
   const displayName = displayNameForPart(part, locale);
   const wa = buildWhatsAppHref(part, displayName);
@@ -150,7 +151,12 @@ export function PartDetail({
               {t("partDetail.priceLabel")}
             </th>
             <td className="px-4 py-3 text-lg font-semibold text-zinc-900">
-              ¥ {Number(part.price).toFixed(2)}
+              {formatPartPrice(Number(part.price), locale, usdCnyRate)}
+              {shouldUseUsd(locale) ? (
+                <p className="mt-1 text-xs font-normal text-zinc-500">
+                  Price converted from CNY by current exchange rate.
+                </p>
+              ) : null}
             </td>
           </tr>
         </tbody>

@@ -143,6 +143,16 @@ const countUploadedStmt = db.prepare(`
       OR instr(lower(COALESCE(p.image_upload_error, '')), lower(@q)) > 0
     )
 `);
+const getUsdCnyRateStmt = db.prepare(
+  `SELECT value, updated_at FROM app_settings WHERE key = 'usd_cny_rate' LIMIT 1`
+);
+const upsertUsdCnyRateStmt = db.prepare(`
+  INSERT INTO app_settings (key, value, updated_at)
+  VALUES ('usd_cny_rate', @value, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+  ON CONFLICT(key) DO UPDATE SET
+    value = excluded.value,
+    updated_at = excluded.updated_at
+`);
 
 function requireUploadKey(req, res) {
   const expected = process.env.ADMIN_UPLOAD_KEY || "";
@@ -205,6 +215,49 @@ router.get("/api/admin/uploads", (req, res) => {
     });
   } catch (e) {
     console.error("GET /api/admin/uploads:", e);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/api/admin/settings/currency", (req, res) => {
+  const err = requireUploadKey(req, res);
+  if (err) return;
+  try {
+    const row = getUsdCnyRateStmt.get();
+    const parsed = Number.parseFloat(String(row?.value ?? "7.2"));
+    const usdCnyRate = Number.isFinite(parsed) && parsed > 0 ? parsed : 7.2;
+    return res.json({
+      usd_cny_rate: Number(usdCnyRate.toFixed(6)),
+      updated_at: row?.updated_at ?? null,
+    });
+  } catch (e) {
+    console.error("GET /api/admin/settings/currency:", e);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/api/admin/settings/currency", express.json({ limit: "64kb" }), (req, res) => {
+  const err = requireUploadKey(req, res);
+  if (err) return;
+  try {
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const raw = Number.parseFloat(String(body.usd_cny_rate ?? ""));
+    if (!Number.isFinite(raw) || raw <= 0) {
+      return res.status(400).json({
+        error: "Bad Request",
+        message: "usd_cny_rate must be a positive number",
+      });
+    }
+    const normalized = Number(raw.toFixed(6));
+    upsertUsdCnyRateStmt.run({ value: String(normalized) });
+    const row = getUsdCnyRateStmt.get();
+    return res.json({
+      ok: true,
+      usd_cny_rate: normalized,
+      updated_at: row?.updated_at ?? null,
+    });
+  } catch (e) {
+    console.error("POST /api/admin/settings/currency:", e);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });

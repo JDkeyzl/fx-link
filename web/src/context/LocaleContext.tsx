@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { getInitialLocale, isRTL, locales, type Locale } from "@/lib/i18n";
+import { DEFAULT_USD_CNY_RATE, normalizeUsdCnyRate } from "@/lib/currency";
 
 type Messages = Record<string, unknown>;
 
@@ -16,6 +17,7 @@ interface LocaleContextValue {
   locale: Locale;
   isRTL: boolean;
   messages: Messages;
+  usdCnyRate: number;
   setLocale: (locale: Locale) => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
 }
@@ -29,9 +31,31 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // "Minified React error #418" (hydration mismatch). We keep the first
   // client render aligned with the server ("en") and switch after mount.
   const [locale, setLocale] = useState<Locale>("en");
+  const [usdCnyRate, setUsdCnyRate] = useState<number>(DEFAULT_USD_CNY_RATE);
 
   useEffect(() => {
     setLocale(getInitialLocale());
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadSiteConfig() {
+      try {
+        const res = await fetch("/api/site-config", {
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok) return;
+        const data = (await res.json()) as { usd_cny_rate?: number };
+        if (cancelled) return;
+        setUsdCnyRate(normalizeUsdCnyRate(data.usd_cny_rate));
+      } catch {
+        /* keep default rate */
+      }
+    }
+    void loadSiteConfig();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const value = useMemo<LocaleContextValue>(() => {
@@ -66,10 +90,11 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       locale,
       isRTL: isRTL(locale),
       messages,
+      usdCnyRate,
       setLocale,
       t,
     };
-  }, [locale]);
+  }, [locale, usdCnyRate]);
 
   return (
     <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>

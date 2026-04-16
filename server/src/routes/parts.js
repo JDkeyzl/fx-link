@@ -30,6 +30,9 @@ const resolvedBase = `
 `;
 
 const stmt = db.prepare(`${resolvedBase} WHERE p.part_no = ?`);
+const getUsdCnyRateStmt = db.prepare(
+  `SELECT value FROM app_settings WHERE key = 'usd_cny_rate' LIMIT 1`
+);
 
 /**
  * Fuzzy list search:
@@ -961,6 +964,21 @@ router.get("/api/parts/:partNo", (req, res) => {
     return jsonPart(row, res);
   } catch (err) {
     console.error("GET /api/parts/:partNo error:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/api/site-config", (_req, res) => {
+  try {
+    const row = getUsdCnyRateStmt.get();
+    const parsed = Number.parseFloat(String(row?.value ?? "7.2"));
+    const usdCnyRate = Number.isFinite(parsed) && parsed > 0 ? parsed : 7.2;
+    res.setHeader("Cache-Control", "public, max-age=60");
+    return res.json({
+      usd_cny_rate: Number(usdCnyRate.toFixed(6)),
+    });
+  } catch (err) {
+    console.error("GET /api/site-config error:", err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
