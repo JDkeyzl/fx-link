@@ -3,7 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { SqlitePartDetail } from "@/lib/partsApi";
-import { partDetailImageSrc } from "@/lib/partDetailImage";
+import {
+  partDetailImageBypassNextOptimizer,
+  partDetailImageSrc,
+} from "@/lib/partDetailImage";
 import { useI18n } from "@/context/LocaleContext";
 
 const DEFAULT_WA = "8618746232944";
@@ -44,8 +47,7 @@ export function PartDetail({
   const wa = buildWhatsAppHref(part, displayName);
   const hasRelated = related.length > 0;
   const imageSrc = partDetailImageSrc(part);
-  const isRemoteImage =
-    imageSrc.startsWith("http://") || imageSrc.startsWith("https://");
+  const usePlainImg = partDetailImageBypassNextOptimizer(imageSrc);
   const imageAlt = partImageAlt(part, displayName);
 
   const subtitle = (
@@ -59,8 +61,8 @@ export function PartDetail({
       <div
         className="relative flex w-full flex-1 items-center justify-center bg-zinc-50/80 aspect-[4/3] max-h-[min(420px,55vh)] md:aspect-auto md:max-h-none md:min-h-0"
       >
-        {isRemoteImage ? (
-          // Remote DB URLs: avoid Next remotePatterns churn for arbitrary hosts.
+        {usePlainImg ? (
+          // Remote URLs + /images/parts/* uploads: avoid /_next/image (400 in prod).
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={imageSrc}

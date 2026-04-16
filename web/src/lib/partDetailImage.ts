@@ -42,6 +42,16 @@ export function partDetailImageSrc(part: {
   return `/placeholders/${normalizeBrandPlaceholderKey(part.brand)}.jpg`;
 }
 
+/**
+ * Use a plain <img> for these sources. next/image hits /_next/image, which
+ * server-fetches the URL and often breaks for uploads behind nginx static.
+ */
+export function partDetailImageBypassNextOptimizer(src: string): boolean {
+  if (src.startsWith("http://") || src.startsWith("https://")) return true;
+  const path = src.startsWith("/") ? src : `/${src}`;
+  return path.startsWith("/images/parts/");
+}
+
 /** Absolute URL for JSON-LD, Open Graph, and Twitter cards. */
 export function partDetailImageAbsoluteUrl(
   part: { image_path?: string | null; brand: string },
