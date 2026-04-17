@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { LocaleProvider, useI18n } from "@/context/LocaleContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ChunkLoadRecovery } from "@/components/ChunkLoadRecovery";
 
 interface ShellLayoutProps {
   children: ReactNode;
@@ -184,6 +185,7 @@ interface AppShellProps {
 export function AppShell({ children, year }: AppShellProps) {
   return (
     <LocaleProvider>
+      <ChunkLoadRecovery />
       <ShellLayout year={year}>{children}</ShellLayout>
     </LocaleProvider>
   );
