@@ -84,9 +84,13 @@ export function PartsSearchForm({
             type="text"
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
+            onInput={(e) => onQueryChange(e.currentTarget.value)}
             placeholder={placeholder}
             className="min-h-[44px] min-w-0 flex-1 rounded-xl border border-[#002d54]/18 bg-white px-4 py-2.5 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-500 outline-none ring-0 transition focus:border-[#002d54] focus:ring-0 focus-visible:ring-0 sm:min-w-[160px]"
             aria-label={placeholder}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
           />
           <button
             type="submit"
@@ -119,9 +123,13 @@ export function PartsSearchForm({
             type="text"
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
+            onInput={(e) => onQueryChange(e.currentTarget.value)}
             placeholder={placeholder}
             className="min-h-[48px] sm:min-h-[52px] min-w-0 flex-1 rounded-xl border-0 bg-[#f8f9fa] px-4 py-3 text-base sm:text-lg text-zinc-900 placeholder:text-zinc-500 outline-none ring-0 transition focus:bg-white focus:ring-0 focus-visible:ring-0 sm:min-w-[200px]"
             aria-label={placeholder}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
           />
           <button
             type="submit"
@@ -154,9 +162,13 @@ export function PartsSearchForm({
           type="text"
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
+          onInput={(e) => onQueryChange(e.currentTarget.value)}
           placeholder={placeholder}
           className="min-h-[44px] min-w-0 flex-1 rounded-xl border border-gray-300 bg-white px-4 py-3 text-base text-zinc-900 outline-none ring-0 transition focus:border-[#002d54] focus:ring-0 focus-visible:ring-0 md:min-h-0 md:py-2 md:text-sm sm:min-w-[200px]"
           aria-label={placeholder}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
         />
         <button
           type="submit"

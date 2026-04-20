@@ -126,7 +126,7 @@ function ShellLayout({ children, year }: ShellLayoutProps) {
       {/* ========== MOBILE LAYOUT ========== */}
       <div className="flex flex-col min-h-screen md:hidden">
         {/* Sticky top bar: 毛玻璃 Glassmorphism */}
-        <header className="glass-header sticky top-0 z-20 flex items-center justify-between px-4 py-3">
+        <header className="glass-header sticky top-0 z-50 flex items-center justify-between px-4 py-3">
           <Link
             href="/"
             className="flex items-center gap-3 rounded-lg outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#002d54]/25 focus-visible:ring-offset-2"

@@ -126,7 +126,7 @@ export function HomeContent() {
           </div>
         ))}
         <div
-          className="absolute inset-0"
+          className="pointer-events-none absolute inset-0"
           style={{ backgroundColor: "var(--hero-overlay)" }}
           aria-hidden
         />
@@ -189,7 +189,7 @@ export function HomeContent() {
           sizes="100vw"
         />
         <div
-          className="absolute inset-0 bg-[#f8f9fa]/52"
+          className="pointer-events-none absolute inset-0 bg-[#f8f9fa]/52"
           aria-hidden
         />
         <div className="relative z-10 mx-auto max-w-5xl">
@@ -244,7 +244,7 @@ export function HomeContent() {
           sizes="100vw"
         />
         <div
-          className="absolute inset-0 w-full"
+          className="pointer-events-none absolute inset-0 w-full"
           style={{
             background: "linear-gradient(to right, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.28) 42%, transparent 68%)",
           }}
