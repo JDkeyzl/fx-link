@@ -111,7 +111,7 @@ export function HomeContent() {
         {HERO_IMAGES.map((src, i) => (
           <div
             key={src}
-            className="absolute inset-0 transition-opacity duration-700 ease-in-out"
+            className="pointer-events-none absolute inset-0 transition-opacity duration-700 ease-in-out"
             style={{ opacity: i === heroIndex ? 1 : 0 }}
             aria-hidden={i !== heroIndex}
           >
@@ -185,7 +185,7 @@ export function HomeContent() {
           src="/whyus.jpg"
           alt=""
           fill
-          className="object-cover object-center"
+          className="pointer-events-none select-none object-cover object-center"
           sizes="100vw"
         />
         <div
@@ -240,7 +240,7 @@ export function HomeContent() {
           src="/contact.png"
           alt=""
           fill
-          className="object-cover object-center"
+          className="pointer-events-none select-none object-cover object-center"
           sizes="100vw"
         />
         <div
