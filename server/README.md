@@ -6,6 +6,32 @@
 - API: `GET /api/parts/:partNo` → JSON part detail (recommended for SEO frontend)
 - API: `GET /parts/:brand/:part_no` → same JSON (legacy / human-readable URL)
 
+## CreaLink Chat (LangChain + DeepSeek + RAG)
+
+RFQ chat for catalogue lookup and sales review queue.
+
+1. Copy `.env.example` → `.env` and set `LLM_API_KEY` (DeepSeek).
+2. Set `ADMIN_UPLOAD_KEY` or `ADMIN_TRANSLATION_KEY` for `/desk/review` and knowledge reindex.
+3. `npm run ingest-knowledge` (also auto-runs on boot if KB empty).
+4. Restart backend → open `http://localhost:3000/desk` (chat) and `http://localhost:3000/desk/review` (sales, bookmark).
+
+APIs:
+- `GET  /api/desk/health`
+- `POST /api/desk/session`
+- `GET  /api/desk/session/:id`
+- `POST /api/desk/chat` `{ "sessionId"?: "...", "message": "..." }`
+- `POST /api/desk/contact` `{ "sessionId", "name?", "email", "phone?", "company?" }`
+- `POST /api/desk/quote/submit` `{ "sessionId" }` (requires valid email + lines)
+- `POST /api/desk/quote/confirm` (legacy alias → submit)
+- `POST /api/desk/quote/line/remove` `{ "sessionId", "part_no" }`
+- `GET  /api/desk/review/leads` (admin key)
+- `GET  /api/desk/review/leads/:sessionId` (admin key)
+- `POST /api/desk/review/leads/:sessionId` `{ "decision": "approved"|"rejected", "note?" }` (admin key)
+- `POST /api/desk/knowledge/reindex` (admin key)
+
+Tools: `lookup_part`, `search_parts`, `get_fx_rate`, `update_requirement_card`, `search_knowledge`, `upsert_quote_line`, `remove_quote_line`, `get_quote_draft`, `upsert_contact`, `get_contact`.
+Quote status: `draft` → `pending_review` → `approved` | `rejected`. Catalogue prices are CNY; USD via `usd_cny_rate`.
+
 ## Setup
 ```bash
 cd /path/to/tk-link/server

@@ -24,6 +24,133 @@
       "title": "Look up heavy truck parts",
       "description": "Enter a part number or a keyword (brand, model, or name) to see reference prices. Results open on a dedicated page so you can bookmark or share the link. For formal quotes and lead times, contact us after your search.",
       "trustLine": "EXW China · Reference prices (indicative only)"
+    },
+    "deskCta": {
+      "title": "CreaLink Chat — ناقش طلب التسعير",
+      "body": "تحدث مع CreaLink Chat لتوضيح المركبة وأرقام القطع والوجهة. أسعار الكتالوج تُستعلم ولا تُختلق.",
+      "button": "فتح CreaLink Chat"
+    }
+  },
+  "desk": {
+    "title": "CreaLink Chat",
+    "subtitle": "وضّح المتطلبات، ابحث في الكتالوج، واطلع على المعرفة التجارية. الأسعار المعروضة مرجع EXW الصين فقط.",
+    "backHome": "العودة للرئيسية",
+    "placeholder": "صف القطع أو الصق رقم القطعة…",
+    "send": "إرسال",
+    "thinking": "CreaLink Chat يبحث…",
+    "emptyTitle": "Start an RFQ conversation",
+    "emptyHint": "Example: Need SINOTRUK HOWO brake pads, about 50 pcs, FOB Lagos. What is EXW vs FOB?",
+    "examples": {
+      "personaHint": "Try questions customers like you often ask:",
+      "shuffle": "Show another scenario",
+      "personas": {
+        "dealer": {
+          "label": "Overseas parts dealer",
+          "p1": "I need EXW reference prices for a restock list: SINOTRUK filters and brake parts, about 200 pcs mixed. Can you check the catalogue?",
+          "p2": "We mainly sell economy replacements to African workshops. How do you label OE vs economy quality on quotes?",
+          "p3": "Please help me turn several part numbers into an EXW reference line list before our sales confirms MOQ."
+        },
+        "mine": {
+          "label": "Mine / off-highway site",
+          "p1": "Our mining trucks need wear parts urgently. I don’t have part numbers—what photos or nameplate info should I send?",
+          "p2": "Looking for SINOTRUK / HOWO dump-truck consumables for a mine site. Can you look up catalogue EXW references in CNY and USD?",
+          "p3": "Lead time matters more than the lowest price. After you find parts in the catalogue, how do we get sales to confirm availability?"
+        },
+        "fleet": {
+          "label": "Fleet operator",
+          "p1": "We run a mixed HOWO and SHACMAN fleet. Need periodic service parts—filters, belts—with quantities for a recurring order.",
+          "p2": "We prefer FOB to Lagos later, but first I need EXW China reference prices from your catalogue for a few part numbers.",
+          "p3": "Same parts every quarter. Can you help structure an RFQ card: brands, qty, destination, and quality preference?"
+        },
+        "workshop": {
+          "label": "Repair shop / parts counter",
+          "p1": "Customer is waiting in the bay. I have one urgent part number—please look it up and give CNY and USD EXW reference.",
+          "p2": "The part number on the old piece is unclear. What should I ask the driver so you can search the catalogue correctly?",
+          "p3": "Catalogue shows a related part. Can it replace the original, or must the customer confirm fitment first?"
+        },
+        "contractor": {
+          "label": "Project / construction buyer",
+          "p1": "Project purchase: batch of heavy-truck chassis parts for site equipment. Need EXW references first, then packing notes.",
+          "p2": "Do we need certificates or special export packing for our destination? I can share country/port if you tell me what you need.",
+          "p3": "Please collect my requirements into a card, then tell me how to contact sales for a formal quotation—not just chat reference prices."
+        }
+      }
+    },
+    "requirementsTitle": "Requirement card",
+    "requirementsEmpty": "Brand, destination, Incoterm, qty appear as collected.",
+    "disclaimer": "أسعار الكتالوج؛ المعرفة التجارية للمرجع فقط. ليست عرضًا ملزمًا. المبيعات تؤكد الحد الأدنى والتعبئة والشحن.",
+    "toolTraceTitle": "Tool / RAG trace",
+    "toolTraceEmpty": "No tool calls on the last turn yet.",
+    "newChat": "New chat",
+    "inputHint": "Enter to send · Shift+Enter for new line",
+    "errorTooLong": "Message is too long.",
+    "statusLlmOk": "LLM ready",
+    "statusLlmDown": "LLM not configured",
+    "statusRag": "RAG {{count}} chunks",
+    "fieldEmpty": "—",
+    "show": "Show",
+    "hide": "Hide",
+    "fields": {
+      "brand": "Brand",
+      "vehicle_model": "Vehicle / model",
+      "destination": "Destination",
+      "incoterm": "Incoterm",
+      "quantity_notes": "Quantity",
+      "quality_preference": "Quality preference",
+      "contact_hint": "Contact",
+      "other_notes": "Other notes"
+    },
+    "quote": {
+      "title": "مسودة العرض",
+      "draft": "مسودة",
+      "pending_review": "بانتظار المراجعة",
+      "approved": "مقبول",
+      "rejected": "مرفوض",
+      "confirmed": "مقبول",
+      "empty": "لا توجد بنود بعد. اطلب من CreaLink Chat البحث عن رقم قطعة وإضافتها للعرض.",
+      "totals": "الإجمالي (مرجع EXW)",
+      "remove": "حذف",
+      "submitBtn": "إرسال للمراجعة",
+      "submitPrompt": "إرسال مسودة EXW لمراجعة المبيعات؟ ستُقفل البنود حتى القبول أو الرفض.",
+      "emptyConfirm": "أضف بندًا واحدًا على الأقل من الكتالوج قبل الإرسال.",
+      "needEmail": "احفظ بريدًا إلكترونيًا صالحًا قبل الإرسال للمراجعة.",
+      "rateNote": "USD = CNY / {{rate}} (سعر العرض)",
+      "submittedAt": "أُرسل في {{time}}",
+      "reviewedAt": "رُوجع في {{time}}",
+      "rejectNote": "ملاحظة الرفض: {{note}}",
+      "disclaimer": "أسعار EXW الصين مرجعية فقط — ليست عرضًا ملزمًا. المبيعات تؤكد الحد الأدنى والتعبئة والشحن."
+    },
+    "contact": {
+      "title": "بيانات التواصل",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف / WhatsApp",
+      "company": "الشركة",
+      "emailRequired": "البريد مطلوب قبل الإرسال",
+      "save": "حفظ بيانات التواصل",
+      "saved": "تم الحفظ",
+      "hint": "مراجعة المبيعات تحتاج بريدك. يمكنك أيضًا ذكره في المحادثة — يُزامن هنا."
+    },
+    "review": {
+      "title": "مراجعة CreaLink Chat",
+      "subtitle": "مراجعة جهات الاتصال ومسودات العروض — قبول أو رفض.",
+      "adminKey": "مفتاح المسؤول",
+      "unlock": "فتح وتحميل",
+      "needKey": "أدخل مفتاح المسؤول",
+      "filterStatus": "الحالة",
+      "statusAll": "الكل",
+      "search": "بحث",
+      "refresh": "تحديث",
+      "listTitle": "العملاء المحتملون",
+      "empty": "لا سجلات",
+      "loading": "جارٍ التحميل…",
+      "selectHint": "اختر عنصرًا من اليسار لعرض التفاصيل.",
+      "detailTitle": "التفاصيل",
+      "note": "ملاحظة المراجعة (اختياري)",
+      "approve": "قبول",
+      "reject": "رفض",
+      "messages": "الرسائل الأخيرة",
+      "openChat": "فتح CreaLink Chat"
     }
   },
   "search": {
@@ -35,7 +162,8 @@
     "noResults": "[مراجعة: لم يتم العثور على قطع لـ \"{{query}}\". جرب رقمًا أو كلمة أخرى، أو أرسل لنا طلب عرض الأسعار.]",
     "pageTitle": "Search results",
     "pageSubtitle": "Reference prices (indicative). Refine your query below.",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "minLength": "يرجى إدخال حرفين على الأقل للبحث."
   },
   "company": {
     "sectionTitle": "Company",

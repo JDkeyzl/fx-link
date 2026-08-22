@@ -191,6 +191,7 @@ export interface PartsSearchResultsProps {
   error: string | null;
   loading: boolean;
   queried: boolean;
+  tooShort?: boolean;
 }
 
 export function PartsSearchResults({
@@ -199,6 +200,7 @@ export function PartsSearchResults({
   error,
   loading,
   queried,
+  tooShort = false,
 }: PartsSearchResultsProps) {
   const { t, locale, usdCnyRate } = useI18n();
   const isDesktop = useIsDesktop();
@@ -228,6 +230,14 @@ export function PartsSearchResults({
             />
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (tooShort) {
+    return (
+      <div className="card-portal w-full rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+        {t("search.minLength")}
       </div>
     );
   }

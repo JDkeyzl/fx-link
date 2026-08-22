@@ -73,10 +73,16 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
     function t(key: string, vars?: Record<string, string | number>): string {
       const raw = resolveKey(key);
-      let base =
-        typeof raw === "string" ? raw : (locales.en[key] as string | undefined);
-
-      if (!base) return key;
+      let base = typeof raw === "string" ? raw : undefined;
+      if (!base) {
+        const enRaw = key.split(".").reduce<unknown>((acc, segment) => {
+          if (acc && typeof acc === "object" && segment in acc) {
+            return (acc as Record<string, unknown>)[segment];
+          }
+          return undefined;
+        }, locales.en);
+        base = typeof enRaw === "string" ? enRaw : key;
+      }
 
       if (vars) {
         Object.entries(vars).forEach(([k, v]) => {

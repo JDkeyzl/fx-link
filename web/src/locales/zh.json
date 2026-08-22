@@ -23,6 +23,133 @@
       "title": "重卡配件查询",
       "description": "输入零件号，或品牌、车型、中英文名称等关键词，即可查看参考价区间。搜索后将在独立结果页展示，便于收藏或转发链接。如需正式报价与交期，可在查询后继续联系我们的业务团队。",
       "trustLine": "中国出厂（EXW）· 参考价（仅供参考）"
+    },
+    "deskCta": {
+      "title": "CreaLink Chat — 用对话梳理询价",
+      "body": "与 CreaLink Chat 确认车型、件号与目的地。价格通过目录查询，不会凭空编造。",
+      "button": "打开 CreaLink Chat"
+    }
+  },
+  "desk": {
+    "title": "CreaLink Chat",
+    "subtitle": "澄清需求、查询目录零件，并检索贸易知识。返回价格仅为 EXW 中国参考价。",
+    "backHome": "返回首页",
+    "placeholder": "描述你需要的配件，或粘贴零件号…",
+    "send": "发送",
+    "thinking": "CreaLink Chat 正在查询…",
+    "emptyTitle": "开始询价对话",
+    "emptyHint": "示例：「需要重汽 HOWO 刹车片约 50 片，FOB 拉各斯。EXW 和 FOB 有什么区别？」",
+    "examples": {
+      "personaHint": "试试这类客户常问的：",
+      "shuffle": "换一批场景",
+      "personas": {
+        "dealer": {
+          "label": "国外经销商",
+          "p1": "我要补货：重汽滤芯和刹车件大概 200 件混批，先给我目录 EXW 参考价（人民币和美元都要）。",
+          "p2": "我们主要卖经济型替代件给非洲修理厂。报价时原厂和经济件怎么区分说明？",
+          "p3": "请先把几个零件号整理成 EXW 参考行项目，MOQ 等我们销售再确认。"
+        },
+        "mine": {
+          "label": "矿山主 / 矿卡现场",
+          "p1": "矿卡易损件比较急，我没有件号。需要发什么照片或铭牌信息你才能查目录？",
+          "p2": "矿区 HOWO 自卸车耗材，请先查目录 EXW 参考价，人民币和美元都报。",
+          "p3": "交期比最低价更重要。目录查到后，怎么让销售确认可供？"
+        },
+        "fleet": {
+          "label": "车队运营者",
+          "p1": "车队里有 HOWO 和陕汽，要做定期保养件（滤芯、皮带等），按重复订单给数量建议。",
+          "p2": "以后可能走 FOB 拉各斯，但先要几个件号的 EXW 中国目录参考价。",
+          "p3": "帮忙把需求卡填起来：品牌、数量、目的地、质量偏好。"
+        },
+        "workshop": {
+          "label": "维修厂 / 配件门店",
+          "p1": "车间客户在等，我有一个急用件号，请查目录并报人民币和美元 EXW 参考价。",
+          "p2": "旧件上的号码看不清。我该向司机问什么，方便你准确搜索？",
+          "p3": "目录里有关联件，能不能直接当替代？还是必须客户确认适配？"
+        },
+        "contractor": {
+          "label": "工程 / 基建采购",
+          "p1": "项目采购：工地设备用的一批重卡底盘件，先要 EXW 参考价，再问包装注意点。",
+          "p2": "我们目的国要不要产地证或特殊出口包装？你需要我提供国家/港口哪些信息？",
+          "p3": "请先整理需求卡，并告诉我如何联系销售出正式报价，不要只停在聊天参考价。"
+        }
+      }
+    },
+    "requirementsTitle": "需求卡",
+    "requirementsEmpty": "助手收集品牌、目的地、贸易条款、数量后会显示在这里。",
+    "disclaimer": "目录取价；贸易/流程知识仅供参考。非正式商务报价。MOQ、包装与运费由销售确认。",
+    "toolTraceTitle": "工具 / RAG 轨迹",
+    "toolTraceEmpty": "上一轮还没有工具调用。",
+    "newChat": "新对话",
+    "inputHint": "Enter 发送 · Shift+Enter 换行",
+    "errorTooLong": "消息过长。",
+    "statusLlmOk": "LLM 就绪",
+    "statusLlmDown": "LLM 未配置",
+    "statusRag": "RAG {{count}} 片段",
+    "fieldEmpty": "—",
+    "show": "展开",
+    "hide": "收起",
+    "fields": {
+      "brand": "品牌",
+      "vehicle_model": "车型",
+      "destination": "目的地",
+      "incoterm": "贸易术语",
+      "quantity_notes": "数量",
+      "quality_preference": "质量偏好",
+      "contact_hint": "联系方式",
+      "other_notes": "其他备注"
+    },
+    "quote": {
+      "title": "报价草稿",
+      "draft": "草稿",
+      "pending_review": "待审核",
+      "approved": "已通过",
+      "rejected": "已驳回",
+      "confirmed": "已通过",
+      "empty": "暂无行项目。让 CreaLink Chat 查件号并加入报价即可。",
+      "totals": "合计（EXW 参考）",
+      "remove": "删除",
+      "submitBtn": "提交审核",
+      "submitPrompt": "提交给销售审核？提交后不可改行，需等待销售通过或驳回。",
+      "emptyConfirm": "请先添加至少一行目录件再提交。",
+      "needEmail": "提交前请先填写并保存有效邮箱。",
+      "rateNote": "美元 = 人民币 / {{rate}}（显示汇率）",
+      "submittedAt": "提交时间 {{time}}",
+      "reviewedAt": "审核时间 {{time}}",
+      "rejectNote": "驳回说明：{{note}}",
+      "disclaimer": "仅为 EXW 中国参考价，非正式报价。MOQ、包装与运费由销售确认。"
+    },
+    "contact": {
+      "title": "联系方式",
+      "name": "姓名",
+      "email": "邮箱",
+      "phone": "电话 / WhatsApp",
+      "company": "公司",
+      "emailRequired": "邮箱必填（提交审核前）",
+      "save": "保存联系方式",
+      "saved": "已保存",
+      "hint": "销售审核需要您的邮箱。也可在对话中告知，会同步到此表单。"
+    },
+    "review": {
+      "title": "CreaLink Chat 审核",
+      "subtitle": "查看客户联系方式与报价草稿，通过或驳回。",
+      "adminKey": "Admin Key",
+      "unlock": "解锁并加载",
+      "needKey": "请输入 Admin Key",
+      "filterStatus": "状态",
+      "statusAll": "全部",
+      "search": "搜索",
+      "refresh": "刷新",
+      "listTitle": "线索列表",
+      "empty": "暂无记录",
+      "loading": "加载中…",
+      "selectHint": "从左侧选择一条线索查看详情。",
+      "detailTitle": "线索详情",
+      "note": "审核备注（可选）",
+      "approve": "通过",
+      "reject": "驳回",
+      "messages": "最近对话",
+      "openChat": "打开 CreaLink Chat"
     }
   },
   "search": {
@@ -34,7 +161,8 @@
     "noResults": "未找到与「{{query}}」匹配的零件。请换一个零件号或关键词，或直接向我们发送询价。",
     "pageTitle": "搜索结果",
     "pageSubtitle": "以下为参考价（仅供参考）。可在下方修改关键词后再次搜索。",
-    "backHome": "返回首页"
+    "backHome": "返回首页",
+    "minLength": "请至少输入 2 个字符进行搜索。"
   },
   "company": {
     "sectionTitle": "公司介绍",

@@ -175,6 +175,26 @@ export function HomeContent() {
         </div>
       </section>
 
+      <section className="border-t border-gray-200 bg-white px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-2xl">
+            <h2 className="text-lg font-semibold text-[#002d54] md:text-xl">
+              {t("home.deskCta.title")}
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-700 md:text-base">
+              {t("home.deskCta.body")}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => router.push("/desk")}
+            className="btn-primary-portal shrink-0 rounded-xl px-5 py-3 text-sm font-semibold sm:text-base"
+          >
+            {t("home.deskCta.button")}
+          </button>
+        </div>
+      </section>
+
       <CompanyIntro />
 
       <section

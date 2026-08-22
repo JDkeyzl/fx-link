@@ -21,8 +21,135 @@
     },
     "searchStrip": {
       "title": "Look up heavy truck parts",
-      "description": "Enter a part number or a keyword (brand, model, or name) to see reference prices. Results open on a dedicated page so you can bookmark or share the link. For formal quotes and lead times, contact us after your search.",
+      "description": "Enter a part number or a keyword (brand, model, or name) to see reference prices. Results open a dedicated page so you can bookmark or share the link. For formal quotes and lead times, contact us after your search.",
       "trustLine": "EXW China · Reference prices (indicative only)"
+    },
+    "deskCta": {
+      "title": "CreaLink Chat — talk through your RFQ",
+      "body": "Chat with CreaLink Chat to clarify vehicle, part numbers and destination. It looks up catalogue reference prices (not guesses).",
+      "button": "Open CreaLink Chat"
+    }
+  },
+  "desk": {
+    "title": "CreaLink Chat",
+    "subtitle": "Clarify requirements, look up catalogue parts, and retrieve trade knowledge. Prices shown are EXW China reference only.",
+    "backHome": "Back to home",
+    "placeholder": "Describe the parts you need, or paste a part number…",
+    "send": "Send",
+    "thinking": "CreaLink Chat is looking things up…",
+    "emptyTitle": "Start an RFQ conversation",
+    "emptyHint": "Example: “Need SINOTRUK HOWO brake pads, about 50 pcs, FOB Lagos. What is the difference between EXW and FOB?”",
+    "examples": {
+      "personaHint": "Try questions customers like you often ask:",
+      "shuffle": "Show another scenario",
+      "personas": {
+        "dealer": {
+          "label": "Overseas parts dealer",
+          "p1": "I need EXW reference prices for a restock list: SINOTRUK filters and brake parts, about 200 pcs mixed. Can you check the catalogue?",
+          "p2": "We mainly sell economy replacements to African workshops. How do you label OE vs economy quality on quotes?",
+          "p3": "Please help me turn several part numbers into an EXW reference line list before our sales confirms MOQ."
+        },
+        "mine": {
+          "label": "Mine / off-highway site",
+          "p1": "Our mining trucks need wear parts urgently. I don’t have part numbers—what photos or nameplate info should I send?",
+          "p2": "Looking for SINOTRUK / HOWO dump-truck consumables for a mine site. Can you look up catalogue EXW references in CNY and USD?",
+          "p3": "Lead time matters more than the lowest price. After you find parts in the catalogue, how do we get sales to confirm availability?"
+        },
+        "fleet": {
+          "label": "Fleet operator",
+          "p1": "We run a mixed HOWO and SHACMAN fleet. Need periodic service parts—filters, belts—with quantities for a recurring order.",
+          "p2": "We prefer FOB to Lagos later, but first I need EXW China reference prices from your catalogue for a few part numbers.",
+          "p3": "Same parts every quarter. Can you help structure an RFQ card: brands, qty, destination, and quality preference?"
+        },
+        "workshop": {
+          "label": "Repair shop / parts counter",
+          "p1": "Customer is waiting in the bay. I have one urgent part number—please look it up and give CNY and USD EXW reference.",
+          "p2": "The part number on the old piece is unclear. What should I ask the driver so you can search the catalogue correctly?",
+          "p3": "Catalogue shows a related part. Can it replace the original, or must the customer confirm fitment first?"
+        },
+        "contractor": {
+          "label": "Project / construction buyer",
+          "p1": "Project purchase: batch of heavy-truck chassis parts for site equipment. Need EXW references first, then packing notes.",
+          "p2": "Do we need certificates or special export packing for our destination? I can share country/port if you tell me what you need.",
+          "p3": "Please collect my requirements into a card, then tell me how to contact sales for a formal quotation—not just chat reference prices."
+        }
+      }
+    },
+    "requirementsTitle": "Requirement card",
+    "requirementsEmpty": "Fields appear as the assistant collects brand, destination, Incoterm, qty…",
+    "disclaimer": "Catalogue prices; trade/process knowledge for reference only. Not a binding commercial offer. Sales confirms MOQ, packing and freight.",
+    "toolTraceTitle": "Tool / RAG trace",
+    "toolTraceEmpty": "No tool calls on the last turn yet.",
+    "newChat": "New chat",
+    "inputHint": "Enter to send · Shift+Enter for new line",
+    "errorTooLong": "Message is too long.",
+    "statusLlmOk": "LLM ready",
+    "statusLlmDown": "LLM not configured",
+    "statusRag": "RAG {{count}} chunks",
+    "fieldEmpty": "—",
+    "show": "Show",
+    "hide": "Hide",
+    "fields": {
+      "brand": "Brand",
+      "vehicle_model": "Vehicle / model",
+      "destination": "Destination",
+      "incoterm": "Incoterm",
+      "quantity_notes": "Quantity",
+      "quality_preference": "Quality preference",
+      "contact_hint": "Contact",
+      "other_notes": "Other notes"
+    },
+    "quote": {
+      "title": "Quote draft",
+      "draft": "Draft",
+      "pending_review": "Pending review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "confirmed": "Approved",
+      "empty": "No lines yet. Ask CreaLink Chat to look up a part number and add it to the quote.",
+      "totals": "Totals (EXW ref.)",
+      "remove": "Remove",
+      "submitBtn": "Submit for review",
+      "submitPrompt": "Submit this EXW draft for sales review? Lines lock until sales approves or rejects.",
+      "emptyConfirm": "Add at least one catalogue line before submitting.",
+      "needEmail": "Save a valid email before submitting for review.",
+      "rateNote": "USD = CNY / {{rate}} (display rate)",
+      "submittedAt": "Submitted at {{time}}",
+      "reviewedAt": "Reviewed at {{time}}",
+      "rejectNote": "Rejection note: {{note}}",
+      "disclaimer": "EXW China reference only — not a binding offer. Sales confirms MOQ, packing and freight."
+    },
+    "contact": {
+      "title": "Contact details",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone / WhatsApp",
+      "company": "Company",
+      "emailRequired": "Email required before submit",
+      "save": "Save contact",
+      "saved": "Saved",
+      "hint": "Sales review needs your email. You can also share it in chat — it syncs here."
+    },
+    "review": {
+      "title": "CreaLink Chat review",
+      "subtitle": "Review customer contacts and quote drafts — approve or reject.",
+      "adminKey": "Admin key",
+      "unlock": "Unlock & load",
+      "needKey": "Enter admin key",
+      "filterStatus": "Status",
+      "statusAll": "All",
+      "search": "Search",
+      "refresh": "Refresh",
+      "listTitle": "Leads",
+      "empty": "No records",
+      "loading": "Loading…",
+      "selectHint": "Select a lead on the left to view details.",
+      "detailTitle": "Lead detail",
+      "note": "Review note (optional)",
+      "approve": "Approve",
+      "reject": "Reject",
+      "messages": "Recent messages",
+      "openChat": "Open CreaLink Chat"
     }
   },
   "search": {
@@ -34,7 +161,8 @@
     "noResults": "No parts found for \"{{query}}\". Please try another number or keyword, or send us your RFQ.",
     "pageTitle": "Search results",
     "pageSubtitle": "Reference prices (indicative). Refine your query below.",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "minLength": "Please enter at least 2 characters to search."
   },
   "company": {
     "sectionTitle": "Company",

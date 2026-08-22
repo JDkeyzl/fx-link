@@ -22,6 +22,7 @@ export default function SearchPageClient() {
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<Part[]>([]);
   const [queried, setQueried] = useState(false);
+  const [tooShort, setTooShort] = useState(false);
   const [sessionReady, setSessionReady] = useState(false);
 
   useLayoutEffect(() => {
@@ -41,8 +42,17 @@ export default function SearchPageClient() {
       setResults([]);
       setError(null);
       setQueried(false);
+      setTooShort(false);
       return;
     }
+    if (q.length < 2) {
+      setResults([]);
+      setError(null);
+      setQueried(true);
+      setTooShort(true);
+      return;
+    }
+    setTooShort(false);
     setLoading(true);
     setError(null);
     setQueried(true);
@@ -109,6 +119,7 @@ export default function SearchPageClient() {
           error={error}
           loading={loading}
           queried={queried}
+          tooShort={tooShort}
         />
       </div>
     </div>

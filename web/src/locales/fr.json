@@ -23,6 +23,133 @@
       "title": "Recherche de pièces poids lourds",
       "description": "Saisissez un numéro de pièce ou un mot-clé (marque, modèle ou nom) pour afficher des prix indicatifs. Les résultats s'ouvrent sur une page dédiée, pratique pour marquer ou partager le lien. Pour un devis ferme et des délais, contactez-nous après votre recherche.",
       "trustLine": "EXW Chine · Prix indicatifs (à titre indicatif uniquement)"
+    },
+    "deskCta": {
+      "title": "CreaLink Chat — clarifiez votre RFQ",
+      "body": "Discutez avec CreaLink Chat pour préciser véhicule, références et destination. Les prix catalogue sont consultés (pas inventés).",
+      "button": "Ouvrir CreaLink Chat"
+    }
+  },
+  "desk": {
+    "title": "CreaLink Chat",
+    "subtitle": "Clarifiez le besoin, consultez le catalogue et les connaissances commerciales. Prix = EXW Chine indicatif.",
+    "backHome": "Retour à l'accueil",
+    "placeholder": "Décrivez les pièces ou collez un numéro…",
+    "send": "Envoyer",
+    "thinking": "CreaLink Chat recherche…",
+    "emptyTitle": "Démarrer une conversation RFQ",
+    "emptyHint": "Exemple : « Plaquettes frein SINOTRUK HOWO, ~50 pcs, FOB Lagos. Différence EXW / FOB ? »",
+    "examples": {
+      "personaHint": "Essayez les questions que posent souvent des clients comme vous :",
+      "shuffle": "Autre scénario",
+      "personas": {
+        "dealer": {
+          "label": "Distributeur pièces à l'étranger",
+          "p1": "Je dois réapprovisionner filtres et freins SINOTRUK, ~200 pcs mélangés. Prix indicatifs EXW catalogue en CNY et USD ?",
+          "p2": "Nous vendons surtout des remplacements économiques. Comment distinguer OE et économique sur le devis ?",
+          "p3": "Aidez-moi à transformer plusieurs numéros en lignes EXW de référence avant confirmation MOQ par les ventes."
+        },
+        "mine": {
+          "label": "Mine / chantier hors route",
+          "p1": "Pièces d'usure urgentes pour dumpers. Pas de numéros—quelles photos ou plaques dois-je envoyer ?",
+          "p2": "Consommables HOWO pour site minier. Cherchez les références EXW catalogue en CNY et USD.",
+          "p3": "Le délai compte plus que le prix le plus bas. Après le catalogue, comment faire confirmer la dispo par les ventes ?"
+        },
+        "fleet": {
+          "label": "Exploitant de flotte",
+          "p1": "Flotte mixte HOWO et SHACMAN. Pièces d'entretien périodique (filtres, courroies) pour commande récurrente.",
+          "p2": "Nous viserons FOB Lagos plus tard ; d'abord prix EXW Chine catalogue pour quelques numéros.",
+          "p3": "Aidez à remplir la fiche : marques, quantités, destination, préférence qualité."
+        },
+        "workshop": {
+          "label": "Atelier / comptoir pièces",
+          "p1": "Client en attente. Un numéro urgent—cherchez et donnez EXW CNY et USD.",
+          "p2": "Numéro illisible sur la vieille pièce. Que demander au chauffeur pour bien chercher ?",
+          "p3": "Le catalogue montre une pièce liée. Peut-elle remplacer l'originale, ou le client doit confirmer l'adaptation ?"
+        },
+        "contractor": {
+          "label": "Acheteur projet / BTP",
+          "p1": "Achat projet : lot de pièces châssis poids lourds. D'abord EXW de référence, puis conseils emballage.",
+          "p2": "Faut-il certificats ou emballage export spécial pour notre destination ? Quels pays/ports vous faut-il ?",
+          "p3": "Remplissez la fiche besoins, puis comment contacter les ventes pour un devis formel—pas seulement le chat."
+        }
+      }
+    },
+    "requirementsTitle": "Fiche besoins",
+    "requirementsEmpty": "Marque, destination, Incoterm, quantité apparaîtront ici.",
+    "disclaimer": "Prix catalogue ; connaissances commerciales à titre indicatif. Offre non contractuelle. MOQ, emballage et fret confirmés par les ventes.",
+    "toolTraceTitle": "Trace outils / RAG",
+    "toolTraceEmpty": "Aucun appel d'outil sur le dernier tour.",
+    "newChat": "Nouveau chat",
+    "inputHint": "Entrée = envoyer · Maj+Entrée = ligne",
+    "errorTooLong": "Message trop long.",
+    "statusLlmOk": "LLM prêt",
+    "statusLlmDown": "LLM non configuré",
+    "statusRag": "RAG {{count}} chunks",
+    "fieldEmpty": "—",
+    "show": "Afficher",
+    "hide": "Masquer",
+    "fields": {
+      "brand": "Marque",
+      "vehicle_model": "Véhicule / modèle",
+      "destination": "Destination",
+      "incoterm": "Incoterm",
+      "quantity_notes": "Quantité",
+      "quality_preference": "Qualité",
+      "contact_hint": "Contact",
+      "other_notes": "Notes"
+    },
+    "quote": {
+      "title": "Brouillon de devis",
+      "draft": "Brouillon",
+      "pending_review": "En revue",
+      "approved": "Approuvé",
+      "rejected": "Rejeté",
+      "confirmed": "Approuvé",
+      "empty": "Aucune ligne. Demandez à CreaLink Chat d'ajouter un numéro catalogue.",
+      "totals": "Totaux (EXW indicatif)",
+      "remove": "Retirer",
+      "submitBtn": "Soumettre à la revue",
+      "submitPrompt": "Soumettre ce brouillon EXW aux ventes ? Les lignes seront verrouillées jusqu'à approbation ou rejet.",
+      "emptyConfirm": "Ajoutez au moins une ligne catalogue avant de soumettre.",
+      "needEmail": "Enregistrez un e-mail valide avant de soumettre.",
+      "rateNote": "USD = CNY / {{rate}} (taux d'affichage)",
+      "submittedAt": "Soumis le {{time}}",
+      "reviewedAt": "Revue le {{time}}",
+      "rejectNote": "Motif du rejet : {{note}}",
+      "disclaimer": "Prix EXW Chine indicatifs uniquement — offre non contractuelle."
+    },
+    "contact": {
+      "title": "Coordonnées",
+      "name": "Nom",
+      "email": "E-mail",
+      "phone": "Téléphone / WhatsApp",
+      "company": "Société",
+      "emailRequired": "E-mail requis avant soumission",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "hint": "La revue commerciale nécessite votre e-mail. Vous pouvez aussi le donner dans le chat — synchronisé ici."
+    },
+    "review": {
+      "title": "Revue CreaLink Chat",
+      "subtitle": "Contacts et devis — approuver ou rejeter.",
+      "adminKey": "Clé admin",
+      "unlock": "Déverrouiller",
+      "needKey": "Saisissez la clé admin",
+      "filterStatus": "Statut",
+      "statusAll": "Tous",
+      "search": "Recherche",
+      "refresh": "Actualiser",
+      "listTitle": "Prospects",
+      "empty": "Aucun enregistrement",
+      "loading": "Chargement…",
+      "selectHint": "Sélectionnez un prospect à gauche.",
+      "detailTitle": "Détail",
+      "note": "Note de revue (optionnel)",
+      "approve": "Approuver",
+      "reject": "Rejeter",
+      "messages": "Messages récents",
+      "openChat": "Ouvrir CreaLink Chat"
     }
   },
   "search": {
@@ -34,7 +161,8 @@
     "noResults": "Aucune pièce trouvée pour « {{query }} ». Essayez un autre numéro ou mot-clé, ou envoyez-nous votre demande de devis.",
     "pageTitle": "Résultats de recherche",
     "pageSubtitle": "Prix indicatifs. Affinez votre recherche ci-dessous.",
-    "backHome": "Retour à l'accueil"
+    "backHome": "Retour à l'accueil",
+    "minLength": "Veuillez saisir au moins 2 caractères pour rechercher."
   },
   "company": {
     "sectionTitle": "Présentation de l'entreprise",
